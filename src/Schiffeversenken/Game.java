@@ -1,9 +1,27 @@
 package Schiffeversenken;
 
+import java.util.Arrays;
+
 public class Game {
 	
+	private int pitchSize;
+	private Player player1;					// Mensch oder AI
+	private Player player2;					// Netzwerk oder AI
+	private int[] ships = new int[4];
 	
+	public Game(int pitchSize, Player player1, Player player2) {
+		this.pitchSize = pitchSize;
+		this.player1 = player1;
+		this.player2 = player2;
+		
+		Arrays.fill(ships, 0);				// Fuellt ships mit 0 (zur Sicherheit)
+	}
 	
+	// Getter und Setter
+	public int getPitchSize() {return this.pitchSize;}
+	public Player getPlayer1() {return this.player1;}
+	public Player getPlayer2() {return this.player2;}
+	public int getNumberOfShips(int size) {return ships[size - 2];}
 	
 	
 	
@@ -23,7 +41,7 @@ public class Game {
      * return int[] -> Liste der Anzahl an theoretisch noch plazierbaren Schiffen einer Größe, unter der Annahme, dass alle der in Zukunft noch plazierten Schiffe
      *                 von derselben Größe sind; Aufsteigend sortiert, beginnend mit Größe 2
      */
-    public int[] getShipsLeft(int fieldSize, int[] shipsInUse) {
+    private int[] getShipsLeft(int fieldSize, int[] shipsInUse) {
     	double occupacityRate = 0.3;
     	double occupacityPerShip = 0.4;													// Für 0.25 ist der Returnwert shipsLeft konstant für jede Eingabe shipsInUse
     	
