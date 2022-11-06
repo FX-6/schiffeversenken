@@ -9,9 +9,9 @@ public class Ship {
 	private int orientation;		// 0 = horizontal, 1 = vertikal
 	private Point rootPoint;		// rootPoint graphisch gesehen immer oben links (kleinstes x und kleinstes y)
 	
-	public Ship(int length, Point rootPoint, int orientation) {
+	public Ship(int length, int orientation) {
 		this.length = length;
-		this.rootPoint = rootPoint;
+		this.rootPoint = new Point(0, 0);
 		this.orientation = orientation;
 		this.damage = new int[this.length];
 		
@@ -22,6 +22,8 @@ public class Ship {
 	public int getLength() {return this.length;}
 	public int getOrientation() {return this.orientation;}
 	public Point getRootPoint() {return this.rootPoint;}
+	
+	public void setRootPoint(Point point) {this.rootPoint = point;}
 	
 
 	
@@ -39,8 +41,8 @@ public class Ship {
 	// Fuegt dem Schiff Schaden zu, sofern ein Teil des Schiffes an Punkt "point" liegt. Wenn ja, gibt "true" zurück, andernfalls "false"
 	public boolean addDamage(Point point) {
 		if (orientation == 0 && rootPoint.y == point.y) {
-			int xDistance = rootPoint.getXDistance(point)
-;			if (xDistance < length) {							// Wenn Schiff auf "point" liegt
+			int xDistance = rootPoint.getXDistance(point);
+			if (xDistance < length) {							// Wenn Schiff auf "point" liegt
 				damage[xDistance] = 1;
 				return true;
 			}

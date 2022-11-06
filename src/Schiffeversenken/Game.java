@@ -9,10 +9,8 @@ public class Game {
 	private Player player2;					// Netzwerk oder AI
 	private int[] ships = new int[4];
 	
-	public Game(int pitchSize, Player player1, Player player2) {
+	public Game(int pitchSize) {
 		this.pitchSize = pitchSize;
-		this.player1 = player1;
-		this.player2 = player2;
 		
 		Arrays.fill(ships, 0);				// Fuellt ships mit 0 (zur Sicherheit)
 	}
@@ -23,8 +21,36 @@ public class Game {
 	public Player getPlayer2() {return this.player2;}
 	public int getNumberOfShips(int size) {return ships[size - 2];}
 	
+	public void setPlayer1(Player player) {this.player1 = player;}
+	public void setPlayer2(Player player) {this.player2 = player;}
 	
 	
+	
+	
+	
+	public boolean save(String id, Object sender) {
+		// true, falls Speichern erfolgreich, andernfalls false
+		
+		if (!(sender instanceof NetworkPlayer) && player2 instanceof NetworkPlayer) {
+			NetworkPlayer player2 = (NetworkPlayer) this.player2;
+			player2.sendSave(id);
+		}
+		
+		// ... Spiel speichern
+		return false;
+	}
+	
+	public boolean load(String id, Object sender) {
+		// true, falls Laden erfolgreich, andernfalls false
+		
+		if (!(sender instanceof NetworkPlayer) && player2 instanceof NetworkPlayer) {
+			NetworkPlayer player2 = (NetworkPlayer) this.player2;
+			player2.sendLoad(id);
+		}
+		
+		// ... Spielstand laden
+		return false;
+	}
 	
 	
 	
