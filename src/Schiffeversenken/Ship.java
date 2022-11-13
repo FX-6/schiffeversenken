@@ -85,7 +85,7 @@ public class Ship {
 		
 		// Ein Schiff horizontal, das andere vertikal
 		else if (orientation == 0 && oShip.orientation == 1) {
-			int offset = rootPoint.y < oShip.rootPoint.y ? 0 : oShip.length;			// Wenn "oShip" über Schiff liegt, muss die Länge von "oShip" der Offset seines rootPoints sein, andernfalls braucht es keinen
+			int offset = rootPoint.y < oShip.rootPoint.y ? 0 : Math.min(oShip.length, rootPoint.getYDistance(oShip.rootPoint));			// Wenn "oShip" über Schiff liegt, muss die Y Distanz und maximal Länge von "oShip" der Offset seines rootPoints sein, andernfalls braucht es keinen
 			for (int i = 0; i < length; i++) {
 				if (rootPoint.add(i, 0).getXDistance(oShip.rootPoint) < 2 && rootPoint.add(i, 0).getYDistance(oShip.rootPoint.add(0, offset)) < 2) {
 					return true;
@@ -95,7 +95,7 @@ public class Ship {
 		
 		// Ein Schiff vertikal, das andere horizontal
 		else if (orientation == 1 && oShip.orientation == 0) {
-			int offset = rootPoint.x < oShip.rootPoint.x ? 0 : oShip.length;			// Wenn "oShip" links von  Schiff liegt, muss die Länge von "oShip" der Offset seines rootPoints sein, andernfalls braucht es keinen
+			int offset = rootPoint.x < oShip.rootPoint.x ? 0 : Math.min(oShip.length, rootPoint.getXDistance(oShip.rootPoint));			// Wenn "oShip" links von  Schiff liegt, muss die X Distanz und maximal die Länge von "oShip" der Offset seines rootPoints sein, andernfalls braucht es keinen
 			for (int i = 0; i < length; i++) {
 				if (rootPoint.add(0, i).getYDistance(oShip.rootPoint) < 2 && rootPoint.add(0, i).getXDistance(oShip.rootPoint.add(offset, 0)) < 2) {
 					return true;
@@ -103,6 +103,17 @@ public class Ship {
 			}
 		}
 		return false;
+	}
+	
+	
+	// Produziert einen beschreibenden String zu diesem Schiff
+	public String toString() {
+		String string = "";
+		for (int i = 0; i < length; i++) {
+			if (damage[i] == 0) string += "=";
+			else if (damage[i] == 1) string += "x";
+		}
+		return "Ship at " + rootPoint + " with orientation " + orientation + " and condition " + string;
 	}
 	
 }
