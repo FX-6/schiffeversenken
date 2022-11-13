@@ -27,4 +27,19 @@ public class Point {
 	public Point add(int x, int y) {
 		return new Point(this.x + x, this.y + y);
 	}
+	
+	// Produziert einen beschreibenden String zu diesem Punkt
+	public String toString() {
+		return "(" + x + "|" + y + ")";
+	}
+	
+	// Ueberprueft, ob ein Object object inhaltlich gleich zu diesem Punkt ist (ob beide Koordinaten uebereinstimmen)
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Point) {
+			Point oPoint = (Point) object;
+			return x == oPoint.x && y == oPoint.y;
+		}
+		return false;
+	}
 }
