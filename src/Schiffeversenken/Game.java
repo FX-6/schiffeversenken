@@ -1,8 +1,14 @@
 package Schiffeversenken;
 
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class Game {
+import Notifications.Notification;
+import Notifications.NotificationCenter;
+
+public class Game implements Notification {
 	
 	private int pitchSize;
 	private Player player1;					// Mensch oder AI
@@ -13,6 +19,8 @@ public class Game {
 		this.pitchSize = pitchSize;
 		
 		Arrays.fill(ships, 0);				// Fuellt ships mit 0 (zur Sicherheit)
+		
+		NotificationCenter.addObserver("ClientConnected", this);			// Abboniert das Event "ClientConnected" (Wird aufgerufen, wenn eine erfolgreiche Verbindung zu einem Client hergestellt wurde)
 	}
 	
 	// Getter und Setter
@@ -21,13 +29,15 @@ public class Game {
 	public Player getPlayer2() {return this.player2;}
 	public int getNumberOfShips(int size) {return ships[size - 2];}
 	
+	public void setPitchSize(int size) {this.pitchSize = size;}
+	public void setShips(int[] ships) {this.ships = ships;}
 	public void setPlayer1(Player player) {this.player1 = player;}
 	public void setPlayer2(Player player) {this.player2 = player;}
 	
 	
 	
 	
-	
+	// Speichert einen Spielstand
 	public boolean save(String id, Object sender) {
 		// true, falls Speichern erfolgreich, andernfalls false
 		
@@ -40,6 +50,7 @@ public class Game {
 		return false;
 	}
 	
+	// Lädt einen Spielstand
 	public boolean load(String id, Object sender) {
 		// true, falls Laden erfolgreich, andernfalls false
 		
@@ -50,6 +61,38 @@ public class Game {
 		
 		// ... Spielstand laden
 		return false;
+	}
+	
+	// Überträgt im Falle eines Netzwerkspiels als Server die Feldgroesse und die Anzahl an Schiffen fuer eine Groesse
+	public void transmittSizeAndShips() {
+		if (player2 instanceof NetworkPlayer) {
+			NetworkPlayer player2 = (NetworkPlayer) this.player2;
+			player2.sendSize(this.pitchSize);
+			player2.sendShips(this.ships);
+		}
+	}
+	
+	// Teilt über das Netzwerk mit, dass alle Schiffe gesetzt wurden und das Spiel beginnen kann
+	public void transmittReady() {
+		if (player2 instanceof NetworkPlayer) {
+			NetworkPlayer player2 = (NetworkPlayer) this.player2;
+			player2.sendReady();
+		}
+	}
+	
+	
+	
+	
+	
+	// Beendet ein Spiel
+	public void exit() {
+		// Spiel beenden ...
+		if (player2 instanceof NetworkPlayer) {
+			NetworkPlayer player2 = (NetworkPlayer) this.player2;
+			player2.endConnection();
+		}
+		
+		Main.currentGame = null;
 	}
 	
 	
@@ -95,5 +138,18 @@ public class Game {
         
         return shipsLeft;
     }
+    
+    
+    
+    
+    
+    
+    
+    @Override
+	public void processNotification(String type, Object object) {
+		if (type.equals("ClientConnected")) {
+
+		}
+	}
 	
 }
