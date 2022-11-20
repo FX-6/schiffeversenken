@@ -38,7 +38,7 @@ public abstract class Player {
 	// Muss aufgerufen werden, um zu Schießen.
 	public int shoot(Point point) {		
 		int result = otherPlayer.shot(point);
-		pointsShot[point.x][point.y] = result;
+		pointsShot[point.x - 1][point.y - 1] = result;
 		
 		if (result == 0) {
 			//otherPlayer.pass();
@@ -76,13 +76,13 @@ public abstract class Player {
 		// Ueberpruefen, ob die Orientierung stimmt
 		if (ship.getOrientation() != 0 && ship.getOrientation() != 1) return false;
 		
-		// Ueberpruefen, ob Schiff im Feld (Feld geht von 0 bis game.pitchSize - 1)
-		if (point.x < 0 || point.y < 0) return false;
+		// Ueberpruefen, ob Schiff im Feld (Feld geht von 1 bis game.pitchSize)
+		if (point.x < 1 || point.y < 1) return false;
 		if (ship.getOrientation() == 0) {
-			if (point.x + ship.getLength() >= game.getPitchSize() || point.y >= game.getPitchSize()) return false;
+			if (point.x + ship.getLength() > game.getPitchSize() || point.y > game.getPitchSize()) return false;
 		}
 		if (ship.getOrientation() == 1) {
-			if (point.y + ship.getLength() >= game.getPitchSize() || point.x >= game.getPitchSize()) return false;
+			if (point.y + ship.getLength() > game.getPitchSize() || point.x > game.getPitchSize()) return false;
 		}
 		
 		// Ueberpruefen, ob Schiff mit anderem Schiff kollidiert (inkl. 1 Block Wasser Abstand)

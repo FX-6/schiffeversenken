@@ -37,6 +37,8 @@ public class NetworkPlayer extends Player implements Notification  {
 			NotificationCenter.addObserver("NewNetworkMessage", this);				// Abboniert das Event "NeweNetworkMessage" (Wird aufgerufen, wenn eine Nachricht über das Netzwerk eintrifft)
 		} catch (IOException e) {
 			e.printStackTrace();
+			NotificationCenter.sendNotification("ConnectionFailed", null);
+			game.exit();
 		}
  	}
 

@@ -93,6 +93,7 @@ public class Game implements Notification {
 		}
 		
 		Main.currentGame = null;
+		System.out.println("Spiel beendet");
 	}
 	
 	

@@ -24,21 +24,25 @@ public class Connection {
 	private PrintWriter out;
 	private BufferedReader in;
 	private NetworkListener listener;
+	
+	private ServerSocket serverSocket;
+	private Thread waitingThread;
 		
 	public Connection(String ipAddress) throws UnknownHostException, IOException {
 		socket = new Socket(ipAddress, port);
 		out = new PrintWriter(socket.getOutputStream(), true);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		System.out.println("Connection with " + socket.getRemoteSocketAddress() + " established.");
+		NotificationCenter.sendNotification("ServerConnected", null);
 		startListening();	
 	}
 	
 	public Connection() throws IOException {
-		ServerSocket serverSocket = new ServerSocket(port);
+		serverSocket = new ServerSocket(port);
 		System.out.println("Server started, waiting for connection ...");
 		
 		
-		Thread thread = new Thread(new Runnable() {
+		waitingThread = new Thread(new Runnable() {
 			public void run() {
 				try {
 					socket = serverSocket.accept();
@@ -53,7 +57,7 @@ public class Connection {
 				}
 			}
 		});
-		thread.start();
+		waitingThread.start();
 	}
 	
 	
@@ -68,10 +72,12 @@ public class Connection {
 	// Beendet die Netzwerkverbindung
 	public void disconnect() throws IOException {
 		if (listener != null) listener.stop();
+		if (waitingThread != null && waitingThread.isAlive()) waitingThread.stop();
 		if (socket != null && socket.isConnected()) {
 			send("exit");
 			socket.close();
 		}
+		if (serverSocket != null) serverSocket.close();
 		listener = null;
 		socket = null;
 	}

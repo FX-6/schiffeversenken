@@ -1,6 +1,7 @@
 package Schiffeversenken;
 
-import java.util.Scanner;
+import UserInterface.GameWindow;
+import UserInterface.Menu;
 
 
 public class Main {
@@ -8,7 +9,18 @@ public class Main {
 	public static Game currentGame = null;
 	public static String hostAddress = null;
 	
+	public static Menu menu = null;
+	public static GameWindow gameWindow = null;
+	
 	public static void main(String[] args) {
+		
+		
+		
+		menu = new Menu();
+		
+		
+		
+		
 //		createGame(10, GameType.NETWORK_SERVER);
 //		
 //		int[] ships = new int[4];
@@ -16,7 +28,7 @@ public class Main {
 //		ships[2] = 1;
 //		currentGame.setShips(ships);
 		
-		
+		/*
 		System.out.println("1.\tcreate [server | client <ipAddress>] pitchSize \t//if Client then just any number for pitchSize");
 		System.out.println("2.\tships <size 2> <size 3> <size 4> <size 5> \t//if Server");
 		System.out.println("3.\tstart \t//if Server");
@@ -100,6 +112,7 @@ public class Main {
 		}
 		
 		currentGame.exit();
+		*/
 		
 	}
 	
@@ -138,8 +151,11 @@ public class Main {
 			break;
 		}
 		
-		currentGame.setPlayer1(player1);
-		currentGame.setPlayer2(player2);		
+		// Wird benötigt, da beim erfolglosen Verbindungsaufbau im Netzwerkspiel das Spiel in anderem Thread bereits beendet sein könnte (und damit currentGame = null ist)
+		if (currentGame != null) {
+			currentGame.setPlayer1(player1);
+			currentGame.setPlayer2(player2);
+		}
 	}
 	
 }
