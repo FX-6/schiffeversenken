@@ -1,6 +1,5 @@
 package Schiffeversenken;
 
-import UserInterface.GameWindow;
 import UserInterface.Menu;
 
 
@@ -9,14 +8,13 @@ public class Main {
 	public static Game currentGame = null;
 	public static String hostAddress = null;
 	
-	public static Menu menu = null;
-	public static GameWindow gameWindow = null;
+	public static Menu menuWindow = null;
 	
 	public static void main(String[] args) {
 		
 		
 		
-		menu = new Menu();
+		menuWindow = new Menu();
 		
 		
 		

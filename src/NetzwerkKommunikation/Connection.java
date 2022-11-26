@@ -29,6 +29,7 @@ public class Connection {
 	private Thread waitingThread;
 		
 	public Connection(String ipAddress) throws UnknownHostException, IOException {
+		System.out.println("Try to connect to " + ipAddress);
 		socket = new Socket(ipAddress, port);
 		out = new PrintWriter(socket.getOutputStream(), true);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -56,7 +57,7 @@ public class Connection {
 					e.printStackTrace();
 				}
 			}
-		});
+		}, "ConnectionWaiter");
 		waitingThread.start();
 	}
 	
@@ -71,12 +72,12 @@ public class Connection {
 	
 	// Beendet die Netzwerkverbindung
 	public void disconnect() throws IOException {
-		if (listener != null) listener.stop();
 		if (waitingThread != null && waitingThread.isAlive()) waitingThread.stop();
 		if (socket != null && socket.isConnected()) {
 			send("exit");
 			socket.close();
 		}
+		//if (listener != null) listener.stop();
 		if (serverSocket != null) serverSocket.close();
 		listener = null;
 		socket = null;

@@ -19,6 +19,7 @@ public class NetworkListener extends Thread {
 	private BufferedReader in;
 		
 	public NetworkListener(BufferedReader in) {
+		super("Listener");
 		this.in = in;
 	}
 	

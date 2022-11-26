@@ -1,6 +1,7 @@
 package Notifications;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,13 +15,18 @@ import java.util.List;
 
 public final class NotificationCenter {
 
-	static HashMap<String, ArrayList<Notification>> listeners = new HashMap<String, ArrayList<Notification>>();
+	private static HashMap<String, ArrayList<Notification>> listeners = new HashMap<String, ArrayList<Notification>>();
 	
 	// Sendet eine Nachricht an alle Abbonenten des Events "type"
 	public static void sendNotification(String type, Object object) {
 		List<Notification> list = listeners.get(type);
+		if (list == null) return;
 		for (Notification listener : list) {
-			listener.processNotification(type, object);
+			try {
+				listener.processNotification(type, object);
+			} catch (ConcurrentModificationException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -35,6 +41,12 @@ public final class NotificationCenter {
 			ArrayList<Notification> list = listeners.get(type);
 			list.add(notification);
 			listeners.put(type, list);
+		}
+	}
+	
+	public static void removeAllObservers(Object object) {
+		for (ArrayList<Notification> list : listeners.values()) {
+			list.remove(object);
 		}
 	}
 	

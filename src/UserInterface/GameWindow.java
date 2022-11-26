@@ -5,13 +5,16 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
+import Notifications.Notification;
+import Notifications.NotificationCenter;
+import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.Main;
 
 /*
  * TODO: Wenn das Spiel beendet wird, dann muss das Fenster wieder geschlossen werden!!
  */
 
-public class GameWindow extends JFrame {
+public class GameWindow extends JFrame implements Notification {
 
 	/**
 	 * 
@@ -20,13 +23,11 @@ public class GameWindow extends JFrame {
 
 	public GameWindow() {
 		super("Schiffeversenken");
-		
+				
 		addWindowListener(new WindowListener() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				Main.currentGame.exit();
-				Main.menu = new Menu();
-				Main.gameWindow = null;
+				Main.menuWindow.exitGame(GameExitStatus.GAME_DISCARDED);
 			}
 
 			@Override
@@ -69,6 +70,12 @@ public class GameWindow extends JFrame {
 	}
 	
 	
+	
+	
+	
+	
+	public void processNotification(String type, Object object) {
+	}
 	
 
 	

@@ -37,8 +37,9 @@ public class NetworkPlayer extends Player implements Notification  {
 			NotificationCenter.addObserver("NewNetworkMessage", this);				// Abboniert das Event "NeweNetworkMessage" (Wird aufgerufen, wenn eine Nachricht über das Netzwerk eintrifft)
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("Connection to " + ipAddress + " failed.");
 			NotificationCenter.sendNotification("ConnectionFailed", null);
-			game.exit();
+			game.exit(this, GameExitStatus.CONNECTION_REFUESED);
 		}
  	}
 
@@ -192,10 +193,19 @@ public class NetworkPlayer extends Player implements Notification  {
 			case "exit":
 				try {
 					connection.disconnect();
-					game.exit();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				game.exit(this, GameExitStatus.CONNECTION_CLOSED);
+				break;
+				
+			case "null":
+				try {
+					connection.disconnect();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				game.exit(this, GameExitStatus.CONNECTION_CLOSED);
 				break;
 				
 			case "pass":

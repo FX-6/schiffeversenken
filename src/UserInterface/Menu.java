@@ -3,6 +3,8 @@ package UserInterface;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import Notifications.NotificationCenter;
+import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
 import UserInterface.MenuPanels.CreateNetworkGamePanel;
@@ -16,8 +18,8 @@ public class Menu extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 2989383731928612512L;
-	
-	private JPanel menu;
+		
+	public GameWindow gameWindow;
 	
 	public Menu() {
 		super("Schiffeversenken");
@@ -47,9 +49,8 @@ public class Menu extends JFrame {
 	
 	// Zeigt das Hauptmenü in diesem Fenster an
 	public void showMenu() {
-		if (menu == null) {	
-			menu = new MainPanel(this);		
-		}
+		NotificationCenter.removeAllObservers(getContentPane());
+		MainPanel menu = new MainPanel(this);		
 		
 		setContentPane(menu);
 		validate();
@@ -58,6 +59,7 @@ public class Menu extends JFrame {
 	
 	// Zeigt die Einstellungen in diesem Fenster an
 	public void showSettings() {
+		NotificationCenter.removeAllObservers(getContentPane());
 		SettingsPanel settings = new SettingsPanel(this);
 		setContentPane(settings);
 		validate();
@@ -66,6 +68,7 @@ public class Menu extends JFrame {
 	
 	// Zeigt die Paramter zum Spielstart an
 	public void showCreateNetworkGame(GameType type) {
+		NotificationCenter.removeAllObservers(getContentPane());
 		CreateNetworkGamePanel newGame = new CreateNetworkGamePanel(this, type);
 		setContentPane(newGame);
 		validate();
@@ -73,28 +76,46 @@ public class Menu extends JFrame {
 	
 	
 	public void showNetworkGame(GameType type) {
+		NotificationCenter.removeAllObservers(getContentPane());
 		NetworkGamePanel joinGame = new NetworkGamePanel(this, type);
 		setContentPane(joinGame);
 		validate();
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	public void createGame(int pitchSize, GameType type, String hostAddress) {
-		Main.hostAddress = hostAddress;
-		Main.createGame(pitchSize, type);
-	}
-	
 	public void openGameWindow() {
-		hideFrame();
-		Main.gameWindow = new GameWindow();
-		Main.menu = null;
+		this.hideFrame();
+		gameWindow = new GameWindow();
 	}
+	
+	public void closeGameWindow() {
+		if (gameWindow != null) {
+			NotificationCenter.removeAllObservers(gameWindow);
+			gameWindow.dispose();
+			gameWindow = null;
+		}
+		
+		this.showMenu();
+		this.showFrame();
+	}
+	
+	public void createGame(int pitchSize, GameType type) {
+		new Thread(new Runnable() {
+			public void run() {
+				Main.createGame(pitchSize, type);
+			}
+		}, "StartConnection").start();
+	}
+	
+	public void exitGame(GameExitStatus status) {
+		Main.currentGame.exit(this, status);
+		closeGameWindow();
+	}
+	
+	
+	
+	
+	
+	
 	
 }

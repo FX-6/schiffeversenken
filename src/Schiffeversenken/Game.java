@@ -1,9 +1,8 @@
 package Schiffeversenken;
 
 import java.util.Arrays;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
+import javax.swing.JFrame;
 
 import Notifications.Notification;
 import Notifications.NotificationCenter;
@@ -20,7 +19,7 @@ public class Game implements Notification {
 		
 		Arrays.fill(ships, 0);				// Fuellt ships mit 0 (zur Sicherheit)
 		
-		NotificationCenter.addObserver("ClientConnected", this);			// Abboniert das Event "ClientConnected" (Wird aufgerufen, wenn eine erfolgreiche Verbindung zu einem Client hergestellt wurde)
+		//NotificationCenter.addObserver("ClientConnected", this);			// Abboniert das Event "ClientConnected" (Wird aufgerufen, wenn eine erfolgreiche Verbindung zu einem Client hergestellt wurde)
 	}
 	
 	// Getter und Setter
@@ -85,12 +84,21 @@ public class Game implements Notification {
 	
 	
 	// Beendet ein Spiel
-	public void exit() {
+	public void exit(Object sender, GameExitStatus status) {
+		
 		// Spiel beenden ...
-		if (player2 instanceof NetworkPlayer) {
-			NetworkPlayer player2 = (NetworkPlayer) this.player2;
-			player2.endConnection();
+		if (!(sender instanceof NetworkPlayer)) {
+			if (player2 instanceof NetworkPlayer) {
+				NetworkPlayer player2 = (NetworkPlayer) getPlayer2();
+				player2.endConnection();
+			}
+		} 
+		if (!(sender instanceof JFrame) && status != GameExitStatus.CONNECTION_REFUESED) {
+			Main.menuWindow.closeGameWindow();
 		}
+		
+		NotificationCenter.removeAllObservers(player1);
+		NotificationCenter.removeAllObservers(player2);
 		
 		Main.currentGame = null;
 		System.out.println("Spiel beendet");
