@@ -12,6 +12,7 @@ import javax.swing.SpinnerNumberModel;
 
 import Notifications.Notification;
 import Notifications.NotificationCenter;
+import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
 import UserInterface.Menu;
@@ -44,7 +45,7 @@ public class CreateNetworkGamePanel extends JPanel implements Notification {
 		setup();
 		fillWithContent();
 
-		parent.createGame(4, type, null);
+		parent.createGame(4, type);
 	}
 
 	private void setup() {
@@ -114,7 +115,7 @@ public class CreateNetworkGamePanel extends JPanel implements Notification {
       JButton menu = new MenuButton();
       menu.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
-            Main.currentGame.exit();
+            parent.exitGame(GameExitStatus.GAME_DISCARDED);;
             System.out.println(event.getActionCommand());
             parent.showMenu();
          }

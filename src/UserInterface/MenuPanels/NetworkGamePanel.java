@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import Notifications.Notification;
 import Notifications.NotificationCenter;
 import Schiffeversenken.GameType;
+import Schiffeversenken.Main;
 import UserInterface.Menu;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputPanel;
@@ -56,7 +57,10 @@ public class NetworkGamePanel extends JPanel implements Notification {
          @Override
          public void keyTyped(KeyEvent e) {
             if (ipInput.getText().isBlank()) { return; }
-            if (e.getKeyChar() == '\n') { parent.createGame(4, type, ipInput.getText()); }
+            if (e.getKeyChar() == '\n') { 
+            	Main.hostAddress = ipInput.getText();
+            	parent.createGame(4, type); 
+            }
          }
 
          @Override
@@ -72,8 +76,8 @@ public class NetworkGamePanel extends JPanel implements Notification {
       joinGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             System.out.println(e.getActionCommand());
-
-            parent.createGame(4, type, ipInput.getText());
+            Main.hostAddress = ipInput.getText();
+            parent.createGame(4, type);
          }
       });
 
