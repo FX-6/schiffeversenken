@@ -113,6 +113,7 @@ public class CreateNetworkGamePanel extends JPanel implements Notification {
 
       // Menu Button
       JButton menu = new MenuButton();
+      menu.setAlignmentX(CENTER_ALIGNMENT);
       menu.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
             parent.exitGame(GameExitStatus.GAME_DISCARDED);;

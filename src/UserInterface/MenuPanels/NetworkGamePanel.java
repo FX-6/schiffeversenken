@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -33,6 +35,11 @@ public class NetworkGamePanel extends JPanel implements Notification {
 	private GameType type;
 
    private InputPanel ipInputPanel;
+   
+   private JTextField ipInput;
+   private JButton joinGameButton;
+   private JButton createGameButton;
+   private JButton menu;
 
 	public NetworkGamePanel(Menu parent, GameType type) {
 		this.parent = parent;
@@ -52,12 +59,13 @@ public class NetworkGamePanel extends JPanel implements Notification {
 
       // IP input
       ipInputPanel = new InputPanel("Host IP");
-      JTextField ipInput = new InputTextField();
+      ipInput = new InputTextField();
       ipInput.addKeyListener(new KeyListener() {
          @Override
          public void keyTyped(KeyEvent e) {
             if (ipInput.getText().isBlank()) { return; }
             if (e.getKeyChar() == '\n') { 
+            	animateConnecting();
             	Main.hostAddress = ipInput.getText();
             	parent.createGame(4, type); 
             }
@@ -72,20 +80,20 @@ public class NetworkGamePanel extends JPanel implements Notification {
       ipInputPanel.add(ipInput);
 
       // Join Game und Create Game Buttons
-      JButton joinGameButton = new InputButton("Spiel beitreten");
+      joinGameButton = new InputButton("Spiel beitreten");
       joinGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             System.out.println(e.getActionCommand());
+            animateConnecting();
             Main.hostAddress = ipInput.getText();
             parent.createGame(4, type);
          }
       });
 
-      JButton createGameButton = new InputButton("Spiel erstellen");
+      createGameButton = new InputButton("Spiel erstellen");
       createGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             System.out.println(e.getActionCommand());
-
             parent.showCreateNetworkGame(GameType.NETWORK_SERVER);
          }
       });
@@ -96,7 +104,8 @@ public class NetworkGamePanel extends JPanel implements Notification {
       wrapperPanel.add(createGameButton);
 
       // Menu Button
-      JButton menu = new MenuButton();
+      menu = new MenuButton();
+      menu.setAlignmentX(CENTER_ALIGNMENT);
       menu.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
             System.out.println(event.getActionCommand());
@@ -110,13 +119,48 @@ public class NetworkGamePanel extends JPanel implements Notification {
       add(wrapperPanel);
       add(Box.createGlue());
    }
+	
+	private void animateConnecting() {
+		menu.setEnabled(false);
+		joinGameButton.setEnabled(false);
+		createGameButton.setEnabled(false);
+		ipInput.setEditable(false);
+		
+		String text = ipInput.getText();
+		
+		ipInput.setText(text + " ");
+		
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
+			
+			@Override
+			public void run() {
+				if (ipInput.getText().equals("")) {
+					ipInput.setText(text);
+					timer.cancel();
+					menu.setEnabled(true);
+					joinGameButton.setEnabled(true);
+					createGameButton.setEnabled(true);
+					ipInput.setEditable(true);
+				}
+				else if (ipInput.getText().equals(text + " ...")) {
+					ipInput.setText(text + " ");
+				}
+				else {
+					ipInput.setText(ipInput.getText() + ".");
+				}
+			}
+		};
+		timer.schedule(task, 0, 250);
+	}
 
 	public void processNotification(String type, Object object) {
 		if (type.equals("ServerConnected")) {
 			parent.openGameWindow();
 		}
 		if (type.equals("ConnectionFailed")) {
-         ipInputPanel.setError("Verbindungsaufbau fehlgeschlagen");
+			ipInput.setText("");
+			ipInputPanel.setError("Verbindung fehlgeschlagen");
 		}
 	}
 }
