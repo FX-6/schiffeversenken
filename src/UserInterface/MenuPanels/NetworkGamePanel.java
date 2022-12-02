@@ -34,12 +34,12 @@ public class NetworkGamePanel extends JPanel implements Notification {
 	private Menu parent;
 	private GameType type;
 
-   private InputPanel ipInputPanel;
+	private InputPanel ipInputPanel;
    
-   private JTextField ipInput;
-   private JButton joinGameButton;
-   private JButton createGameButton;
-   private JButton menu;
+	private JTextField ipInput;
+	private JButton joinGameButton;
+	private JButton createGameButton;
+	private JButton menu;
 
 	public NetworkGamePanel(Menu parent, GameType type) {
 		this.parent = parent;
@@ -65,10 +65,11 @@ public class NetworkGamePanel extends JPanel implements Notification {
          public void keyTyped(KeyEvent e) {
             if (ipInput.getText().isBlank()) { return; }
             if (e.getKeyChar() == '\n') { 
-            	animateConnecting();
             	Main.hostAddress = ipInput.getText();
+            	animateConnecting();
             	parent.createGame(4, type); 
             }
+            ipInputPanel.setError("");
          }
 
          @Override
@@ -83,10 +84,10 @@ public class NetworkGamePanel extends JPanel implements Notification {
       joinGameButton = new InputButton("Spiel beitreten");
       joinGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            System.out.println(e.getActionCommand());
-            animateConnecting();
-            Main.hostAddress = ipInput.getText();
-            parent.createGame(4, type);
+        	 System.out.println(e.getActionCommand());
+        	 Main.hostAddress = ipInput.getText();
+        	 animateConnecting();
+        	 parent.createGame(4, type);
          }
       });
 
@@ -124,7 +125,7 @@ public class NetworkGamePanel extends JPanel implements Notification {
 		menu.setEnabled(false);
 		joinGameButton.setEnabled(false);
 		createGameButton.setEnabled(false);
-		ipInput.setEditable(false);
+		ipInput.setEnabled(false);
 		
 		String text = ipInput.getText();
 		
@@ -141,7 +142,7 @@ public class NetworkGamePanel extends JPanel implements Notification {
 					menu.setEnabled(true);
 					joinGameButton.setEnabled(true);
 					createGameButton.setEnabled(true);
-					ipInput.setEditable(true);
+					ipInput.setEnabled(true);
 				}
 				else if (ipInput.getText().equals(text + " ...")) {
 					ipInput.setText(text + " ");
