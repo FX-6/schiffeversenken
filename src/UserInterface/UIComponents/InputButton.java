@@ -3,6 +3,7 @@ package UserInterface.UIComponents;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Font;
+import Schiffeversenken.SettingsHandler;
 
 public class InputButton extends JButton {
    protected int fontSizeLarge = 25;
@@ -13,14 +14,15 @@ public class InputButton extends JButton {
    protected int itemWidth = 500;
    protected int itemHeigth = 80;
 
-   protected int borderRadius = 15;
-   protected int borderWidth = 2;
+   protected int borderRadius = SettingsHandler.getSettingInt("border.radius");
+   protected int borderWidth = SettingsHandler.getSettingInt("border.width");
 
-   protected Color backgroundColor = Color.decode("#FFFFFF");
-   protected Color borderColor = Color.decode("#000000");
-   protected Color fontColor = Color.decode("#FFFFFF");
-   protected Color buttonBackground = Color.decode("#FFFFFF");
-   protected Color errorColor = Color.decode("#FF0000");
+   protected Color backgroundColor = Color.decode(SettingsHandler.getSettingString("color.background"));
+   protected Color borderColor = Color.decode(SettingsHandler.getSettingString("color.border"));
+   protected Color fontColor = Color.decode(SettingsHandler.getSettingString("color.font"));
+   protected Color buttonBackground = Color.decode(SettingsHandler.getSettingString("color.button.background"));
+   protected Color buttonFontColor = Color.decode(SettingsHandler.getSettingString("color.button.font"));
+   protected Color errorColor = Color.decode(SettingsHandler.getSettingString("color.error"));
 
    private int fontSize = fontSizeLarge;
    protected Font defaultFont;
@@ -48,7 +50,8 @@ public class InputButton extends JButton {
       defaultFont = new Font("Titel", Font.PLAIN, fontSize);
       hoverFont = new Font("Titel", Font.BOLD, fontSize);
 
-      setBackground(backgroundColor);
+      setBackground(buttonBackground);
+      setForeground(buttonFontColor);
       setFont(defaultFont);
       setBorder(javax.swing.BorderFactory.createCompoundBorder(
          new RoundedBorder(borderRadius, borderWidth, borderColor),
