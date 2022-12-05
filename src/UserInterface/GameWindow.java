@@ -6,7 +6,6 @@ import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 
 import Notifications.Notification;
-import Notifications.NotificationCenter;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.Main;
 
@@ -17,13 +16,13 @@ import Schiffeversenken.Main;
 public class GameWindow extends JFrame implements Notification {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6451215725250748331L;
 
 	public GameWindow() {
 		super("Schiffeversenken");
-				
+
 		addWindowListener(new WindowListener() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -48,11 +47,11 @@ public class GameWindow extends JFrame implements Notification {
 			@Override
 			public void windowDeactivated(WindowEvent e) {}
 		});
-		
+
 		setup();
 		showFrame();
 	}
-	
+
 	private void setup() {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		pack();
@@ -60,23 +59,23 @@ public class GameWindow extends JFrame implements Notification {
 		setSize(1500, 750);
 		setLocationRelativeTo(null);
 	}
-	
+
 	public void hideFrame() {
 		this.setVisible(false);
 	}
-	
+
 	public void showFrame() {
 		this.setVisible(true);
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	public void processNotification(String type, Object object) {
 	}
-	
 
-	
+
+
 }
