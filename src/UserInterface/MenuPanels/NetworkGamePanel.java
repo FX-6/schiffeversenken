@@ -18,13 +18,14 @@ import Notifications.NotificationCenter;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
 import UserInterface.Menu;
+import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputPanel;
 import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
-public class NetworkGamePanel extends JPanel implements Notification {
+public class NetworkGamePanel extends BackgroundPanel implements Notification {
 
 	/**
 	 *
@@ -35,7 +36,7 @@ public class NetworkGamePanel extends JPanel implements Notification {
 	private GameType type;
 
 	private InputPanel ipInputPanel;
-   
+
 	private JTextField ipInput;
 	private JButton joinGameButton;
 	private JButton createGameButton;
@@ -64,10 +65,10 @@ public class NetworkGamePanel extends JPanel implements Notification {
          @Override
          public void keyTyped(KeyEvent e) {
             if (ipInput.getText().isBlank()) { return; }
-            if (e.getKeyChar() == '\n') { 
+            if (e.getKeyChar() == '\n') {
             	Main.hostAddress = ipInput.getText();
             	animateConnecting();
-            	parent.createGame(4, type); 
+            	parent.createGame(4, type);
             }
             ipInputPanel.setError("");
          }
@@ -120,20 +121,20 @@ public class NetworkGamePanel extends JPanel implements Notification {
       add(wrapperPanel);
       add(Box.createGlue());
    }
-	
+
 	private void animateConnecting() {
 		menu.setEnabled(false);
 		joinGameButton.setEnabled(false);
 		createGameButton.setEnabled(false);
 		ipInput.setEnabled(false);
-		
+
 		String text = ipInput.getText();
-		
+
 		ipInput.setText(text + " ");
-		
+
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
-			
+
 			@Override
 			public void run() {
 				if (ipInput.getText().equals("")) {

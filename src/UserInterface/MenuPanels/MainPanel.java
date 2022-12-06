@@ -11,11 +11,12 @@ import javax.swing.JPanel;
 
 import Schiffeversenken.GameType;
 import UserInterface.Menu;
+import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.WrapperPanel;
 
-public class MainPanel extends JPanel {
+public class MainPanel extends BackgroundPanel {
 
 	/**
 	 *

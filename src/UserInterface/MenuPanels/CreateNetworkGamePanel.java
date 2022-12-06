@@ -16,6 +16,7 @@ import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
 import UserInterface.Menu;
+import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.DualRowPanel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputPanel;
@@ -29,7 +30,7 @@ import UserInterface.UIComponents.WrapperPanel;
  * 			Schiffsanzahlen überprüfen (30% Füllgrad, etc) und Automatische Auswahl
  */
 
-public class CreateNetworkGamePanel extends JPanel implements Notification {
+public class CreateNetworkGamePanel extends BackgroundPanel implements Notification {
 
 	/**
 	 *

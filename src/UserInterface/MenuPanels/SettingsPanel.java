@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -14,9 +15,11 @@ import javax.swing.SpinnerNumberModel;
 
 import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
+import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.DualRowPanel;
 import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
+import UserInterface.UIComponents.InputComboBox;
 import UserInterface.UIComponents.InputPanel;
 import UserInterface.UIComponents.InputSpinner;
 import UserInterface.UIComponents.InputTextField;
@@ -24,10 +27,9 @@ import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
 // TODO: Give savebutton function
-// TODO: theme path input
 // TODO: Overflow scroll
 
-public class SettingsPanel extends JPanel {
+public class SettingsPanel extends BackgroundPanel {
 
 	/**
 	 *
@@ -101,7 +103,9 @@ public class SettingsPanel extends JPanel {
 
       JLabel themeHeader = new HeaderLabel("Theme");
 
-      // theme path input
+      InputPanel themeInputPanel = new InputPanel("Themename");
+      JComboBox<String> themeInput = new InputComboBox<String>(SettingsHandler.getThemes());
+      themeInputPanel.add(themeInput);
 
       JButton saveButton = new InputButton("Speichern");
       // give savebutton function
@@ -113,6 +117,7 @@ public class SettingsPanel extends JPanel {
       wrapperPanel.add(borderHeader);
       wrapperPanel.add(bordersFirstRow);
       wrapperPanel.add(themeHeader);
+      wrapperPanel.add(themeInputPanel);
       wrapperPanel.add(saveButton);
 
       JButton menuButton = new MenuButton();
