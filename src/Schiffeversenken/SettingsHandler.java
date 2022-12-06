@@ -2,13 +2,22 @@ package Schiffeversenken;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
+// TODO Change link to zip file?
 // TODO Auto-generated catch blocks
 
 public class SettingsHandler {
@@ -19,25 +28,53 @@ public class SettingsHandler {
       (System.getProperty("user.home") + "/." + appName))
    );
    public static String settingsFilePath = appDirectory + File.separator + "settings.json";
+   public static String themesFolderPath = appDirectory + File.separator + "Themes";
+   public static String currentThemePath = themesFolderPath + File.separator;
 
    public static void initSettings() {
       File appDir = new File(appDirectory);
-      appDir.mkdir();
 
-      try {
-         File settingsFile = new File(settingsFilePath);
+      if (!appDir.exists()) {
+         appDir.mkdir();
 
-         if (settingsFile.createNewFile()) {
-            FileWriter fileWriter = new FileWriter(settingsFile);
+         try {
+            // vlt lieber n github link, dann kann mans gescheit updaten
+            URL url = new URL("https://cdn.discordapp.com/attachments/828604182591307797/1049638280515289108/SchiffeversenkenDefaults.zip");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            InputStream in = connection.getInputStream();
+            ZipInputStream zipInStr = new ZipInputStream(in);
+            ZipEntry entry = zipInStr.getNextEntry();
+            byte[] buffer = new byte[1024];
 
-            fileWriter.write("{\n   \"color.background\": \"#FFFFFF\",\n   \"color.font\": \"#000000\",\n   \"color.button.background\": \"#FFFFFF\",\n   \"color.button.font\": \"#000000\",\n   \"color.error\": \"#FF0000\",\n   \"color.border\": \"#000000\",\n   \"border.width\": \"2\",\n   \"border.radius\": \"15\",\n   \"theme.path\": \"\"\n}");
+            while(entry != null) {
+               File newFile = new File(appDirectory, entry.getName());
 
-            fileWriter.close();
+               if (!entry.isDirectory()) {
+                  System.out.println("File: " + newFile.getName());
+
+                  File parent = newFile.getParentFile();
+                  parent.mkdirs();
+
+                  FileOutputStream fileOutStr = new FileOutputStream(newFile);
+                  int len;
+
+                  while ((len = zipInStr.read(buffer)) > 0) {
+                     fileOutStr.write(buffer, 0, len);
+                  }
+
+                  fileOutStr.close();
+               }
+               zipInStr.closeEntry();
+               entry = zipInStr.getNextEntry();
+            }
+         } catch (IOException e) {
+            // Auto-generated catch block
+            e.printStackTrace();
          }
-      } catch (IOException e) {
-         // Auto-generated catch block
-         e.printStackTrace();
       }
+
+      currentThemePath += getSettingString("theme.path") + File.separator;
    }
 
    public static String getSettingString(String name) {
@@ -104,5 +141,22 @@ public class SettingsHandler {
 
    public static void setSettingInt(String name, int value) {
       SettingsHandler.setSettingString(name, Integer.toString(value));
+   }
+
+   public static String[] getThemes() {
+      return new File(themesFolderPath).list();
+   }
+
+   public static BufferedImage getImage(String name) {
+      BufferedImage image = null;
+
+      try {
+         image = ImageIO.read(new File(currentThemePath + name));
+      } catch (IOException e) {
+         // Auto-generated catch block
+         e.printStackTrace();
+      }
+
+      return image;
    }
 }
