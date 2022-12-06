@@ -17,8 +17,8 @@ import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
-// TODO Change link to zip file?
-// TODO Auto-generated catch blocks
+// TODO Change link to zip file? (Felix)
+// TODO Auto-generated catch blocks (Felix)
 
 public class SettingsHandler {
    private static String appName = "Schiffeversenken";

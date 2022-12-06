@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.awt.Font;
 import Schiffeversenken.SettingsHandler;
 
-// TODO: fix colors
+// TODO: fix colors (Felix)
 
 public class InputSpinner extends JSpinner {
    protected int fontSizeLarge = 25;

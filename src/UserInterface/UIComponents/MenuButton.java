@@ -2,7 +2,7 @@ package UserInterface.UIComponents;
 
 import java.awt.Dimension;
 
-// TODO: Positioning (20, 20)
+// TODO: Positioning (20, 20) (Felix)
 
 public class MenuButton extends InputButton {
    private Dimension size = new Dimension(75, 25);

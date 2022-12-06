@@ -26,8 +26,8 @@ import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
-// TODO: Give savebutton function
-// TODO: Overflow scroll
+// TODO: Give savebutton function (Felix)
+// TODO: Overflow scroll (Felix)
 
 public class SettingsPanel extends BackgroundPanel {
 
