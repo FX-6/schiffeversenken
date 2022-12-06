@@ -119,9 +119,23 @@ public class Game implements Notification {
      * return int[] -> Liste der Anzahl an theoretisch noch plazierbaren Schiffen einer Größe, unter der Annahme, dass alle der in Zukunft noch plazierten Schiffe
      *                 von derselben Größe sind; Aufsteigend sortiert, beginnend mit Größe 2
      */
-    private int[] getShipsLeft(int fieldSize, int[] shipsInUse) {
-    	double occupacityRate = 0.3;
-    	double occupacityPerShip = 0.4;													// Für 0.25 ist der Returnwert shipsLeft konstant für jede Eingabe shipsInUse
+    public static int[] getShipsLeft(int fieldSize, int[] shipsInUse) {
+    	double occupacityRate = 0.0;
+    	double occupacityPerShip = 0.3;												// Für 0.25 ist der Returnwert shipsLeft konstant für jede Eingabe shipsInUse
+    	
+    	if (fieldSize <= 8) {
+    		occupacityPerShip = 0.4;
+    	}
+    	
+    	if (fieldSize <= 10) {
+    		while (occupacityRate < 0.3 || occupacityRate > 0.4) {
+        		occupacityRate = Math.random();
+        	}
+    	} else {
+    		while (occupacityRate < 0.1 || occupacityRate > 0.4) {
+        		occupacityRate = Math.random();
+        	}
+    	}
     	
         int[] shipsLeft = new int[shipsInUse.length];
         int maxFields = (int) Math.ceil(fieldSize * fieldSize * occupacityRate);    	// Anzahl an Feldern, die maximal von Schiffen belegt werden dürfen (30% aller Felder)

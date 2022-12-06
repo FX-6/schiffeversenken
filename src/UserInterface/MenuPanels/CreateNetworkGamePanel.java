@@ -2,6 +2,7 @@ package UserInterface.MenuPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -12,6 +13,7 @@ import javax.swing.SpinnerNumberModel;
 
 import Notifications.Notification;
 import Notifications.NotificationCenter;
+import Schiffeversenken.Game;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
@@ -85,6 +87,24 @@ public class CreateNetworkGamePanel extends JPanel implements Notification {
       ship5InputPanel.add(ship5Input);
       shipsInputRow2.add(ship4InputPanel);
       shipsInputRow2.add(ship5InputPanel);
+      
+      
+      autoShipButton.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int[] ships = new int[4];
+			Arrays.fill(ships, 0);
+			ships = Game.getShipsLeft(Integer.parseInt(sizeInput.getValue().toString()), ships);
+			
+			ship2Input.setValue(ships[0]);
+			ship3Input.setValue(ships[1]);
+			ship4Input.setValue(ships[2]);
+			ship5Input.setValue(ships[3]);
+		}    	  
+      });
+      
+      
 
       // Start game button
       startGameButton = new InputButton("Spiel starten");
