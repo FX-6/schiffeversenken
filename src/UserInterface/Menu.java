@@ -7,9 +7,11 @@ import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
 import UserInterface.MenuPanels.CreateNetworkGamePanel;
+import UserInterface.MenuPanels.CreateSingleplayerGamePanel;
 import UserInterface.MenuPanels.MainPanel;
 import UserInterface.MenuPanels.NetworkGamePanel;
 import UserInterface.MenuPanels.SettingsPanel;
+import UserInterface.MenuPanels.TutorialPanel;
 
 public class Menu extends JFrame {
 
@@ -64,6 +66,21 @@ public class Menu extends JFrame {
 		validate();
 	}
 
+   // Zeigt die Spielanleitung
+   public void showTutorial() {
+      NotificationCenter.removeAllObservers(getContentPane());
+      TutorialPanel tutorial = new TutorialPanel(this);
+      setContentPane(tutorial);
+      validate();
+   }
+
+   // Zeigt die Inputs für's Singleplayer game
+   public void showCreateSingleplayerGame(GameType type) {
+      NotificationCenter.removeAllObservers(getContentPane());
+      CreateSingleplayerGamePanel newGame = new CreateSingleplayerGamePanel(this, type);
+      setContentPane(newGame);
+      validate();
+   }
 
 	// Zeigt die Paramter zum Spielstart an
 	public void showCreateNetworkGame(GameType type) {

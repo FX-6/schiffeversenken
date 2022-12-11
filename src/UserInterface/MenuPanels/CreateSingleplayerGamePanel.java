@@ -11,8 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import Notifications.Notification;
-import Notifications.NotificationCenter;
 import Schiffeversenken.Game;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
@@ -26,36 +24,28 @@ import UserInterface.UIComponents.InputSpinner;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
+// TODO serialVersionUID? Was ist das üebrhaupt?
 // TODO Input validation (Felix)
-// TODO IP als Heading anzeigen (Felix)
 // TODO Add Play as KI Checkbox (Felix)
-// TODO Spiel starten Knopf deaktivieren, wenn der andere Verbindung wieder abbricht
 
-public class CreateNetworkGamePanel extends BackgroundPanel implements Notification {
+public class CreateSingleplayerGamePanel extends BackgroundPanel {
+	// private static final long serialVersionUID = ;
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -4350076887571572645L;
+   Menu parent;
 
-	private Menu parent;
+   public CreateSingleplayerGamePanel(Menu parent, GameType type) {
+      this.parent = parent;
+      setup();
+      fillWithContent();
 
-   private JButton startGameButton;
+      parent.createGame(4, type);
+   }
 
-	public CreateNetworkGamePanel(Menu parent, GameType type) {
-		this.parent = parent;
-		setup();
-		fillWithContent();
+   private void setup() {
+      setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+   }
 
-		parent.createGame(4, type);
-	}
-
-	private void setup() {
-		NotificationCenter.addObserver("ClientConnected", this);
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-	}
-
-	private void fillWithContent() {
+   private void fillWithContent() {
       JPanel wrapperPanel = new WrapperPanel();
 
       // Field size input and auto ship button
@@ -103,9 +93,8 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
          }
       });
 
-      // Start game button
-      startGameButton = new InputButton("Spiel starten");
-      startGameButton.setEnabled(false);
+      // start game button
+      JButton startGameButton = new InputButton("Spiel starten");
       startGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             Main.currentGame.setPitchSize(Integer.parseInt(sizeInput.getValue().toString()));
@@ -122,33 +111,26 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
          }
       });
 
-      // Alles in Wrapper einfügen
+      // add comps to wrapper panel
       wrapperPanel.add(sizeRow);
       wrapperPanel.add(shipsInputRow1);
       wrapperPanel.add(shipsInputRow2);
       wrapperPanel.add(startGameButton);
 
-      // Menu Button
-      JButton menu = new MenuButton();
-      menu.setAlignmentX(CENTER_ALIGNMENT);
-      menu.addActionListener(new ActionListener() {
+      // menu button
+      JButton menuButton = new MenuButton();
+      menuButton.setAlignmentX(CENTER_ALIGNMENT);
+      menuButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
-            parent.exitGame(GameExitStatus.GAME_DISCARDED);;
+            parent.exitGame(GameExitStatus.GAME_DISCARDED);
             System.out.println(event.getActionCommand());
             parent.showMenu();
          }
       });
 
-      // Alles einfügen
-      add(menu);
+      add(menuButton);
       add(Box.createGlue());
       add(wrapperPanel);
       add(Box.createGlue());
-	}
-
-	public void processNotification(String type, Object object) {
-		if (type.equals("ClientConnected")) {
-			startGameButton.setEnabled(true);
-		}
-	}
+   }
 }

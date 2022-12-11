@@ -44,6 +44,7 @@ public class MainPanel extends BackgroundPanel {
 		singlePlayer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				System.out.println(event.getActionCommand());
+            parent.showCreateSingleplayerGame(GameType.AI); // TODO ist das der richtige Type? (Felix)
 			}
 		});
 
@@ -66,6 +67,7 @@ public class MainPanel extends BackgroundPanel {
 		description.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				System.out.println(event.getActionCommand());
+            parent.showTutorial();
 			}
 		});
 
