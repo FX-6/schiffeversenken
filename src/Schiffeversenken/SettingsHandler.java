@@ -17,6 +17,7 @@ import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
+// TODO Save game handler (Felix)
 // TODO Change link to zip file? (Felix)
 // TODO Auto-generated catch blocks (Felix)
 
@@ -30,12 +31,15 @@ public class SettingsHandler {
    public static String settingsFilePath = appDirectory + File.separator + "settings.json";
    public static String themesFolderPath = appDirectory + File.separator + "Themes";
    public static String currentThemePath = themesFolderPath + File.separator;
+   public static String saveGamesPath = appDirectory + File.separator + "Saves";
 
    public static void initSettings() {
       File appDir = new File(appDirectory);
+      File saveDir = new File(saveGamesPath);
 
       if (!appDir.exists()) {
          appDir.mkdir();
+         saveDir.mkdir();
 
          try {
             // vlt lieber n github link, dann kann mans gescheit updaten
@@ -158,5 +162,9 @@ public class SettingsHandler {
       }
 
       return image;
+   }
+
+   public static String[] getSavedGames() {
+      return new File(saveGamesPath).list();
    }
 }
