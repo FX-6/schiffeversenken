@@ -260,4 +260,8 @@ public class SettingsHandler {
 
       return true;
    }
+
+   public static boolean validateIP(String ip) {
+      return ip.matches("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+   }
 }

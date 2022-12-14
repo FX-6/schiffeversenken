@@ -17,6 +17,7 @@ import Notifications.Notification;
 import Notifications.NotificationCenter;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
+import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
 import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.InputButton;
@@ -64,13 +65,16 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       ipInput.addKeyListener(new KeyListener() {
          @Override
          public void keyTyped(KeyEvent e) {
-            if (ipInput.getText().isBlank()) { return; }
             if (e.getKeyChar() == '\n') {
-            	Main.hostAddress = ipInput.getText();
-            	animateConnecting();
-            	parent.createGame(4, type);
+               if (SettingsHandler.validateIP(ipInput.getText())) {
+                  ipInputPanel.setError("");
+                  Main.hostAddress = ipInput.getText();
+                  animateConnecting();
+                  parent.createGame(4, type);
+               } else {
+                  ipInputPanel.setError("Invalide IP");
+               }
             }
-            ipInputPanel.setError("");
          }
 
          @Override
@@ -85,10 +89,15 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       joinGameButton = new InputButton("Spiel beitreten");
       joinGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-        	 System.out.println(e.getActionCommand());
-        	 Main.hostAddress = ipInput.getText();
-        	 animateConnecting();
-        	 parent.createGame(4, type);
+            if (SettingsHandler.validateIP(ipInput.getText())) {
+               ipInputPanel.setError("");
+               System.out.println(e.getActionCommand());
+               Main.hostAddress = ipInput.getText();
+               animateConnecting();
+               parent.createGame(4, type);
+            } else {
+               ipInputPanel.setError("Invalide IP");
+            }
          }
       });
 
