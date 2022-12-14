@@ -9,9 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 
 import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
@@ -21,12 +19,10 @@ import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputComboBox;
 import UserInterface.UIComponents.InputPanel;
-import UserInterface.UIComponents.InputSpinner;
 import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
-// TODO: Give savebutton function (Felix)
 // TODO: Overflow scroll (Felix)
 
 public class SettingsPanel extends BackgroundPanel {
@@ -93,10 +89,10 @@ public class SettingsPanel extends BackgroundPanel {
 
       JPanel bordersFirstRow = new DualRowPanel();
       InputPanel borderWidthInputPanel = new InputPanel("Breite");
-      JSpinner borderWidthInput = new InputSpinner(new SpinnerNumberModel(SettingsHandler.getSettingInt("border.width"), 0, 4, 1));
+      InputTextField borderWidthInput = new InputTextField();
       borderWidthInputPanel.add(borderWidthInput);
       InputPanel borderRadiusInputPanel = new InputPanel("Radius");
-      JSpinner borderRadiusInput = new InputSpinner(new SpinnerNumberModel(SettingsHandler.getSettingInt("border.radius"), 0, 25, 1));
+      InputTextField borderRadiusInput = new InputTextField();
       borderRadiusInputPanel.add(borderRadiusInput);
       bordersFirstRow.add(borderWidthInputPanel);
       bordersFirstRow.add(borderRadiusInputPanel);
@@ -108,7 +104,77 @@ public class SettingsPanel extends BackgroundPanel {
       themeInputPanel.add(themeInput);
 
       JButton saveButton = new InputButton("Speichern");
-      // give savebutton function
+      saveButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
+               backgroundInputPanel.setError("");
+               SettingsHandler.setSettingString("color.background", backgroundInput.getText());
+            } else {
+               backgroundInputPanel.setError("Invalider Input");
+            }
+
+            if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
+               foregroundInputPanel.setError("");
+               SettingsHandler.setSettingString("color.font", foregroundInput.getText());
+            } else {
+               foregroundInputPanel.setError("Invalider Input");
+            }
+
+            if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
+               buttonBackgroundInputPanel.setError("");
+               SettingsHandler.setSettingString("color.button.background", buttonBackgroundInput.getText());
+            } else {
+               buttonBackgroundInputPanel.setError("Invalider Input");
+            }
+
+            if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
+               buttonForegroundInputPanel.setError("");
+               SettingsHandler.setSettingString("color.button.font", buttonForegroundInput.getText());
+            } else {
+               buttonForegroundInputPanel.setError("Invalider Input");
+            }
+
+            if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
+               errorInputPanel.setError("");
+               SettingsHandler.setSettingString("color.error", errorInput.getText());
+            } else {
+               errorInputPanel.setError("Invalider Input");
+            }
+
+            if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
+               borderInputPanel.setError("");
+               SettingsHandler.setSettingString("color.border", borderInput.getText());
+            } else {
+               borderInputPanel.setError("Invalider Input");
+            }
+
+            try {
+               if (borderWidthInput.getIntValue() < 0) {
+                  borderWidthInputPanel.setError("Zu klein");
+               } else if (borderWidthInput.getIntValue() > 4) {
+                  borderWidthInputPanel.setError("Zu groß");
+               } else {
+                  borderWidthInputPanel.setError("");
+                  SettingsHandler.setSettingString("border.width", borderWidthInput.getStringValue());
+               }
+            } catch (NumberFormatException err) {
+               borderWidthInputPanel.setError("Invalider Input");
+            }
+
+            try {
+               if (borderRadiusInput.getIntValue() < 0) {
+                  borderRadiusInputPanel.setError("Zu klein");
+               } else if (borderRadiusInput.getIntValue() > 4) {
+                  borderRadiusInputPanel.setError("Zu groß");
+               } else {
+                  borderRadiusInputPanel.setError("");
+                  SettingsHandler.setSettingString("border.width", borderRadiusInput.getStringValue());
+               }
+            } catch (NumberFormatException err) {
+               borderRadiusInputPanel.setError("Invalider Input");
+            }
+         }
+      });
 
       wrapperPanel.add(colorHeader);
       wrapperPanel.add(colorsFirstRow);

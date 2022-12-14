@@ -264,4 +264,8 @@ public class SettingsHandler {
    public static boolean validateIP(String ip) {
       return ip.matches("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
    }
+
+   public static boolean validateHEXColor(String color) {
+      return color.matches("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$");
+   }
 }
