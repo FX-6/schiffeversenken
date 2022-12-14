@@ -24,7 +24,6 @@ import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
 // TODO serialVersionUID? Was ist das üebrhaupt?
-// TODO Input validation (Felix)
 // TODO Add Play as KI Checkbox (Felix)
 
 public class CreateSingleplayerGamePanel extends BackgroundPanel {
