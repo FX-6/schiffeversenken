@@ -15,6 +15,10 @@ import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
+
+import UserInterface.UIComponents.InputPanel;
+import UserInterface.UIComponents.InputTextField;
+
 import java.awt.image.BufferedImage;
 
 // TODO Save game handler (Felix)
@@ -166,5 +170,94 @@ public class SettingsHandler {
 
    public static String[] getSavedGames() {
       return new File(saveGamesPath).list();
+   }
+
+   public static boolean validateSizeInput(InputTextField inputField, InputPanel inputPanel) {
+      int input = 0;
+      try {
+         input = inputField.getIntValue();
+      } catch (NumberFormatException e) {
+         inputPanel.setError("Invalider Input");
+         return false;
+      }
+
+      if (input < 5) {
+         inputPanel.setError("Zu klein");
+         return false;
+      } else if (input > 30) {
+         inputPanel.setError("Zu groß");
+         return false;
+      }
+
+      inputPanel.setError("");
+      return true;
+   }
+
+   public static boolean validateGameInput(InputTextField[] inputFields, InputPanel[] inputPanels) {
+      int[] inputs = new int[5];
+      int invalidInputs = 0;
+
+      try {
+         inputs[1] = inputFields[1].getIntValue();
+      } catch (NumberFormatException e) {
+         inputPanels[1].setError("Invalider Input");
+         invalidInputs++;
+      }
+      try {
+         inputs[2] = inputFields[2].getIntValue();
+      } catch (NumberFormatException e) {
+         inputPanels[2].setError("Invalider Input");
+         invalidInputs++;
+      }
+      try {
+         inputs[3] = inputFields[3].getIntValue();
+      } catch (NumberFormatException e) {
+         inputPanels[3].setError("Invalider Input");
+         invalidInputs++;
+      }
+      try {
+         inputs[4] = inputFields[4].getIntValue();
+      } catch (NumberFormatException e) {
+         inputPanels[4].setError("Invalider Input");
+         invalidInputs++;
+      }
+      try {
+         inputs[5] = inputFields[5].getIntValue();
+      } catch (NumberFormatException e) {
+         inputPanels[5].setError("Invalider Input");
+         invalidInputs++;
+      }
+
+      if (invalidInputs > 0) { return false; }
+
+      int percOccupied = (inputs[1] * 2 + inputs[2] * 3 + inputs[3] * 4 + inputs[4] * 5) * 100 / (inputs[0] * inputs[0]);
+
+      if (inputs[0] < 5) {
+         inputPanels[0].setError("Zu klein");
+         return false;
+      } else if (inputs[0] > 30) {
+         inputPanels[0].setError("Zu groß");
+         return false;
+      } else if (percOccupied < 10) {
+         inputPanels[1].setError("Zu wenige");
+         inputPanels[2].setError("Zu wenige");
+         inputPanels[3].setError("Zu wenige");
+         inputPanels[4].setError("Zu wenige");
+         return false;
+      } else if (percOccupied > 40) {
+         inputPanels[1].setError("Zu viele");
+         inputPanels[2].setError("Zu viele");
+         inputPanels[3].setError("Zu viele");
+         inputPanels[4].setError("Zu viele");
+         return false;
+      }
+
+      inputPanels[0].setError("");
+      inputPanels[1].setError("");
+      inputPanels[2].setError("");
+      inputPanels[3].setError("");
+      inputPanels[4].setError("");
+
+      return true;
    }
 }
