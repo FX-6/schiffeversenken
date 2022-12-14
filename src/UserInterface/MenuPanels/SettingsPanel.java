@@ -90,9 +90,11 @@ public class SettingsPanel extends BackgroundPanel {
       JPanel bordersFirstRow = new DualRowPanel();
       InputPanel borderWidthInputPanel = new InputPanel("Breite");
       InputTextField borderWidthInput = new InputTextField();
+      borderWidthInput.setText(SettingsHandler.getSettingString("border.width"));
       borderWidthInputPanel.add(borderWidthInput);
       InputPanel borderRadiusInputPanel = new InputPanel("Radius");
       InputTextField borderRadiusInput = new InputTextField();
+      borderRadiusInput.setText(SettingsHandler.getSettingString("border.radius"));
       borderRadiusInputPanel.add(borderRadiusInput);
       bordersFirstRow.add(borderWidthInputPanel);
       bordersFirstRow.add(borderRadiusInputPanel);
@@ -164,11 +166,11 @@ public class SettingsPanel extends BackgroundPanel {
             try {
                if (borderRadiusInput.getIntValue() < 0) {
                   borderRadiusInputPanel.setError("Zu klein");
-               } else if (borderRadiusInput.getIntValue() > 4) {
+               } else if (borderRadiusInput.getIntValue() > 15) {
                   borderRadiusInputPanel.setError("Zu groß");
                } else {
                   borderRadiusInputPanel.setError("");
-                  SettingsHandler.setSettingString("border.width", borderRadiusInput.getStringValue());
+                  SettingsHandler.setSettingString("border.radius", borderRadiusInput.getStringValue());
                }
             } catch (NumberFormatException err) {
                borderRadiusInputPanel.setError("Invalider Input");
