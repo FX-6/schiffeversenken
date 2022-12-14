@@ -8,19 +8,18 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
 
 import Schiffeversenken.Game;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
+import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
 import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.DualRowPanel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputPanel;
-import UserInterface.UIComponents.InputSpinner;
+import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
@@ -51,7 +50,7 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel {
       // Field size input and auto ship button
       JPanel sizeRow = new DualRowPanel();
       InputPanel sizeInputPanel = new InputPanel("Spielfeldgröße");
-      JSpinner sizeInput = new InputSpinner(new SpinnerNumberModel(5, 5, 25, 1));
+      InputTextField sizeInput = new InputTextField();
       sizeInputPanel.add(sizeInput);
       JButton autoShipButton = new InputButton("Bevölkern");
       sizeRow.add(sizeInputPanel);
@@ -60,20 +59,20 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel {
       // Ship size inputs
       JPanel shipsInputRow1 = new DualRowPanel();
       InputPanel ship2InputPanel = new InputPanel("2er Schiffe");
-      JSpinner ship2Input = new InputSpinner(new SpinnerNumberModel(0, 0, 10, 1));
+      InputTextField ship2Input = new InputTextField();
       ship2InputPanel.add(ship2Input);
       InputPanel ship3InputPanel = new InputPanel("3er Schiffe");
-      JSpinner ship3Input = new InputSpinner(new SpinnerNumberModel(0, 0, 10, 1));
+      InputTextField ship3Input = new InputTextField();
       ship3InputPanel.add(ship3Input);
       shipsInputRow1.add(ship2InputPanel);
       shipsInputRow1.add(ship3InputPanel);
 
       JPanel shipsInputRow2 = new DualRowPanel();
       InputPanel ship4InputPanel = new InputPanel("4er Schiffe");
-      JSpinner ship4Input = new InputSpinner(new SpinnerNumberModel(0, 0, 10, 1));
+      InputTextField ship4Input = new InputTextField();
       ship4InputPanel.add(ship4Input);
       InputPanel ship5InputPanel = new InputPanel("5er Schiffe");
-      JSpinner ship5Input = new InputSpinner(new SpinnerNumberModel(0, 0, 10, 1));
+      InputTextField ship5Input = new InputTextField();
       ship5InputPanel.add(ship5Input);
       shipsInputRow2.add(ship4InputPanel);
       shipsInputRow2.add(ship5InputPanel);
@@ -84,12 +83,15 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel {
          public void actionPerformed(ActionEvent e) {
             int[] ships = new int[4];
             Arrays.fill(ships, 0);
-            ships = Game.getShipsLeft(Integer.parseInt(sizeInput.getValue().toString()), ships);
 
-            ship2Input.setValue(ships[0]);
-            ship3Input.setValue(ships[1]);
-            ship4Input.setValue(ships[2]);
-            ship5Input.setValue(ships[3]);
+            if (SettingsHandler.validateSizeInput(sizeInput, sizeInputPanel)) {
+               ships = Game.getShipsLeft(sizeInput.getIntValue(), ships);
+
+               ship2Input.setValue(ships[0]);
+               ship3Input.setValue(ships[1]);
+               ship4Input.setValue(ships[2]);
+               ship5Input.setValue(ships[3]);
+            }
          }
       });
 
@@ -97,17 +99,22 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel {
       JButton startGameButton = new InputButton("Spiel starten");
       startGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            Main.currentGame.setPitchSize(Integer.parseInt(sizeInput.getValue().toString()));
+            InputTextField[] inputTextFields = {sizeInput, ship2Input, ship3Input, ship4Input, ship5Input};
+            InputPanel[] inputPanels = { sizeInputPanel, ship2InputPanel, ship3InputPanel, ship4InputPanel, ship5InputPanel};
 
-            int[] ships = new int[4];
-            ships[0] = Integer.parseInt(ship2Input.getValue().toString());
-            ships[1] = Integer.parseInt(ship3Input.getValue().toString());
-            ships[2] = Integer.parseInt(ship4Input.getValue().toString());
-            ships[3] = Integer.parseInt(ship5Input.getValue().toString());
-            Main.currentGame.setShips(ships);
-            Main.currentGame.transmittSizeAndShips();
+            if (SettingsHandler.validateGameInput(inputTextFields, inputPanels)) {
+               Main.currentGame.setPitchSize(sizeInput.getIntValue());
 
-            parent.openGameWindow();
+               int[] ships = new int[4];
+               ships[0] = ship2Input.getIntValue();
+               ships[1] = ship3Input.getIntValue();
+               ships[2] = ship4Input.getIntValue();
+               ships[3] = ship5Input.getIntValue();
+               Main.currentGame.setShips(ships);
+               Main.currentGame.transmittSizeAndShips();
+
+               parent.openGameWindow();
+            }
          }
       });
 
