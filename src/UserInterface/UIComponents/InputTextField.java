@@ -36,4 +36,20 @@ public class InputTextField extends JTextField {
       setForeground(buttonFontColor);
       setBorder(new MatteBorder(0, 0, borderWidth, 0, borderColor));
    }
+
+   public void setValue(String value) {
+      this.setText(value);
+   }
+
+   public void setValue(int value) {
+      this.setText(Integer.toString(value));
+   }
+
+   public String getStringValue() {
+      return this.getText();
+   }
+
+   public int getIntValue() {
+      return Integer.parseInt(this.getStringValue());
+   }
 }
