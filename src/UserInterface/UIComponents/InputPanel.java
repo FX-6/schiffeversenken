@@ -1,9 +1,11 @@
 package UserInterface.UIComponents;
 
 import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
 import java.awt.GridLayout;
 import java.awt.Font;
-import javax.swing.JLabel;
 
 public class InputPanel extends UIPanel {
    private String label;
@@ -25,6 +27,7 @@ public class InputPanel extends UIPanel {
       inputLabelRow = new InputLabelRow();
       inputLabel = new InputLabel(label);
       errorLabel = new ErrorLabel();
+      errorLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
       inputLabelRow.add(inputLabel);
       inputLabelRow.add(errorLabel);
