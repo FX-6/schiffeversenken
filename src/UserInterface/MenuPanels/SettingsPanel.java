@@ -166,7 +166,7 @@ public class SettingsPanel extends BackgroundPanel {
             try {
                if (borderRadiusInput.getIntValue() < 0) {
                   borderRadiusInputPanel.setError("Zu klein");
-               } else if (borderRadiusInput.getIntValue() > 15) {
+               } else if (borderRadiusInput.getIntValue() > 17) {
                   borderRadiusInputPanel.setError("Zu groß");
                } else {
                   borderRadiusInputPanel.setError("");
