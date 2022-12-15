@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.GridLayout;
 
 public class WrapperPanel extends UIPanel {
+   private static final long serialVersionUID = 1L;
+
    private Dimension size = new Dimension((2 * borderWidth + 2 * padding) + itemWidth, (2 * borderWidth + 2 * padding));
    private GridLayout gridLayout = new GridLayout(0, 1, padding, padding);
 

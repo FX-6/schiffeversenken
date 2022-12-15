@@ -7,6 +7,8 @@ import java.awt.Font;
 import Schiffeversenken.SettingsHandler;
 
 public class InputTextField extends JTextField {
+   private static final long serialVersionUID = 1L;
+
    protected int fontSizeLarge = 25;
    protected int fontSizeSmall = 15;
 

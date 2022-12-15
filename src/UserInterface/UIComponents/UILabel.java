@@ -5,6 +5,8 @@ import java.awt.Color;
 import Schiffeversenken.SettingsHandler;
 
 public class UILabel extends JLabel {
+   private static final long serialVersionUID = 1L;
+
    protected int fontSizeLarge = 25;
    protected int fontSizeSmall = 15;
 

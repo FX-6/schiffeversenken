@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import Schiffeversenken.SettingsHandler;
 
 public class BackgroundPanel extends UIPanel {
+   private static final long serialVersionUID = 1L;
+
    public BackgroundPanel() {
       super();
    }

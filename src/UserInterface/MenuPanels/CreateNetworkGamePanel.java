@@ -29,7 +29,6 @@ import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
-// TODO Add Play as KI Checkbox (Felix)
 // TODO Spiel starten Knopf deaktivieren, wenn der andere Verbindung wieder abbricht
 
 public class CreateNetworkGamePanel extends BackgroundPanel implements Notification {

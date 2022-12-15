@@ -23,11 +23,8 @@ import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
-// TODO serialVersionUID? Was ist das üebrhaupt?
-// TODO Add Play as KI Checkbox (Felix)
-
 public class CreateSingleplayerGamePanel extends BackgroundPanel {
-	// private static final long serialVersionUID = ;
+	private static final long serialVersionUID = 1L;
 
    Menu parent;
 

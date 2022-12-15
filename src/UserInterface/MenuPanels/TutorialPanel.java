@@ -16,11 +16,10 @@ import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.TextLabel;
 import UserInterface.UIComponents.WrapperPanel;
 
-// TODO serialVersionUID? Was ist das üebrhaupt? (Felix)
 // TODO size of TextLabel in TextLabel (Felix)
 
 public class TutorialPanel extends BackgroundPanel {
-	// private static final long serialVersionUID = ;
+	private static final long serialVersionUID = 1L;
 
    Menu parent;
 

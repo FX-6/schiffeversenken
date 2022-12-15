@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.Font;
 
 public class InputPanel extends UIPanel {
+   private static final long serialVersionUID = 1L;
+
    private String label;
    private JPanel inputLabelRow;
    private JLabel inputLabel;
