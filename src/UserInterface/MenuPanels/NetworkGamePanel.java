@@ -20,6 +20,8 @@ import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
 import UserInterface.UIComponents.BackgroundPanel;
+import UserInterface.UIComponents.DualRowPanel;
+import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputPanel;
 import UserInterface.UIComponents.InputTextField;
@@ -39,8 +41,10 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 	private InputPanel ipInputPanel;
 
 	private JTextField ipInput;
-	private JButton joinGameButton;
-	private JButton createGameButton;
+	private JButton joinGameAsHumanButton;
+	private JButton joinGameAsAiButton;
+	private JButton createGameAsHumanButton;
+	private JButton createGameAsAiButton;
 	private JButton menu;
 
 	public NetworkGamePanel(Menu parent, GameType type) {
@@ -85,36 +89,72 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       });
       ipInputPanel.add(ipInput);
 
-      // Join Game und Create Game Buttons
-      joinGameButton = new InputButton("Spiel beitreten");
-      joinGameButton.addActionListener(new ActionListener() {
+      // Join game as human button
+      joinGameAsHumanButton = new InputButton("Mensch");
+      joinGameAsHumanButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             if (SettingsHandler.validateIP(ipInput.getText())) {
                ipInputPanel.setError("");
                System.out.println(e.getActionCommand());
                Main.hostAddress = ipInput.getText();
                animateConnecting();
-               parent.createGame(4, type);
+               parent.createGame(4, GameType.NETWORK_CLIENT);
             } else {
                ipInputPanel.setError("Invalide IP");
             }
          }
       });
 
-      createGameButton = new InputButton("Spiel erstellen");
-      createGameButton.addActionListener(new ActionListener() {
+      // Join game as ai button
+      joinGameAsAiButton = new InputButton("Bot");
+      joinGameAsAiButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            if (SettingsHandler.validateIP(ipInput.getText())) {
+               ipInputPanel.setError("");
+               System.out.println(e.getActionCommand());
+               Main.hostAddress = ipInput.getText();
+               animateConnecting();
+               parent.createGame(4, GameType.NETWORK_AI_CLIENT);
+            } else {
+               ipInputPanel.setError("Invalide IP");
+            }
+         }
+      });
+
+      // Create game as human button
+      createGameAsHumanButton = new InputButton("Mensch");
+      createGameAsHumanButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             System.out.println(e.getActionCommand());
             parent.showCreateNetworkGame(GameType.NETWORK_SERVER);
          }
       });
 
-      // Alles in Wrapper einfügen
-      wrapperPanel.add(ipInputPanel);
-      wrapperPanel.add(joinGameButton);
-      wrapperPanel.add(createGameButton);
+      // Create game as ai button
+      createGameAsAiButton = new InputButton("Bot");
+      createGameAsAiButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            System.out.println(e.getActionCommand());
+            parent.showCreateNetworkGame(GameType.NETWORK_AI_SERVER);
+         }
+      });
 
-      // Menu Button
+      // Join game button rows
+      JPanel joinGameButtonRow = new DualRowPanel();
+      joinGameButtonRow.add(joinGameAsHumanButton);
+      joinGameButtonRow.add(joinGameAsAiButton);
+      JPanel createGameButtonRow = new DualRowPanel();
+      createGameButtonRow.add(createGameAsHumanButton);
+      createGameButtonRow.add(createGameAsAiButton);
+
+      // Add all to wrapper
+      wrapperPanel.add(ipInputPanel);
+      wrapperPanel.add(new HeaderLabel("Spiel beitreten als"));
+      wrapperPanel.add(joinGameButtonRow);
+      wrapperPanel.add(new HeaderLabel("Spiel erstellen als"));
+      wrapperPanel.add(createGameButtonRow);
+
+      // MenuButton
       menu = new MenuButton();
       menu.setAlignmentX(CENTER_ALIGNMENT);
       menu.addActionListener(new ActionListener() {
@@ -124,7 +164,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
          }
       });
 
-      // Wrapper und rest einfügen
+      // Add menu and wrapper
       add(menu);
       add(Box.createGlue());
       add(wrapperPanel);
@@ -133,8 +173,8 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 
 	private void animateConnecting() {
 		menu.setEnabled(false);
-		joinGameButton.setEnabled(false);
-		createGameButton.setEnabled(false);
+		joinGameAsHumanButton.setEnabled(false);
+		createGameAsHumanButton.setEnabled(false);
 		ipInput.setEnabled(false);
 
 		String text = ipInput.getText();
@@ -150,8 +190,8 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 					ipInput.setText(text);
 					timer.cancel();
 					menu.setEnabled(true);
-					joinGameButton.setEnabled(true);
-					createGameButton.setEnabled(true);
+					joinGameAsHumanButton.setEnabled(true);
+					createGameAsHumanButton.setEnabled(true);
 					ipInput.setEnabled(true);
 				}
 				else if (ipInput.getText().equals(text + " ...")) {

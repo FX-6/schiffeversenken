@@ -62,9 +62,9 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
       // IP Address heading
       JLabel ipAddressLabel = new HeaderLabel();
       try {
-         ipAddressLabel.setText(Inet4Address.getLocalHost().getHostAddress());
+         ipAddressLabel.setText("IP: " + Inet4Address.getLocalHost().getHostAddress());
       } catch (UnknownHostException e1) {
-         ipAddressLabel.setText("Fehler");
+         ipAddressLabel.setText("IP nicht gefunden");
          e1.printStackTrace();
       }
 

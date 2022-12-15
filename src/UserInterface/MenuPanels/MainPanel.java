@@ -44,7 +44,7 @@ public class MainPanel extends BackgroundPanel {
 		singlePlayer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				System.out.println(event.getActionCommand());
-            parent.showCreateSingleplayerGame(GameType.AI); // TODO ist das der richtige Type? (Felix)
+            parent.showCreateSingleplayerGame(GameType.AI);
 			}
 		});
 
@@ -53,13 +53,6 @@ public class MainPanel extends BackgroundPanel {
 			public void actionPerformed(ActionEvent event) {
 				System.out.println(event.getActionCommand());
 				parent.showNetworkGame(GameType.NETWORK_CLIENT);
-			}
-		});
-
-		JButton multiPlayerPC = new InputButton("Mehrspieler KI vs. KI");
-		multiPlayerPC.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				System.out.println(event.getActionCommand());
 			}
 		});
 
@@ -82,7 +75,6 @@ public class MainPanel extends BackgroundPanel {
       wrapperPanel.add(header);
       wrapperPanel.add(singlePlayer);
       wrapperPanel.add(multiPlayerNetwork);
-      wrapperPanel.add(multiPlayerPC);
       wrapperPanel.add(description);
       wrapperPanel.add(settings);
 
