@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,9 +32,6 @@ import UserInterface.UIComponents.WrapperPanel;
 
 public class CreateNetworkGamePanel extends BackgroundPanel implements Notification {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -4350076887571572645L;
 
 	private Menu parent;
@@ -52,7 +48,6 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 
 	private void setup() {
 		NotificationCenter.addObserver("ClientConnected", this);
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 	}
 
 	private void fillWithContent() {
@@ -146,9 +141,8 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
       wrapperPanel.add(startGameButton);
 
       // Menu Button
-      JButton menu = new MenuButton();
-      menu.setAlignmentX(CENTER_ALIGNMENT);
-      menu.addActionListener(new ActionListener() {
+      JButton menuButton = new MenuButton();
+      menuButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
             parent.exitGame(GameExitStatus.GAME_DISCARDED);;
             System.out.println(event.getActionCommand());
@@ -156,8 +150,8 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
          }
       });
 
-      // Alles einfügen
-      add(menu);
+      // add all to window
+      add(menuButton);
       add(Box.createGlue());
       add(wrapperPanel);
       add(Box.createGlue());

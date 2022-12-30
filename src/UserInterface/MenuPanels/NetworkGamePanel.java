@@ -8,7 +8,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -45,7 +44,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 	private JButton joinGameAsAiButton;
 	private JButton createGameAsHumanButton;
 	private JButton createGameAsAiButton;
-	private JButton menu;
+	private JButton menuButton;
 
 	public NetworkGamePanel(Menu parent, GameType type) {
 		this.parent = parent;
@@ -57,7 +56,6 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 	private void setup() {
 		NotificationCenter.addObserver("ServerConnected", this);
 		NotificationCenter.addObserver("ConnectionFailed", this);
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 	}
 
 	private void fillWithContent() {
@@ -155,24 +153,23 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       wrapperPanel.add(createGameButtonRow);
 
       // MenuButton
-      menu = new MenuButton();
-      menu.setAlignmentX(CENTER_ALIGNMENT);
-      menu.addActionListener(new ActionListener() {
+      menuButton = new MenuButton();
+      menuButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
             System.out.println(event.getActionCommand());
             parent.showMenu();
          }
       });
 
-      // Add menu and wrapper
-      add(menu);
+      // add all to window
+      add(menuButton);
       add(Box.createGlue());
       add(wrapperPanel);
       add(Box.createGlue());
    }
 
 	private void animateConnecting() {
-		menu.setEnabled(false);
+		menuButton.setEnabled(false);
 		joinGameAsHumanButton.setEnabled(false);
 		createGameAsHumanButton.setEnabled(false);
 		ipInput.setEnabled(false);
@@ -189,7 +186,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 				if (ipInput.getText().equals("")) {
 					ipInput.setText(text);
 					timer.cancel();
-					menu.setEnabled(true);
+					menuButton.setEnabled(true);
 					joinGameAsHumanButton.setEnabled(true);
 					createGameAsHumanButton.setEnabled(true);
 					ipInput.setEnabled(true);

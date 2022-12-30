@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -36,9 +35,7 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel {
       parent.createGame(4, type);
    }
 
-   private void setup() {
-      setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-   }
+   private void setup() {}
 
    private void fillWithContent() {
       JPanel wrapperPanel = new WrapperPanel();
@@ -122,7 +119,6 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel {
 
       // menu button
       JButton menuButton = new MenuButton();
-      menuButton.setAlignmentX(CENTER_ALIGNMENT);
       menuButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
             parent.exitGame(GameExitStatus.GAME_DISCARDED);
@@ -131,6 +127,7 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel {
          }
       });
 
+      // add all to window
       add(menuButton);
       add(Box.createGlue());
       add(wrapperPanel);

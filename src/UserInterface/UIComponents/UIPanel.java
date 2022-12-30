@@ -1,7 +1,11 @@
 package UserInterface.UIComponents;
 
-import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Component;
+
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+
 import Schiffeversenken.SettingsHandler;
 
 public class UIPanel extends JPanel {
@@ -32,5 +36,7 @@ public class UIPanel extends JPanel {
 
    private void setup() {
       setBackground(backgroundColor);
+      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+      setAlignmentX(Component.LEFT_ALIGNMENT);
    }
 }

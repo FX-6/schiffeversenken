@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -40,9 +39,7 @@ public class SettingsPanel extends BackgroundPanel {
 		fillWithContent();
 	}
 
-	private void setup() {
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-	}
+	private void setup() {}
 
 	private void fillWithContent() {
       JPanel wrapperPanel = new WrapperPanel();
@@ -196,8 +193,8 @@ public class SettingsPanel extends BackgroundPanel {
          }
       });
 
-		add(menuButton); // Position top left
-      menuButton.setLocation(20, 20);
+		// add all to window
+      add(menuButton);
       add(Box.createGlue());
       add(wrapperPanel);
       add(Box.createGlue());

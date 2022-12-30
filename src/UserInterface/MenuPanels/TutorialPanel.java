@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,9 +28,7 @@ public class TutorialPanel extends BackgroundPanel {
       fillWithContent();
    }
 
-   private void setup() {
-      setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-   }
+   private void setup() {}
 
    private void fillWithContent() {
       JPanel wrapperPanel = new WrapperPanel();
@@ -51,6 +48,7 @@ public class TutorialPanel extends BackgroundPanel {
          }
       });
 
+      // add all to window
       add(menuButton);
       add(Box.createGlue());
       add(wrapperPanel);

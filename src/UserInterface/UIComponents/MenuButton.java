@@ -2,8 +2,6 @@ package UserInterface.UIComponents;
 
 import java.awt.Dimension;
 
-// TODO Positioning (20, 20) (Felix)
-
 public class MenuButton extends InputButton {
    private static final long serialVersionUID = 1L;
 
@@ -19,6 +17,5 @@ public class MenuButton extends InputButton {
       setPreferredSize(size);
       setMaximumSize(size);
       setBorder(new RoundedBorder(borderRadius, borderWidth, borderColor));
-      setLocation(20, 20); // Kann wahrscheinlich nicht im Constructor stehen
    }
 }
