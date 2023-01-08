@@ -9,6 +9,8 @@ public class AIPlayer extends Player {
 	@Override
 	public void pass() {
 		// Teile der KI mit, dass sie einen weitereun Zug ausüben darf
+		otherPlayer.setMyTurn(false);
+		setMyTurn(true);
 	}
 
 }

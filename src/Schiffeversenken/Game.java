@@ -1,5 +1,6 @@
 package Schiffeversenken;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.swing.JFrame;
@@ -28,7 +29,9 @@ public class Game implements Notification {
 	public Player getPlayer2() {return this.player2;}
 	public int getNumberOfShips(int size) {return ships[size - 2];}
 	
-	public void setPitchSize(int size) {this.pitchSize = size;}
+	public void setPitchSize(int size) {this.pitchSize = size;
+										player1.refreshPointsShot();
+										player2.refreshPointsShot();}
 	public void setShips(int[] ships) {this.ships = ships;}
 	public void setPlayer1(Player player) {this.player1 = player;}
 	public void setPlayer2(Player player) {this.player2 = player;}
@@ -45,8 +48,15 @@ public class Game implements Notification {
 			player2.sendSave(id);
 		}
 		
-		// ... Spiel speichern
-		return false;
+		// Spiel speichern
+		try {
+			new SaveGameHandler(id);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 	
 	// Lädt einen Spielstand
@@ -77,6 +87,26 @@ public class Game implements Notification {
 			NetworkPlayer player2 = (NetworkPlayer) this.player2;
 			player2.sendReady();
 		}
+	}
+	
+	
+	
+	// Teilt dem Spiel mit, dass der Spieler seine Schiffe gesetzt hat
+	// Wird von Player aufgerufen (oder dem Interface)
+	public void setReady(Player sender) {
+		// Überprüft, ob beide Spieler ready sind und sendet ggf. an das Netzwerk
+		
+			// Gibt dem ersten Spieler den Zug
+			if (player2 instanceof NetworkPlayer) {
+				NetworkPlayer player2 = (NetworkPlayer) getPlayer2();
+				if (player2.isServer) {
+					player1.pass();
+				} else {
+					player2.pass();
+				}
+			} else {
+				player1.pass();
+			}
 	}
 	
 	

@@ -2,6 +2,16 @@ package Schiffeversenken;
 
 public class Point {
 
+	// Liest einen Punkt aus einem String der Form "x,y" (Siehe toString())
+	public static Point parsePoint(String string) {
+		String[] list = string.split(",");
+		int x = Integer.parseInt(list[0]);
+		int y = Integer.parseInt(list[1]);
+		return new Point(x, y);
+	}
+	
+	
+	
 	public final int x;
 	public final int y;
 	
@@ -30,7 +40,7 @@ public class Point {
 	
 	// Produziert einen beschreibenden String zu diesem Punkt
 	public String toString() {
-		return "(" + x + "|" + y + ")";
+		return x + "," + y;
 	}
 	
 	// Ueberprueft, ob ein Object object inhaltlich gleich zu diesem Punkt ist (ob beide Koordinaten uebereinstimmen)

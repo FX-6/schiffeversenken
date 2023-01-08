@@ -9,6 +9,8 @@ public class HumanPlayer extends Player {
 	@Override
 	public void pass() {
 		// Teile der UI mit, dass Spieler dran ist und lasse ihn aktionen ausfuehren!!
+		otherPlayer.setMyTurn(false);
+		setMyTurn(true);
 	}
 
 }

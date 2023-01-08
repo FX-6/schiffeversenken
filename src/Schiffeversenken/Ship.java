@@ -25,6 +25,10 @@ public class Ship {
 	
 	public void setRootPoint(Point point) {this.rootPoint = point;}
 	
+	
+	// Getter und Setter nur für Save/Load
+	public int[] getDamage() {return damage;}
+	
 
 	
 	

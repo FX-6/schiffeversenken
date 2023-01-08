@@ -11,6 +11,8 @@ public abstract class Player {
 	private List<Ship> ships;
 	private int[][] pointsShot;
 	private int shipsDestroyed = 0;
+	
+	private boolean isMyTurn = false;
 		
 	public Player(Game game, Player otherPlayer) {
 		this.game = game;
@@ -26,12 +28,28 @@ public abstract class Player {
 	
 	
 	// Getter und Setter
-	public void setOtherPlayer(Player player) {this.otherPlayer = player;}
+	public boolean isMyTurn() {return isMyTurn;}
 	
+	public void setOtherPlayer(Player player) {this.otherPlayer = player;}
+	public void setMyTurn(boolean bool) {this.isMyTurn = bool;}
+	
+	
+	
+	// Getter und Setter nur für Save/Load
+	public int getShipsDestroyed() {return this.shipsDestroyed;}
+	public int[][] getPointsShot() {return this.pointsShot;}
+	public List<Ship> getShipList() {return ships;}
+	
+	
+	public void refreshPointsShot() {
+		this.pointsShot = new int[game.getPitchSize()][game.getPitchSize()];
+	}
 	
 	
 	
 	public abstract void pass();
+	
+	//public abstract void ready();
 	
 	
 	

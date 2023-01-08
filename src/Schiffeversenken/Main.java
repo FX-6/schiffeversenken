@@ -2,7 +2,6 @@ package Schiffeversenken;
 
 import UserInterface.Menu;
 
-
 public class Main {
 
 	public static Game currentGame = null;
@@ -17,8 +16,9 @@ public class Main {
 
 		menuWindow = new Menu();
 
-
-
+		
+		
+		
 
 //		createGame(10, GameType.NETWORK_SERVER);
 //

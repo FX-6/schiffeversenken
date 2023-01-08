@@ -57,6 +57,8 @@ public class NetworkPlayer extends Player implements Notification  {
 	// Teilt dem Netzwerk mit, dass es an der Reihe ist
 	@Override
 	public void pass() {
+		otherPlayer.setMyTurn(false);
+		setMyTurn(true);
 		send("pass");
 	}
 	
