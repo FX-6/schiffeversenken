@@ -1,5 +1,6 @@
 package Schiffeversenken;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -15,12 +16,12 @@ public class Game implements Notification {
 	private Player player2;					// Netzwerk oder AI
 	private int[] ships = new int[4];
 	
+	private int readyCount = 0;
+	
 	public Game(int pitchSize) {
 		this.pitchSize = pitchSize;
 		
 		Arrays.fill(ships, 0);				// Fuellt ships mit 0 (zur Sicherheit)
-		
-		//NotificationCenter.addObserver("ClientConnected", this);			// Abboniert das Event "ClientConnected" (Wird aufgerufen, wenn eine erfolgreiche Verbindung zu einem Client hergestellt wurde)
 	}
 	
 	// Getter und Setter
@@ -40,7 +41,7 @@ public class Game implements Notification {
 	
 	
 	// Speichert einen Spielstand
-	public boolean save(String id, Object sender) {
+	public boolean save(String id, String name, Object sender) {
 		// true, falls Speichern erfolgreich, andernfalls false
 		
 		if (!(sender instanceof NetworkPlayer) && player2 instanceof NetworkPlayer) {
@@ -50,7 +51,7 @@ public class Game implements Notification {
 		
 		// Spiel speichern
 		try {
-			new SaveGameHandler(id);
+			new SaveGameHandler(id, name);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -69,7 +70,13 @@ public class Game implements Notification {
 		}
 		
 		// ... Spielstand laden
-		return false;
+		try {
+			new SaveGameHandler(id);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	// Überträgt im Falle eines Netzwerkspiels als Server die Feldgroesse und die Anzahl an Schiffen fuer eine Groesse
@@ -95,18 +102,30 @@ public class Game implements Notification {
 	// Wird von Player aufgerufen (oder dem Interface)
 	public void setReady(Player sender) {
 		// Überprüft, ob beide Spieler ready sind und sendet ggf. an das Netzwerk
+		readyCount++;
 		
+		if (sender == player1) {
+			if (player2 instanceof NetworkPlayer) {
+				NetworkPlayer player2 = (NetworkPlayer) getPlayer2();
+				player2.sendReady();
+			}
+		}
+		
+		if (readyCount == 2) {
+			
 			// Gibt dem ersten Spieler den Zug
 			if (player2 instanceof NetworkPlayer) {
 				NetworkPlayer player2 = (NetworkPlayer) getPlayer2();
 				if (player2.isServer) {
 					player1.pass();
 				} else {
-					player2.pass();
+					player2.setMyTurn(true);
+					player1.setMyTurn(false);
 				}
 			} else {
 				player1.pass();
 			}
+		}
 	}
 	
 	
@@ -168,18 +187,18 @@ public class Game implements Notification {
     	}
     	
         int[] shipsLeft = new int[shipsInUse.length];
-        int maxFields = (int) Math.ceil(fieldSize * fieldSize * occupacityRate);    	// Anzahl an Feldern, die maximal von Schiffen belegt werden dürfen (30% aller Felder)
+        int maxFields = (int) Math.floor(fieldSize * fieldSize * occupacityRate);    	// Anzahl an Feldern, die maximal von Schiffen belegt werden dürfen
         int fieldsUsed = 0;                                                         	// Anzahl an Feldern, die bereits belegt sind
         for (int i = 0; i < shipsInUse.length; i++) {                               	//      -"-
             fieldsUsed = fieldsUsed + shipsInUse[i]*(i+2);                          	//      -"-
         }                                                                           	//      -"-
         int fieldsFree = maxFields - fieldsUsed;                                    	// Anzahl an Feldern, die unter Berücksichtigung der 30% Obergrenze noch belegt werden dürfen
-
+        
         for (int i = 0; i < shipsInUse.length; i++) {
             int amountShipsFields = shipsInUse[i] * (i+2);                          	// Anzahl an Feldern, die von Schiffen dieser Sorte belegt sind
-            int maxAmountShipsFields = (int) Math.floor(maxFields * occupacityPerShip); // Anzahl an Feldern, die von dieser Schiffssorte maximal belegt werden dürfen (40% der 30% aller Felder)
+            int maxAmountShipsFields = (int) Math.floor(maxFields * occupacityPerShip); // Anzahl an Feldern, die von dieser Schiffssorte maximal belegt werden dürfen
 
-            int amountLeft = (maxAmountShipsFields - amountShipsFields) / (i+2);    	// Anzahl an Feldern, die von dieser Schiffssorte noch belegt werden dürften (ohne 30% Obergrenze aller Felder)
+            int amountLeft = (maxAmountShipsFields - amountShipsFields) / (i+2);    	// Anzahl an Feldern, die von dieser Schiffssorte noch belegt werden dürften
 
             // Sucht größte Anzahl an Feldern, die von dieser Schiffssorte noch belegt werden dürfen, unter Berücksichtigung der 30% Obergrenze aller Felder
             while (amountLeft*(i+2) > fieldsFree) {

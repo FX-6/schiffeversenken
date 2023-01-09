@@ -1,10 +1,11 @@
 package Schiffeversenken;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.Timestamp;
 import java.util.List;
+import java.util.Scanner;
 
 public class SaveGameHandler {
 
@@ -26,12 +27,10 @@ public class SaveGameHandler {
 	private File file;
 	
 	// Um ein neues Spiel zu speichern
-	public SaveGameHandler(String name) throws IOException {
-		String fileName = System.currentTimeMillis() + "." + name + ".json";
+	public SaveGameHandler(String id, String name) throws IOException {
+		String fileName = id + "." + name + ".json";
 		
 		file = new File(SettingsHandler.saveGamesPath + File.separator + fileName);
-		
-		
 		
 		
 		
@@ -109,8 +108,17 @@ public class SaveGameHandler {
 	
 	
 	// Um ein gespeichertes Spiel zu laden
-	public SaveGameHandler(Timestamp id) {
+	public SaveGameHandler(String id) throws FileNotFoundException {
+		File file = null;
 		
+		for (String string : SettingsHandler.getSavedGames()) {
+			if (string.split(".")[0].equals(id)) {
+				file = new File(SettingsHandler.saveGamesPath + File.separator + string);
+				break;
+			}
+		}
+		
+		Scanner reader = new Scanner(file);
 	}
 	
 	
