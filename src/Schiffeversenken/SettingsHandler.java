@@ -18,7 +18,6 @@ import UserInterface.UIComponents.InputTextField;
 
 import java.awt.image.BufferedImage;
 
-// TODO Save game handler (Felix)
 // TODO Change link to zip file? (Felix)
 // TODO Auto-generated catch blocks (Felix)
 
