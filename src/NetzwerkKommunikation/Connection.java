@@ -74,7 +74,7 @@ public class Connection {
 	public void disconnect() throws IOException {
 		if (waitingThread != null && waitingThread.isAlive()) waitingThread.stop();
 		if (socket != null && socket.isConnected()) {
-			send("exit");
+			//send("exit");
 			socket.close();
 		}
 		//if (listener != null) listener.stop();
