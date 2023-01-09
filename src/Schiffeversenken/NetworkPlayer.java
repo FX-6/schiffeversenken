@@ -12,6 +12,9 @@ public class NetworkPlayer extends Player implements Notification  {
 	public final boolean isServer;
 	private Connection connection;
 	
+	private boolean isPingPong;
+	private String queMessage;						// Warteschlange der Position 1 für Netzwerk-Nachrichten, wenn gerade nicht gesendet werden darf (isPingPong = false)
+	
 	private String message = ""; 					// Wird gebraucht, um empfangene Nachrichten an Methoden weiterzuleiten, die auf eine Nachricht warten
 	
 	
@@ -19,6 +22,7 @@ public class NetworkPlayer extends Player implements Notification  {
 	// Wenn Netzwerkspiel erstellt wird (Server)
 	public NetworkPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
+		this.isPingPong = true;
 		this.isServer = true;
 		try {
 			connection = new Connection();										
@@ -31,6 +35,7 @@ public class NetworkPlayer extends Player implements Notification  {
 	// Wenn Netzwerkspiel beigetreten werden soll (Client)
 	public NetworkPlayer(Game game, Player otherPlayer, String ipAddress) {
 		super(game, otherPlayer);
+		this.isPingPong = false;
 		this.isServer = false;
 		try {
 			connection = new Connection(ipAddress);
@@ -137,7 +142,23 @@ public class NetworkPlayer extends Player implements Notification  {
 	
 	// Nachricht ans Netzwerk senden
 	private void send(String message) {
+		queMessage = message;
+		sendQue();
+	}
+	
+	// Sendet die Warteschlange mit Überprüfung des PingPong-Prinzips
+	private void sendQue() {
+		if (isPingPong) {
+			connection.send(queMessage);
+			queMessage = "";
+			isPingPong = false;
+		}
+	}
+	
+	// Sendet ohne Überprüfung des PingPong-Prinzips und ohne Beachtung der Warteschlange
+	private void sendFirst(String message) {
 		connection.send(message);
+		isPingPong = false;
 	}
 	
 	
@@ -147,6 +168,8 @@ public class NetworkPlayer extends Player implements Notification  {
 	@Override
 	public void processNotification(String type, Object object) {
 		if (type.equals("NewNetworkMessage")) {
+			isPingPong = true;
+			
 			String message = (String) object;
 			
 			System.out.println("\t\t-> " + message);
@@ -157,13 +180,16 @@ public class NetworkPlayer extends Player implements Notification  {
 			
 			switch (cmd) {
 			case "save":
-				game.save(args[1], this);
-				send("ok");
+				NotificationCenter.sendNotification("SaveGame", args[1]);			// Pop-Up Fenster umd Spielstandspeicherung einen Namen zu geben	
+				sendFirst("ok");
 				break;
 				
 			case "load":
-				game.load(args[1], this);
-				send("ok");
+				if (game.load(args[1], this)) {
+					sendFirst("ok");
+				} else {
+					game.exit(this, GameExitStatus.FILE_NOT_FOUND);
+				}
 				break;
 				
 			case "size":
@@ -171,7 +197,7 @@ public class NetworkPlayer extends Player implements Notification  {
 				game.setPitchSize(pitchSize);
 				this.updatePointsShot();
 				otherPlayer.updatePointsShot();
-				send("done");
+				sendFirst("done");
 				break;
 				
 			case "ships":
@@ -182,14 +208,14 @@ public class NetworkPlayer extends Player implements Notification  {
 					ships[size-2]++;
 				}
 				game.setShips(ships);
-				send("done");
+				sendFirst("done");
 				break;
 				
 			case "shot":
 				int x = Integer.parseInt(args[1]);
 				int y = Integer.parseInt(args[2]);
 				int result = this.shoot(new Point(x, y));
-				send("answer "+ result);
+				sendFirst("answer "+ result);
 				break;
 				
 			case "exit":
@@ -228,7 +254,12 @@ public class NetworkPlayer extends Player implements Notification  {
 				
 			case "ready":
 				continueWithAnswer();
+				game.setReady(this);
 				break;
+			}
+			
+			if (!queMessage.equals("")) {
+				sendQue();
 			}
 		}
 	}
