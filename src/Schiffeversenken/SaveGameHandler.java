@@ -302,24 +302,6 @@ public class SaveGameHandler {
 		return string;
 	}
 	
-	private String writeArray(Object[] values, String indentation, boolean isString) {
-		String string = "[\n";
-		if (isString) {
-			for (Object obj : values) {
-				string += indentation + "\t\"" + obj + "\",\n";
-			}
-		}
-		else {
-			for (Object obj : values) {
-				string += indentation + "\t" + obj + ",\n";
-			}
-		}
-		if (values.length > 0) string = string.substring(0, string.length() - 2);
-		string += "\n" + indentation + "]";
-		return string;
-	}
-	
-	
 	
 	private String write2DArray(String key, int[][] array, String indentation) {
 		String string = "\"" + key + "\":[\n";
