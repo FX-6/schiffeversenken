@@ -1,30 +1,33 @@
 package UserInterface.UIComponents;
 
-import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import java.awt.GridLayout;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 
 public class InputPanel extends UIPanel {
    private static final long serialVersionUID = 1L;
 
-   private String label;
+   protected Dimension size = new Dimension(itemWidth, itemHeigth);
+
    private JPanel inputLabelRow;
    private JLabel inputLabel;
    private JLabel errorLabel;
    private GridLayout singleGridLayout = new GridLayout(2, 1, 0, 0);
    private Font font = new Font("Titel", Font.PLAIN, fontSizeSmall);
 
-   public InputPanel(String label) {
+   public InputPanel(String label, boolean single) {
       super();
-      this.label = label;
-      setup();
-   }
 
-   private void setup() {
-      setLayout(singleGridLayout);
+      if (!single) {size.setSize(itemWidth / 2 - padding / 2, size.getHeight());}
+      this.setMinimumSize(size);
+      this.setPreferredSize(size);
+      this.setMaximumSize(size);
+      this.setSize(size);
+      this.setLayout(singleGridLayout);
 
       inputLabelRow = new InputLabelRow();
       inputLabel = new InputLabel(label);
@@ -34,7 +37,7 @@ public class InputPanel extends UIPanel {
       inputLabelRow.add(inputLabel);
       inputLabelRow.add(errorLabel);
 
-      add(inputLabelRow);
+      this.add(inputLabelRow);
    }
 
    public void setError(String text) {
@@ -46,22 +49,23 @@ public class InputPanel extends UIPanel {
 
       InputLabelRow() {
          super();
-         setLayout(dualGridLayout);
+         this.setLayout(dualGridLayout);
+         this.setBackground(backgroundColor);
       }
    }
 
    private class InputLabel extends UILabel {
       InputLabel(String text) {
          super(text);
-         setFont(font);
+         this.setFont(font);
       }
    }
 
    private class ErrorLabel extends UILabel {
       ErrorLabel() {
          super();
-         setFont(font);
-         setForeground(errorColor);
+         this.setFont(font);
+         this.setForeground(errorColor);
       }
    }
 }

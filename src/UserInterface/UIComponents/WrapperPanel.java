@@ -1,53 +1,44 @@
 package UserInterface.UIComponents;
 
-import java.awt.Dimension;
 import java.awt.Component;
-import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import javax.swing.BorderFactory;
+import javax.swing.border.EmptyBorder;
 
 public class WrapperPanel extends UIPanel {
    private static final long serialVersionUID = 1L;
 
-   private Dimension size = new Dimension((2 * borderWidth + 2 * padding) + itemWidth, (2 * borderWidth + 2 * padding));
-   private BoxLayout boxLayout = new BoxLayout(this, BoxLayout.X_AXIS);
-   private GridLayout gridLayout = new GridLayout(0, 1, padding, padding);
-   private JPanel containerPanel = new UIPanel();
+   protected Dimension size = new Dimension(itemWidth + 2 * borderWidth + 2 * padding, 2 * borderWidth + padding);
 
    public WrapperPanel() {
       super();
-      setup();
-   }
 
-   private void setup() {
-      this.setLayout(boxLayout);
-      this.setOpaque(false);
-
-      containerPanel.setLayout(gridLayout);
-      containerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-      containerPanel.setMinimumSize(size);
-      containerPanel.setPreferredSize(size);
-      containerPanel.setMaximumSize(size);
-      containerPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+      this.setLayout(new GridBagLayout());
+      this.setMaximumSize(size);
+      this.setPreferredSize(size);
+      this.setMaximumSize(size);
+      this.setSize(size);
+      this.setBackground(backgroundColor);
+      this.setBorder(BorderFactory.createCompoundBorder(
          new RoundedBorder(borderRadius, borderWidth, borderColor),
-         new javax.swing.border.EmptyBorder(padding, padding, padding, padding)
+         new EmptyBorder(padding, padding, 0, padding)
       ));
-
-      this.originalAdd(Box.createHorizontalGlue());
-      this.originalAdd(containerPanel);
-      this.originalAdd(Box.createHorizontalGlue());
    }
 
-   private Component originalAdd(Component comp) {
-      super.add(comp);
-      return comp;
-   }
+   public Component add(Component comp, GridBagConstraints c) {
+      super.add(comp, c);
 
-   public Component add(Component comp) {
-      containerPanel.add(comp);
-      size.setSize(size.getWidth(), size.getHeight() + itemHeigth);
+      if (c.insets.left == 0) {
+         size.setSize(this.getWidth(), size.getHeight() + comp.getHeight() + padding);
+         this.setMinimumSize(size);
+         this.setPreferredSize(size);
+         this.setMaximumSize(size);
+         this.setSize(size);
+      }
+
       return comp;
    }
 }
