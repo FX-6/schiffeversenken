@@ -1,7 +1,6 @@
 package UserInterface.UIComponents;
 
 import java.awt.Dimension;
-import java.awt.Font;
 
 public class MenuButton extends InputButton {
    private static final long serialVersionUID = 1L;
@@ -10,16 +9,13 @@ public class MenuButton extends InputButton {
 
    public MenuButton() {
       super("Menü", true);
+      setup();
+   }
 
-      defaultFont = new Font("Titel", Font.PLAIN, fontSizeSmall);
-      hoverFont = new Font("Titel", Font.BOLD, fontSizeSmall);
-
-      this.setMinimumSize(size);
-      this.setPreferredSize(size);
-      this.setMaximumSize(size);
-      this.setSize(size);
-      this.setLocation(padding, padding);
-      this.setBorder(new RoundedBorder(borderRadius, borderWidth, borderColor));
-      this.setFont(defaultFont);
+   private void setup() {
+      setMinimumSize(size);
+      setPreferredSize(size);
+      setMaximumSize(size);
+      setBorder(new RoundedBorder(borderRadius, borderWidth, borderColor));
    }
 }

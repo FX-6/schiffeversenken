@@ -36,6 +36,6 @@ public class UILabel extends JLabel {
    }
 
    private void setup() {
-      this.setForeground(fontColor);
+      setForeground(fontColor);
    }
 }

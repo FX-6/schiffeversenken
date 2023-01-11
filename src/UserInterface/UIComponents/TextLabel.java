@@ -1,20 +1,21 @@
 package UserInterface.UIComponents;
 
-import java.awt.Dimension;
+// TODO get height with content to adjust itemHeight in wrapperPanel (Felix)
 
 public class TextLabel extends UILabel {
    private static final long serialVersionUID = 1L;
 
-   protected Dimension size = new Dimension(itemWidth, itemHeigth);
+   public TextLabel() {
+      super();
+      setup();
+   }
 
-   public TextLabel(String text, boolean single) {
+   public TextLabel(String text) {
       super(text);
+      setup();
+   }
 
-      if (!single) { size.setSize(itemWidth / 2 - padding / 2, itemHeigth);  }
-
-      this.setMinimumSize(size);
-      this.setPreferredSize(size);
-      this.setMaximumSize(size);
-      this.setSize(size);
+   public void setup() {
+      // get height and set preffered height
    }
 }

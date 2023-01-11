@@ -1,11 +1,8 @@
 package UserInterface.UIComponents;
 
 import javax.swing.JButton;
-
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-
 import Schiffeversenken.SettingsHandler;
 
 public class InputButton extends JButton {
@@ -29,24 +26,41 @@ public class InputButton extends JButton {
    protected Color buttonFontColor = Color.decode(SettingsHandler.getSettingString("color.button.foreground"));
    protected Color errorColor = Color.decode(SettingsHandler.getSettingString("color.error"));
 
-   protected Dimension size = new Dimension(itemWidth, itemHeigth);
-   protected Font defaultFont = new Font("Titel", Font.PLAIN, fontSizeLarge);
-   protected Font hoverFont = new Font("Titel", Font.BOLD, fontSizeLarge);
+   private int fontSize = fontSizeLarge;
+   protected Font defaultFont;
+   protected Font hoverFont;
 
-   public InputButton(String text, boolean single) {
+   public InputButton() {
+      super();
+      setup();
+   }
+
+   public InputButton(String text) {
       super(text);
+      setup();
+   }
 
-      if (!single) { size.setSize(itemWidth / 2 - padding / 2, size.getHeight()); }
-      this.setMinimumSize(size);
-      this.setPreferredSize(size);
-      this.setMaximumSize(size);
-      this.setSize(size);
-      this.setBackground(buttonBackground);
-      this.setForeground(buttonFontColor);
-      this.setFont(defaultFont);
-      this.setBorder(new RoundedBorder(borderRadius, borderWidth, borderColor));
+   public InputButton(String text, boolean small) {
+      super(text);
+      if (small) {
+         this.fontSize = fontSizeSmall;
+      }
+      setup();
+   }
 
-      this.addMouseListener(new java.awt.event.MouseAdapter() {
+   private void setup() {
+      defaultFont = new Font("Titel", Font.PLAIN, fontSize);
+      hoverFont = new Font("Titel", Font.BOLD, fontSize);
+
+      setBackground(buttonBackground);
+      setForeground(buttonFontColor);
+      setFont(defaultFont);
+      setBorder(javax.swing.BorderFactory.createCompoundBorder(
+         new RoundedBorder(borderRadius, borderWidth, borderColor),
+         new javax.swing.border.EmptyBorder(padding, padding, padding, padding)
+      ));
+
+      addMouseListener(new java.awt.event.MouseAdapter() {
          public void mouseEntered(java.awt.event.MouseEvent evt) {
             setFont(hoverFont);
          }

@@ -2,14 +2,14 @@ package UserInterface.MenuPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.*;
-import java.awt.GridBagConstraints;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import Notifications.Notification;
 import Notifications.NotificationCenter;
@@ -20,6 +20,7 @@ import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
 import UserInterface.UIComponents.BackgroundPanel;
+import UserInterface.UIComponents.DualRowPanel;
 import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputPanel;
@@ -30,15 +31,27 @@ import UserInterface.UIComponents.WrapperPanel;
 // TODO Spiel starten Knopf deaktivieren, wenn der andere Verbindung wieder abbricht
 
 public class CreateNetworkGamePanel extends BackgroundPanel implements Notification {
-   private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = -4350076887571572645L;
+
+	private Menu parent;
 
    private JButton startGameButton;
 
-   public CreateNetworkGamePanel(Menu parent, GameType type) {
-      NotificationCenter.addObserver("ClientConnected", this);
+	public CreateNetworkGamePanel(Menu parent, GameType type) {
+		this.parent = parent;
+		setup();
+		fillWithContent();
 
-      // fill with content
-      WrapperPanel wrapperPanel = new WrapperPanel();
+		parent.createGame(4, type);
+	}
+
+	private void setup() {
+		NotificationCenter.addObserver("ClientConnected", this);
+	}
+
+	private void fillWithContent() {
+      JPanel wrapperPanel = new WrapperPanel();
 
       // IP Address heading
       JLabel ipAddressLabel = new HeaderLabel();
@@ -49,60 +62,43 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
          e1.printStackTrace();
       }
 
-      // field size input
-      InputPanel sizeInputPanel = new InputPanel("Spielfeldgröße", false);
+      // Field size input and auto ship button
+      JPanel sizeRow = new DualRowPanel();
+      InputPanel sizeInputPanel = new InputPanel("Spielfeldgröße");
       InputTextField sizeInput = new InputTextField();
       sizeInputPanel.add(sizeInput);
-      GridBagConstraints sizeInputPanelConstraints = doubleFirstConstraints;
-      sizeInputPanelConstraints.gridy = 0;
-      wrapperPanel.add(sizeInputPanel, sizeInputPanelConstraints);
+      JButton autoShipButton = new InputButton("Bevölkern");
+      sizeRow.add(sizeInputPanel);
+      sizeRow.add(autoShipButton);
 
-      // auto ship button
-      JButton autoShipButton = new InputButton("Bevölkern", false);
-      GridBagConstraints autoShipButtonConstraints = doubleSecondConstraints;
-      autoShipButtonConstraints.gridy = 0;
-      wrapperPanel.add(autoShipButton, autoShipButtonConstraints);
-
-      // ship size 2 input
-      InputPanel ship2InputPanel = new InputPanel("2er Schiffe", false);
+      // Ship size inputs
+      JPanel shipsInputRow1 = new DualRowPanel();
+      InputPanel ship2InputPanel = new InputPanel("2er Schiffe");
       InputTextField ship2Input = new InputTextField();
       ship2InputPanel.add(ship2Input);
-      GridBagConstraints ship2InputPanelConstraints = doubleFirstConstraints;
-      ship2InputPanelConstraints.gridy = 1;
-      wrapperPanel.add(ship2InputPanel, ship2InputPanelConstraints);
-
-      // ship size 3 input
-      InputPanel ship3InputPanel = new InputPanel("3er Schiffe", false);
+      InputPanel ship3InputPanel = new InputPanel("3er Schiffe");
       InputTextField ship3Input = new InputTextField();
       ship3InputPanel.add(ship3Input);
-      GridBagConstraints ship3InputPanelConstraints = doubleSecondConstraints;
-      ship3InputPanelConstraints.gridy = 1;
-      wrapperPanel.add(ship3InputPanel, ship3InputPanelConstraints);
+      shipsInputRow1.add(ship2InputPanel);
+      shipsInputRow1.add(ship3InputPanel);
 
-      // ship size 4 input
-      InputPanel ship4InputPanel = new InputPanel("4er Schiffe", false);
+      JPanel shipsInputRow2 = new DualRowPanel();
+      InputPanel ship4InputPanel = new InputPanel("4er Schiffe");
       InputTextField ship4Input = new InputTextField();
       ship4InputPanel.add(ship4Input);
-      GridBagConstraints ship4InputPanelConstraints = doubleFirstConstraints;
-      ship4InputPanelConstraints.gridy = 2;
-      wrapperPanel.add(ship4InputPanel, ship4InputPanelConstraints);
-
-      // ship size 5 input
-      InputPanel ship5InputPanel = new InputPanel("5er Schiffe", false);
+      InputPanel ship5InputPanel = new InputPanel("5er Schiffe");
       InputTextField ship5Input = new InputTextField();
       ship5InputPanel.add(ship5Input);
-      GridBagConstraints ship5InputPanelConstraints = doubleSecondConstraints;
-      ship5InputPanelConstraints.gridy = 2;
-      wrapperPanel.add(ship5InputPanel, ship5InputPanelConstraints);
+      shipsInputRow2.add(ship4InputPanel);
+      shipsInputRow2.add(ship5InputPanel);
 
       // auto fill ships
       autoShipButton.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            int[] ships = new int[4];
-            Arrays.fill(ships, 0);
-
             if (SettingsHandler.validateSizeInput(sizeInput, sizeInputPanel)) {
+               int[] ships = new int[4];
+               Arrays.fill(ships, 0);
                ships = Game.getShipsLeft(sizeInput.getIntValue(), ships);
 
                ship2Input.setValue(ships[0]);
@@ -114,7 +110,8 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
       });
 
       // Start game button
-      startGameButton = new InputButton("Spiel starten", true);
+      startGameButton = new InputButton("Spiel starten");
+      startGameButton.setEnabled(false);
       startGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             InputTextField[] inputTextFields = {sizeInput, ship2Input, ship3Input, ship4Input, ship5Input};
@@ -135,38 +132,34 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
             }
          }
       });
-      GridBagConstraints startGameButtonConstraints = defaultConstraints;
-      startGameButtonConstraints.gridy = 3;
-      wrapperPanel.add(startGameButton, startGameButtonConstraints);
 
-      // wrapperPanel
-      wrapperPanel.setLocation(170, 113);
-      this.add(wrapperPanel);
+      // Alles in Wrapper einfügen
+      wrapperPanel.add(ipAddressLabel);
+      wrapperPanel.add(sizeRow);
+      wrapperPanel.add(shipsInputRow1);
+      wrapperPanel.add(shipsInputRow2);
+      wrapperPanel.add(startGameButton);
 
       // Menu Button
       JButton menuButton = new MenuButton();
       menuButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
-            parent.exitGame(GameExitStatus.GAME_DISCARDED);
+            parent.exitGame(GameExitStatus.GAME_DISCARDED);;
             System.out.println(event.getActionCommand());
             parent.showMenu();
          }
       });
-      this.add(menuButton);
 
-      // recenter wrapperPanel
-      this.addComponentListener(new ComponentAdapter() {
-         public void componentResized(ComponentEvent e) {
-            wrapperPanel.setLocation(e.getComponent().getWidth() / 2 - wrapperPanel.getWidth() / 2, e.getComponent().getHeight() / 2 - wrapperPanel.getHeight() / 2);
-         }
-      });
+      // add all to window
+      add(menuButton);
+      add(Box.createGlue());
+      add(wrapperPanel);
+      add(Box.createGlue());
+	}
 
-      parent.createGame(4, type);
-   }
-
-   public void processNotification(String type, Object object) {
-      if (type.equals("ClientConnected")) {
-         startGameButton.setEnabled(true);
-      }
-   }
+	public void processNotification(String type, Object object) {
+		if (type.equals("ClientConnected")) {
+			startGameButton.setEnabled(true);
+		}
+	}
 }

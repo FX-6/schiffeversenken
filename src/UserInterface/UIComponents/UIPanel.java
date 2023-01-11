@@ -1,9 +1,9 @@
 package UserInterface.UIComponents;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import java.awt.Component;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import Schiffeversenken.SettingsHandler;
@@ -29,26 +29,14 @@ public class UIPanel extends JPanel {
    protected Color buttonFontColor = Color.decode(SettingsHandler.getSettingString("color.button.foreground"));
    protected Color errorColor = Color.decode(SettingsHandler.getSettingString("color.error"));
 
-   public GridBagConstraints defaultConstraints = new GridBagConstraints();
-   public GridBagConstraints doubleFirstConstraints = new GridBagConstraints();
-   public GridBagConstraints doubleSecondConstraints = new GridBagConstraints();
-
    public UIPanel() {
       super();
+      setup();
+   }
 
-      defaultConstraints.gridx = 0;
-      defaultConstraints.gridwidth = 2;
-      defaultConstraints.gridheight = 1;
-      defaultConstraints.insets = new Insets(0, 0, padding, 0);
-
-      doubleFirstConstraints.gridx = 0;
-      doubleFirstConstraints.gridwidth = 1;
-      doubleFirstConstraints.gridheight = 1;
-      doubleFirstConstraints.insets = new Insets(0, 0, padding, 0);
-
-      doubleSecondConstraints.gridx = 1;
-      doubleSecondConstraints.gridwidth = 1;
-      doubleSecondConstraints.gridheight = 1;
-      doubleSecondConstraints.insets = new Insets(0, padding, padding, 0);
+   private void setup() {
+      setBackground(backgroundColor);
+      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+      setAlignmentX(Component.LEFT_ALIGNMENT);
    }
 }

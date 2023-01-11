@@ -29,6 +29,8 @@ public class Ship {
 	// Getter und Setter nur für Save/Load
 	public int[] getDamage() {return damage;}
 	
+	public void setDamage(int[] damage) {this.damage = damage;}
+	
 
 	
 	

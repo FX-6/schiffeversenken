@@ -12,8 +12,8 @@ public class Point {
 	
 	
 	
-	public final int x;
-	public final int y;
+	public final int x;			// SPALTE
+	public final int y;			// ZEILE
 	
 	public Point(int x, int y) {
 		this.x = x;

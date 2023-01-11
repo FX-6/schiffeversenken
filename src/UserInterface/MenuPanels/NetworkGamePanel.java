@@ -4,13 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.*;
-import java.awt.GridBagConstraints;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Notifications.Notification;
@@ -20,6 +19,7 @@ import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
 import UserInterface.UIComponents.BackgroundPanel;
+import UserInterface.UIComponents.DualRowPanel;
 import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputPanel;
@@ -28,29 +28,41 @@ import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
 public class NetworkGamePanel extends BackgroundPanel implements Notification {
-   private static final long serialVersionUID = 1L;
 
-   private Menu parent;
-   private InputPanel ipInputPanel;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1743610007354983145L;
 
-   private JTextField ipInput;
-   private JButton joinGameAsHumanButton;
-   private JButton joinGameAsAiButton;
-   private JButton createGameAsHumanButton;
-   private JButton createGameAsAiButton;
-   private JButton menuButton;
+	private Menu parent;
+	private GameType type;
 
-   public NetworkGamePanel(Menu parent, GameType type) {
-      this.parent = parent;
-      // setup
-      NotificationCenter.addObserver("ServerConnected", this);
-      NotificationCenter.addObserver("ConnectionFailed", this);
+	private InputPanel ipInputPanel;
 
-      // fill with content
-      WrapperPanel wrapperPanel = new WrapperPanel();
+	private JTextField ipInput;
+	private JButton joinGameAsHumanButton;
+	private JButton joinGameAsAiButton;
+	private JButton createGameAsHumanButton;
+	private JButton createGameAsAiButton;
+	private JButton menuButton;
+
+	public NetworkGamePanel(Menu parent, GameType type) {
+		this.parent = parent;
+		this.type = type;
+		setup();
+		fillWithContent();
+	}
+
+	private void setup() {
+		NotificationCenter.addObserver("ServerConnected", this);
+		NotificationCenter.addObserver("ConnectionFailed", this);
+	}
+
+	private void fillWithContent() {
+      JPanel wrapperPanel = new WrapperPanel();
 
       // IP input
-      ipInputPanel = new InputPanel("Host IP", true);
+      ipInputPanel = new InputPanel("Host IP");
       ipInput = new InputTextField();
       ipInput.addKeyListener(new KeyListener() {
          @Override
@@ -74,18 +86,9 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
          public void keyReleased(KeyEvent e) {}
       });
       ipInputPanel.add(ipInput);
-      GridBagConstraints sizeInputPanelConstraints = defaultConstraints;
-      sizeInputPanelConstraints.gridy = 0;
-      wrapperPanel.add(ipInputPanel, sizeInputPanelConstraints);
 
-      // join game as header
-      JLabel joinGameAsLabel = new HeaderLabel("Spiel beitreten als");
-      GridBagConstraints joinGameAsLabelConstraints = defaultConstraints;
-      joinGameAsLabelConstraints.gridy = 1;
-      wrapperPanel.add(joinGameAsLabel, joinGameAsLabelConstraints);
-
-      // join game as human button
-      joinGameAsHumanButton = new InputButton("Mensch", false);
+      // Join game as human button
+      joinGameAsHumanButton = new InputButton("Mensch");
       joinGameAsHumanButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             if (SettingsHandler.validateIP(ipInput.getText())) {
@@ -99,12 +102,9 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
             }
          }
       });
-      GridBagConstraints joinGameAsHumanButtonConstraints = doubleFirstConstraints;
-      joinGameAsHumanButtonConstraints.gridy = 2;
-      wrapperPanel.add(joinGameAsHumanButton, joinGameAsHumanButtonConstraints);
 
-      // join game as ai button
-      joinGameAsAiButton = new InputButton("Bot", false);
+      // Join game as ai button
+      joinGameAsAiButton = new InputButton("Bot");
       joinGameAsAiButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             if (SettingsHandler.validateIP(ipInput.getText())) {
@@ -118,43 +118,39 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
             }
          }
       });
-      GridBagConstraints joinGameAsAiButtonConstraints = doubleSecondConstraints;
-      joinGameAsAiButtonConstraints.gridy = 2;
-      wrapperPanel.add(joinGameAsAiButton, joinGameAsAiButtonConstraints);
 
-      // create game as header
-      JLabel createGameAsLabel = new HeaderLabel("Spiel erstellen als");
-      GridBagConstraints createGameAsLabelConstraints = defaultConstraints;
-      createGameAsLabelConstraints.gridy = 3;
-      wrapperPanel.add(createGameAsLabel, createGameAsLabelConstraints);
-
-      // create game as human button
-      createGameAsHumanButton = new InputButton("Mensch", false);
+      // Create game as human button
+      createGameAsHumanButton = new InputButton("Mensch");
       createGameAsHumanButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             System.out.println(e.getActionCommand());
             parent.showCreateNetworkGame(GameType.NETWORK_SERVER);
          }
       });
-      GridBagConstraints createGameAsHumanButtonConstraints = doubleFirstConstraints;
-      createGameAsHumanButtonConstraints.gridy = 4;
-      wrapperPanel.add(createGameAsHumanButton, createGameAsHumanButtonConstraints);
 
-      // create game as ai button
-      createGameAsAiButton = new InputButton("Bot", false);
+      // Create game as ai button
+      createGameAsAiButton = new InputButton("Bot");
       createGameAsAiButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             System.out.println(e.getActionCommand());
             parent.showCreateNetworkGame(GameType.NETWORK_AI_SERVER);
          }
       });
-      GridBagConstraints createGameAsAiButtonConstraints = doubleSecondConstraints;
-      createGameAsAiButtonConstraints.gridy = 4;
-      wrapperPanel.add(createGameAsAiButton, createGameAsAiButtonConstraints);
 
-      // wrapperPanel
-      wrapperPanel.setLocation(170, 68);
-      this.add(wrapperPanel);
+      // Join game button rows
+      JPanel joinGameButtonRow = new DualRowPanel();
+      joinGameButtonRow.add(joinGameAsHumanButton);
+      joinGameButtonRow.add(joinGameAsAiButton);
+      JPanel createGameButtonRow = new DualRowPanel();
+      createGameButtonRow.add(createGameAsHumanButton);
+      createGameButtonRow.add(createGameAsAiButton);
+
+      // Add all to wrapper
+      wrapperPanel.add(ipInputPanel);
+      wrapperPanel.add(new HeaderLabel("Spiel beitreten als"));
+      wrapperPanel.add(joinGameButtonRow);
+      wrapperPanel.add(new HeaderLabel("Spiel erstellen als"));
+      wrapperPanel.add(createGameButtonRow);
 
       // MenuButton
       menuButton = new MenuButton();
@@ -164,57 +160,55 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
             parent.showMenu();
          }
       });
-      this.add(menuButton);
 
-      // recenter wrapperPanel
-      this.addComponentListener(new ComponentAdapter() {
-         public void componentResized(ComponentEvent e) {
-            wrapperPanel.setLocation(e.getComponent().getWidth() / 2 - wrapperPanel.getWidth() / 2, e.getComponent().getHeight() / 2 - wrapperPanel.getHeight() / 2);
-         }
-      });
+      // add all to window
+      add(menuButton);
+      add(Box.createGlue());
+      add(wrapperPanel);
+      add(Box.createGlue());
    }
 
-   private void animateConnecting() {
-      menuButton.setEnabled(false);
-      joinGameAsHumanButton.setEnabled(false);
-      createGameAsHumanButton.setEnabled(false);
-      ipInput.setEnabled(false);
+	private void animateConnecting() {
+		menuButton.setEnabled(false);
+		joinGameAsHumanButton.setEnabled(false);
+		createGameAsHumanButton.setEnabled(false);
+		ipInput.setEnabled(false);
 
-      String text = ipInput.getText();
+		String text = ipInput.getText();
 
-      ipInput.setText(text + " ");
+		ipInput.setText(text + " ");
 
-      Timer timer = new Timer();
-      TimerTask task = new TimerTask() {
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask() {
 
-         @Override
-         public void run() {
-            if (ipInput.getText().equals("")) {
-               ipInput.setText(text);
-               timer.cancel();
-               menuButton.setEnabled(true);
-               joinGameAsHumanButton.setEnabled(true);
-               createGameAsHumanButton.setEnabled(true);
-               ipInput.setEnabled(true);
-            }
-            else if (ipInput.getText().equals(text + " ...")) {
-               ipInput.setText(text + " ");
-            }
-            else {
-               ipInput.setText(ipInput.getText() + ".");
-            }
-         }
-      };
-      timer.schedule(task, 0, 250);
-   }
+			@Override
+			public void run() {
+				if (ipInput.getText().equals("")) {
+					ipInput.setText(text);
+					timer.cancel();
+					menuButton.setEnabled(true);
+					joinGameAsHumanButton.setEnabled(true);
+					createGameAsHumanButton.setEnabled(true);
+					ipInput.setEnabled(true);
+				}
+				else if (ipInput.getText().equals(text + " ...")) {
+					ipInput.setText(text + " ");
+				}
+				else {
+					ipInput.setText(ipInput.getText() + ".");
+				}
+			}
+		};
+		timer.schedule(task, 0, 250);
+	}
 
-   public void processNotification(String type, Object object) {
-      if (type.equals("ServerConnected")) {
-         parent.openGameWindow();
-      }
-      if (type.equals("ConnectionFailed")) {
-         ipInput.setText("");
-         ipInputPanel.setError("Verbindung fehlgeschlagen");
-      }
-   }
+	public void processNotification(String type, Object object) {
+		if (type.equals("ServerConnected")) {
+			parent.openGameWindow();
+		}
+		if (type.equals("ConnectionFailed")) {
+			ipInput.setText("");
+			ipInputPanel.setError("Verbindung fehlgeschlagen");
+		}
+	}
 }

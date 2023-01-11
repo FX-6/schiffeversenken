@@ -2,16 +2,19 @@ package UserInterface.MenuPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.*;
-import java.awt.GridBagConstraints;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
 import UserInterface.UIComponents.BackgroundPanel;
+import UserInterface.UIComponents.DualRowPanel;
+import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.InputComboBox;
 import UserInterface.UIComponents.InputPanel;
@@ -19,78 +22,65 @@ import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
+// TODO Overflow scroll (Felix)
+
 public class SettingsPanel extends BackgroundPanel {
-   private static final long serialVersionUID = 1L;
 
-   Menu parent;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7953362830551040945L;
 
-   public SettingsPanel(Menu parent) {
-      this.parent = parent;
+	Menu parent;
 
-      // fill with content
-      WrapperPanel wrapperPanel = new WrapperPanel();
+	public SettingsPanel(Menu parent) {
+		this.parent = parent;
+		setup();
+		fillWithContent();
+	}
 
-      // theme input
-      InputPanel themeInputPanel = new InputPanel("Themename", true);
-      JComboBox<String> themeInput = new InputComboBox<String>(SettingsHandler.getThemes());
-      themeInputPanel.add(themeInput);
-      GridBagConstraints themeInputPanelConstraints = defaultConstraints;
-      themeInputPanelConstraints.gridy = 0;
-      wrapperPanel.add(themeInputPanel, themeInputPanelConstraints);
+	private void setup() {}
 
-      // background color input
-      InputPanel backgroundInputPanel = new InputPanel("Hintergrundfarbe", false);
+	private void fillWithContent() {
+      JPanel wrapperPanel = new WrapperPanel();
+
+      JLabel colorHeader = new HeaderLabel("Farben");
+
+      JPanel colorsFirstRow = new DualRowPanel();
+      InputPanel backgroundInputPanel = new InputPanel("Hintergrund");
       JTextField backgroundInput = new InputTextField();
       backgroundInput.setText(SettingsHandler.getSettingString("color.background"));
       backgroundInputPanel.add(backgroundInput);
-      GridBagConstraints backgroundInputPanelConstraints = doubleFirstConstraints;
-      backgroundInputPanelConstraints.gridy = 1;
-      wrapperPanel.add(backgroundInputPanel, backgroundInputPanelConstraints);
-
-      // font color input
-      InputPanel foregroundInputPanel = new InputPanel("Schriftfarbe", false);
+      InputPanel foregroundInputPanel = new InputPanel("Schrift");
       JTextField foregroundInput = new InputTextField();
       foregroundInput.setText(SettingsHandler.getSettingString("color.foreground"));
       foregroundInputPanel.add(foregroundInput);
-      GridBagConstraints foregroundInputPanelConstraints = doubleSecondConstraints;
-      foregroundInputPanelConstraints.gridy = 1;
-      wrapperPanel.add(foregroundInputPanel, foregroundInputPanelConstraints);
+      colorsFirstRow.add(backgroundInputPanel);
+      colorsFirstRow.add(foregroundInputPanel);
 
-      // button background color input
-      InputPanel buttonBackgroundInputPanel = new InputPanel("Hgfarbe (Button)", false);
+      JPanel colorsSecondRow = new DualRowPanel();
+      InputPanel buttonBackgroundInputPanel = new InputPanel("Button - Hintergrund");
       JTextField buttonBackgroundInput = new InputTextField();
       buttonBackgroundInput.setText(SettingsHandler.getSettingString("color.button.background"));
       buttonBackgroundInputPanel.add(buttonBackgroundInput);
-      GridBagConstraints buttonBackgroundInputPanelConstraints = doubleFirstConstraints;
-      buttonBackgroundInputPanelConstraints.gridy = 2;
-      wrapperPanel.add(buttonBackgroundInputPanel, buttonBackgroundInputPanelConstraints);
-
-      // button font color input
-      InputPanel buttonForegroundInputPanel = new InputPanel("Schriftfarbe (Button)", false);
+      InputPanel buttonForegroundInputPanel = new InputPanel("Button - Schrift");
       JTextField buttonForegroundInput = new InputTextField();
       buttonForegroundInput.setText(SettingsHandler.getSettingString("color.button.foreground"));
       buttonForegroundInputPanel.add(buttonForegroundInput);
-      GridBagConstraints buttonForegroundInputPanelConstraints = doubleSecondConstraints;
-      buttonForegroundInputPanelConstraints.gridy = 2;
-      wrapperPanel.add(buttonForegroundInputPanel, buttonForegroundInputPanelConstraints);
+      colorsSecondRow.add(buttonBackgroundInputPanel);
+      colorsSecondRow.add(buttonForegroundInputPanel);
 
-      // border color input
-      InputPanel borderInputPanel = new InputPanel("Borderfarbe", false);
+      JPanel colorsThirdRow = new DualRowPanel();
+      InputPanel borderInputPanel = new InputPanel("Border");
       JTextField borderInput = new InputTextField();
       borderInput.setText(SettingsHandler.getSettingString("color.border"));
       borderInputPanel.add(borderInput);
-      GridBagConstraints borderInputPanelConstraints = doubleFirstConstraints;
-      borderInputPanelConstraints.gridy = 3;
-      wrapperPanel.add(borderInputPanel, borderInputPanelConstraints);
-
-      // error color input
-      InputPanel errorInputPanel = new InputPanel("Errorfarbe", false);
+      InputPanel errorInputPanel = new InputPanel("Error");
       JTextField errorInput = new InputTextField();
       errorInput.setText(SettingsHandler.getSettingString("color.error"));
       errorInputPanel.add(errorInput);
-      GridBagConstraints errorInputPanelConstraints = doubleSecondConstraints;
-      errorInputPanelConstraints.gridy = 3;
-      wrapperPanel.add(errorInputPanel, errorInputPanelConstraints);
+      colorsThirdRow.add(borderInputPanel);
+      colorsThirdRow.add(errorInputPanel);
 
       // save button
       JButton saveButton = new InputButton("Speichern", true);
@@ -139,15 +129,11 @@ public class SettingsPanel extends BackgroundPanel {
             }
          }
       });
-      GridBagConstraints saveButtonConstraints = defaultConstraints;
-      saveButtonConstraints.gridy = 5;
-      wrapperPanel.add(saveButton, saveButtonConstraints);
 
       // wrapperPanel
       wrapperPanel.setLocation(170, 68);
       this.add(wrapperPanel);
 
-      // menu button
       JButton menuButton = new MenuButton();
       menuButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
@@ -155,13 +141,11 @@ public class SettingsPanel extends BackgroundPanel {
             parent.showMenu();
          }
       });
-      this.add(menuButton);
 
-      // recenter wrapperPanel
-      this.addComponentListener(new ComponentAdapter() {
-         public void componentResized(ComponentEvent e) {
-            wrapperPanel.setLocation(e.getComponent().getWidth() / 2 - wrapperPanel.getWidth() / 2, e.getComponent().getHeight() / 2 - wrapperPanel.getHeight() / 2);
-         }
-      });
-   }
+		// add all to window
+      add(menuButton);
+      add(Box.createGlue());
+      add(wrapperPanel);
+      add(Box.createGlue());
+	}
 }
