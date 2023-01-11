@@ -44,7 +44,7 @@ public class Menu extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
 		setMinimumSize(getSize());
-		setSize(700, 400);
+		setSize(900, 650);
 		setLocationRelativeTo(null);
 	}
 

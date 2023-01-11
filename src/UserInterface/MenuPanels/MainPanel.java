@@ -2,11 +2,11 @@ package UserInterface.MenuPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.awt.GridBagConstraints;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import Schiffeversenken.GameType;
 import UserInterface.Menu;
@@ -16,68 +16,79 @@ import UserInterface.UIComponents.InputButton;
 import UserInterface.UIComponents.WrapperPanel;
 
 public class MainPanel extends BackgroundPanel {
+   private static final long serialVersionUID = 1L;
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 4275588428062437239L;
+   Menu parent;
 
-	Menu parent;
-
-	public MainPanel(Menu parent) {
+   public MainPanel(Menu parent) {
       this.parent = parent;
-		setup();
-		fillWithContent();
-	}
 
-	private void setup() {}
+      // fill with content
+      WrapperPanel wrapperPanel = new WrapperPanel();
 
-	private void fillWithContent() {
-      JPanel wrapperPanel = new WrapperPanel();
+      // title
+      JLabel headerLabel = new HeaderLabel("Schiffeversenken");
+      GridBagConstraints headerLabelConstraints = defaultConstraints;
+      headerLabelConstraints.gridy = 0;
+      wrapperPanel.add(headerLabel, headerLabelConstraints);
 
-      JLabel header = new HeaderLabel("Schiffeversenken");
-
-      JButton singlePlayer = new InputButton("Einzelspieler");
-		singlePlayer.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				System.out.println(event.getActionCommand());
+      // start singleplayer
+      JButton singlePlayerButton = new InputButton("Einzelspieler", true);
+      GridBagConstraints singlePlayerButtonConstraints = defaultConstraints;
+      singlePlayerButtonConstraints.gridy = 1;
+      singlePlayerButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent event) {
+            System.out.println(event.getActionCommand());
             parent.showCreateSingleplayerGame(GameType.AI);
-			}
-		});
+         }
+      });
+      wrapperPanel.add(singlePlayerButton, singlePlayerButtonConstraints);
 
-		JButton multiPlayerNetwork = new InputButton("Mehrspieler");
-		multiPlayerNetwork.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				System.out.println(event.getActionCommand());
-				parent.showNetworkGame(GameType.NETWORK_CLIENT);
-			}
-		});
+      // start multiplayer
+      JButton multiPlayerNetworkButton = new InputButton("Mehrspieler", true);
+      GridBagConstraints multiPlayerNetworkButtonConstraints = defaultConstraints;
+      multiPlayerNetworkButtonConstraints.gridy = 2;
+      multiPlayerNetworkButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent event) {
+            System.out.println(event.getActionCommand());
+            parent.showNetworkGame(GameType.NETWORK_CLIENT);
+         }
+      });
+      wrapperPanel.add(multiPlayerNetworkButton, multiPlayerNetworkButtonConstraints);
 
-		JButton description = new InputButton("Spielanleitung");
-		description.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				System.out.println(event.getActionCommand());
+      // go to description
+      JButton descriptionButton = new InputButton("Spielanleitung", true);
+      GridBagConstraints descriptionButtonConstraints = defaultConstraints;
+      descriptionButtonConstraints.gridy = 3;
+      descriptionButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent event) {
+            System.out.println(event.getActionCommand());
             parent.showTutorial();
-			}
-		});
+         }
+      });
+      wrapperPanel.add(descriptionButton, descriptionButtonConstraints);
 
-		JButton settings = new InputButton("Einstellungen");
-		settings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				System.out.println(event.getActionCommand());
-				parent.showSettings();
-			}
-		});
+      // go to settings
+      JButton settingsButton = new InputButton("Einstellungen", true);
+      GridBagConstraints settingsButtonConstraints = defaultConstraints;
+      settingsButtonConstraints.gridy = 4;
+      settingsButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent event) {
+            System.out.println(event.getActionCommand());
+            parent.showSettings();
+         }
+      });
+      wrapperPanel.add(settingsButton, settingsButtonConstraints);
 
-      wrapperPanel.add(header);
-      wrapperPanel.add(singlePlayer);
-      wrapperPanel.add(multiPlayerNetwork);
-      wrapperPanel.add(description);
-      wrapperPanel.add(settings);
+      // wrapperPanel
+      wrapperPanel.setLocation(170, 68);
+      this.add(wrapperPanel);
 
-      // add all to window
-      add(Box.createGlue());
-      add(wrapperPanel);
-      add(Box.createGlue());
-	}
+      // recenter wrapperPanel
+      this.addComponentListener(new ComponentAdapter() {
+         public void componentResized(ComponentEvent e) {
+            wrapperPanel.setLocation(e.getComponent().getWidth() / 2 - wrapperPanel.getWidth() / 2, e.getComponent().getHeight() / 2 - wrapperPanel.getHeight() / 2);
+         }
+      });
+   }
 }

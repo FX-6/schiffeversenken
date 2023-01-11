@@ -13,7 +13,7 @@ public class UILabel extends JLabel {
    protected int padding = 20;
 
    protected int itemWidth = 500;
-   protected int itemHeigth = 80;
+   protected int itemHeigth = 70;
 
    protected int borderRadius = SettingsHandler.getSettingInt("border.radius");
    protected int borderWidth = SettingsHandler.getSettingInt("border.width");
@@ -36,6 +36,6 @@ public class UILabel extends JLabel {
    }
 
    private void setup() {
-      setForeground(fontColor);
+      this.setForeground(fontColor);
    }
 }
