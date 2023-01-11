@@ -170,11 +170,12 @@ public class SettingsHandler {
          invalidInputs++;
       }
       try {
-         inputs[5] = inputFields[5].getIntValue();
+         inputs[0] = inputFields[0].getIntValue();
       } catch (NumberFormatException e) {
          inputPanels[5].setError("Invalider Input");
          invalidInputs++;
       }
+      
 
       if (invalidInputs > 0) { return false; }
 
