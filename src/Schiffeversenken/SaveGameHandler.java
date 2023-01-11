@@ -4,8 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import Notifications.NotificationCenter;
 
 public class SaveGameHandler {
 
@@ -28,7 +31,7 @@ public class SaveGameHandler {
 	
 	// Um ein neues Spiel zu speichern
 	public SaveGameHandler(String id, String name) throws IOException {
-		String fileName = id + "." + name + ".json";
+		String fileName = id + "#" + name + ".json";
 		
 		file = new File(SettingsHandler.saveGamesPath + File.separator + fileName);
 		
@@ -86,7 +89,7 @@ public class SaveGameHandler {
 			attributes[2] = writeAttribute("orientation", ship.getOrientation(), "\t");
 			attributes[3] = writeArray("damage", ship.getDamage(), "\t");
 			
-			shipList2[list1.indexOf(ship)] = writeObject(attributes, "\t");
+			shipList2[list2.indexOf(ship)] = writeObject(attributes, "\t");
 		}
 		player2[3] = writeArray("ships", shipList2, "\t", false);
 		
@@ -112,13 +115,141 @@ public class SaveGameHandler {
 		File file = null;
 		
 		for (String string : SettingsHandler.getSavedGames()) {
-			if (string.split(".")[0].equals(id)) {
+			if (string.startsWith(".")) continue;
+			if (string.split("#")[0].equals(id)) {
 				file = new File(SettingsHandler.saveGamesPath + File.separator + string);
 				break;
 			}
 		}
-		
+				
 		Scanner reader = new Scanner(file);
+		
+		int objectDepth = 0;
+		
+		int object = 0;					// 1 = Game, 2 = Player1, 3 = Player2
+		
+		while (reader.hasNextLine()) {
+			String line = reader.nextLine().trim();
+			//System.out.println(line);
+			
+			if (line.contains("{")) {
+				objectDepth++;
+				if (objectDepth == 1) {
+					object++;
+				}
+			}
+			if (line.contains("}")) objectDepth--;
+
+			
+			if (line.contains(":")) {
+				String key = line.split(":")[0].replace("\"", "");
+				String value = line.split(":")[1].replace(",", "");
+				
+				
+				// pitchSize
+				if (key.equals("pitchSize")) {
+					Main.currentGame.setPitchSize(Integer.parseInt(value));
+				}
+				
+				// ships of game
+				else if (key.equals("ships") && object == 1) {
+					int[] ships = new int[4];
+					ships[0] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+					ships[1] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+					ships[2] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+					ships[3] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+					
+					Main.currentGame.setShips(ships);
+				}
+				
+				else if (key.equals("isMyTurn")) {
+					if (object == 2) {
+						Main.currentGame.getPlayer1().setMyTurn(Boolean.parseBoolean(value));
+					}
+					else if (object == 3) {
+						Main.currentGame.getPlayer2().setMyTurn(Boolean.parseBoolean(value));
+					}
+				}
+				
+				else if (key.equals("shipsDestroyed")) {
+					if (object == 2) {
+						Main.currentGame.getPlayer1().setShipsDestroyed(Integer.parseInt(value));
+					}
+					else if (object == 3) {
+						Main.currentGame.getPlayer2().setShipsDestroyed(Integer.parseInt(value));
+					}
+				}
+				
+				else if (key.equals("pointsShot")) {
+					int pitchSize = Main.currentGame.getPitchSize();
+					int[][] shots = new int[pitchSize][pitchSize];
+					
+					for (int x = 0; x < pitchSize; x++) {
+						reader.nextLine();
+						for (int y = 0; y < pitchSize; y++) {
+							shots[x][y] = Integer.parseInt(reader.nextLine().trim().substring(0, 1));
+						}
+						reader.nextLine();
+					}
+					
+					if (object == 2) {
+						Main.currentGame.getPlayer1().setPointsShot(shots);
+					}
+					else if (object == 3) {
+						Main.currentGame.getPlayer2().setPointsShot(shots);
+					}
+				}
+				
+				else if (key.equals("ships") && object > 1) {
+					int numberOfShips = Main.currentGame.getNumberOfShips(2) + Main.currentGame.getNumberOfShips(3) + Main.currentGame.getNumberOfShips(4) + Main.currentGame.getNumberOfShips(5);
+					
+					List<Ship> ships = new ArrayList<Ship>();
+					
+					for (int i = 0; i < numberOfShips; i++) {
+						reader.nextLine();
+						
+						String[] coords = reader.nextLine().trim().split(":")[1].replace("\"", "").split(",");
+						Point rootPoint = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
+						
+						int length = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));
+						int orientation = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));
+						
+						reader.nextLine();
+						
+						int[] damage = new int[length];
+						for (int j = 0; j < length; j++) {
+							damage[j] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+						}
+						
+						Ship ship = new Ship(length, orientation);
+						ship.setRootPoint(rootPoint);
+						ship.setDamage(damage);
+						
+						ships.add(ship);
+						
+						System.out.println(ships.size());
+						
+						reader.nextLine();
+						reader.nextLine();
+					}
+					
+					if (object == 2) {
+						Main.currentGame.getPlayer1().setShips(ships);
+					}
+					else if (object == 3) {
+						Main.currentGame.getPlayer2().setShips(ships);
+					}
+					
+				}
+				
+				System.out.println(objectDepth + "\t" + object + "\t -> " + line);
+				
+			}
+			
+		}
+		
+		NotificationCenter.sendNotification("GameLoaded", null);				// Für UI zum aktualisieren
+		
 	}
 	
 	
