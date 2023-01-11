@@ -40,6 +40,13 @@ public abstract class Player {
 	public int[][] getPointsShot() {return this.pointsShot;}
 	public List<Ship> getShipList() {return ships;}
 	
+	public void setShipsDestroyed(int amount) {this.shipsDestroyed = amount;}
+	public void setPointsShot(int[][] shots) {this.pointsShot = shots;}
+	public void setShips(List<Ship> ships) {this.ships = ships;}
+	
+	
+	
+	
 	
 	public void refreshPointsShot() {
 		this.pointsShot = new int[game.getPitchSize()][game.getPitchSize()];
@@ -87,22 +94,22 @@ public abstract class Player {
 	
 	// Wird nur von HumanPlayer und AIPlayer benötigt, ist der Einfachheit halber aber hier implementiert!
 	
-	public boolean placeShipAt(Ship ship, Point point) {	
+	public boolean placeShipAt(Ship ship, Point point) {			
 		// Ueberpruefen, ob es die Schiffslaenge geben darf
 		if (ship.getLength() < 2 || ship.getLength() > 5) return false;
-		
+				
 		// Ueberpruefen, ob die Orientierung stimmt
 		if (ship.getOrientation() != 0 && ship.getOrientation() != 1) return false;
-		
+				
 		// Ueberpruefen, ob Schiff im Feld (Feld geht von 1 bis game.pitchSize)
 		if (point.x < 1 || point.y < 1) return false;
 		if (ship.getOrientation() == 0) {
-			if (point.x + ship.getLength() > game.getPitchSize() || point.y > game.getPitchSize()) return false;
+			if (point.x + ship.getLength() - 1 > game.getPitchSize() || point.y > game.getPitchSize()) return false;
 		}
-		if (ship.getOrientation() == 1) {
-			if (point.y + ship.getLength() > game.getPitchSize() || point.x > game.getPitchSize()) return false;
+		else if (ship.getOrientation() == 1) {
+			if (point.y + ship.getLength() - 1 > game.getPitchSize() || point.x > game.getPitchSize()) return false;
 		}
-		
+							
 		// Ueberpruefen, ob Schiff mit anderem Schiff kollidiert (inkl. 1 Block Wasser Abstand)
 		Point p = ship.getRootPoint();
 		int countSize = 0;						// Zaehler, wie viele Schiffe dieser Laenge bereits gesetzt sind
