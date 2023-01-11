@@ -11,8 +11,6 @@ import Schiffeversenken.SettingsHandler;
 public class GameMapPanel extends UIPanel {
    private static final long serialVersionUID = 1L;
 
-   private final int imageSize = 100;
-
    private Point prevMouseLocation, windowPosition;
    private double zoomFactor = 1;
 

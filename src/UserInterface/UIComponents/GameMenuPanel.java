@@ -8,8 +8,8 @@ public class GameMenuPanel extends WrapperPanel {
    public GameMenuPanel() {
       super();
 
-      this.itemWidth *= 0.7;
-      this.itemHeigth *= 0.8;
+      this.itemWidth = itemSmallWidth;
+      this.itemHeigth = itemSmallHeigth;
       this.setSize(2 * borderWidth + 2 * padding + this.itemWidth, this.getWidth());
    }
 

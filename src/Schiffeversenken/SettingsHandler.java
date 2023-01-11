@@ -80,7 +80,8 @@ public class SettingsHandler {
       }
 
       settingsValues = new SettingsValues();
-      currentThemePath += getSettingString("theme.path") + File.separator;
+      currentThemePath += getSettingString("settings.theme.path") + File.separator;
+      settingsValues.pullColors();
    }
 
    public static String getSettingString(String name) {
@@ -220,77 +221,156 @@ public class SettingsHandler {
 
 class SettingsValues {
    private String color_background = "#FFFFFF";
-   private String color_font = "#000000";
+   private String color_foreground = "#000000";
    private String color_button_background = "#FFFFFF";
-   private String color_button_font = "#000000";
+   private String color_button_foreground = "#000000";
    private String color_error = "#FF0000";
    private String color_border = "#000000";
-   private String border_width = "2";
-   private String border_radius = "15";
-   private String theme_path = "Default";
+
+   private String settings_image_size = "100";
+   private String settings_fontsize_small = "15";
+   private String settings_fontsize_large = "25";
+   private String settings_items_width = "500";
+   private String settings_items_height = "70";
+   private String settings_items_small_width = "350";
+   private String settings_items_small_height = "55";
+   private String settings_items_padding = "20";
+   private String settings_border_width = "2";
+   private String settings_border_radius = "15";
+   private String settings_theme_path = "Default";
+
+   private String colorsFilePath = "";
    private String settingsFileString = "";
+   private String colorsFileString = "";
 
    public SettingsValues() {
       try {
          File settingsFile = new File(SettingsHandler.settingsFilePath);
-         Scanner fileReader = new Scanner(settingsFile);
-         while (fileReader.hasNextLine()) { settingsFileString += fileReader.nextLine(); }
-         fileReader.close();
+         Scanner settingsFileReader = new Scanner(settingsFile);
+         while (settingsFileReader.hasNextLine()) { settingsFileString += settingsFileReader.nextLine() + "\n"; }
+         settingsFileReader.close();
 
          int posOfColon, firstQuote, secondQuote;
-         String name = "color.background";
+         String name;
+
+         name = "settings.image.size";
          posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
          firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
          secondQuote = settingsFileString.indexOf("\"", firstQuote);
          this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
 
-         name = "color.font";
+         name = "settings.fontsize.small";
          posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
          firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
          secondQuote = settingsFileString.indexOf("\"", firstQuote);
          this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.fontsize.large";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.items.width";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.items.height";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.items.small.width";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.items.small.height";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.items.padding";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.border.width";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.border.radius";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         name = "settings.theme.path";
+         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+
+         this.colorsFilePath = SettingsHandler.themesFolderPath + File.separator + settingsFileString.substring(firstQuote, secondQuote) + File.separator + "colors.json";
+      } catch (FileNotFoundException e) {
+         // Auto-generated catch block
+         e.printStackTrace();
+      }
+   }
+
+   public void pullColors() {
+      try {
+         File colorsFile = new File(this.colorsFilePath);
+         Scanner colorsFileReader = new Scanner(colorsFile);
+         while (colorsFileReader.hasNextLine()) { colorsFileString += colorsFileReader.nextLine() + "\n"; }
+         colorsFileReader.close();
+
+         int posOfColon, firstQuote, secondQuote;
+         String name;
+
+         name = "color.background";
+         posOfColon = colorsFileString.indexOf(":", colorsFileString.indexOf(name));
+         firstQuote = colorsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = colorsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, colorsFileString.substring(firstQuote, secondQuote));
+
+         name = "color.foreground";
+         posOfColon = colorsFileString.indexOf(":", colorsFileString.indexOf(name));
+         firstQuote = colorsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = colorsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, colorsFileString.substring(firstQuote, secondQuote));
 
          name = "color.button.background";
-         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
-         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
-         secondQuote = settingsFileString.indexOf("\"", firstQuote);
-         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+         posOfColon = colorsFileString.indexOf(":", colorsFileString.indexOf(name));
+         firstQuote = colorsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = colorsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, colorsFileString.substring(firstQuote, secondQuote));
 
-         name = "color.button.font";
-         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
-         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
-         secondQuote = settingsFileString.indexOf("\"", firstQuote);
-         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+         name = "color.button.foreground";
+         posOfColon = colorsFileString.indexOf(":", colorsFileString.indexOf(name));
+         firstQuote = colorsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = colorsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, colorsFileString.substring(firstQuote, secondQuote));
 
          name = "color.error";
-         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
-         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
-         secondQuote = settingsFileString.indexOf("\"", firstQuote);
-         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+         posOfColon = colorsFileString.indexOf(":", colorsFileString.indexOf(name));
+         firstQuote = colorsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = colorsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, colorsFileString.substring(firstQuote, secondQuote));
 
          name = "color.border";
-         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
-         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
-         secondQuote = settingsFileString.indexOf("\"", firstQuote);
-         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
-
-         name = "border.width";
-         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
-         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
-         secondQuote = settingsFileString.indexOf("\"", firstQuote);
-         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
-
-         name = "border.radius";
-         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
-         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
-         secondQuote = settingsFileString.indexOf("\"", firstQuote);
-         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
-
-         name = "theme.path";
-         posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
-         firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
-         secondQuote = settingsFileString.indexOf("\"", firstQuote);
-         this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
+         posOfColon = colorsFileString.indexOf(":", colorsFileString.indexOf(name));
+         firstQuote = colorsFileString.indexOf("\"", posOfColon) + 1;
+         secondQuote = colorsFileString.indexOf("\"", firstQuote);
+         this.setValue(name, colorsFileString.substring(firstQuote, secondQuote));
       } catch (FileNotFoundException e) {
          // Auto-generated catch block
          e.printStackTrace();
@@ -298,64 +378,110 @@ class SettingsValues {
    }
 
    public String getValue(String name) {
-      if (name == "color.background") {
+      if (name == "settings.image.size") {
+         return this.settings_image_size;
+      } else if (name == "settings.fontsize.small") {
+         return this.settings_fontsize_small;
+      } else if (name == "settings.fontsize.large") {
+         return this.settings_fontsize_large;
+      } else if (name == "settings.items.width") {
+         return this.settings_items_width;
+      } else if (name == "settings.items.height") {
+         return this.settings_items_height;
+      } else if (name == "settings.items.small.width") {
+         return this.settings_items_small_width;
+      } else if (name == "settings.items.small.height") {
+         return this.settings_items_small_height;
+      } else if (name == "settings.items.padding") {
+         return this.settings_items_padding;
+      } else if (name == "settings.border.width") {
+         return this.settings_border_width;
+      } else if (name == "settings.border.radius") {
+         return this.settings_border_radius;
+      } else if (name == "settings.theme.path") {
+         return this.settings_theme_path;
+      } else if (name == "color.background") {
          return this.color_background;
-      } else if (name == "color.font") {
-         return this.color_font;
+      } else if (name == "color.foreground") {
+         return this.color_foreground;
       } else if (name == "color.button.background") {
          return this.color_button_background;
-      } else if (name == "color.button.font") {
-         return this.color_button_font;
+      } else if (name == "color.button.foreground") {
+         return this.color_button_foreground;
       } else if (name == "color.error") {
          return this.color_error;
       } else if (name == "color.border") {
          return this.color_border;
-      } else if (name == "border.width") {
-         return this.border_width;
-      } else if (name == "border.radius") {
-         return this.border_radius;
-      } else if (name == "theme.path") {
-         return this.theme_path;
-      }
-
-      return "";
+      } else { return ""; }
    }
 
    public void setValue(String name, String value) {
-      if (name == "color.background") {
+      if (name == "settings.image.size") {
          this.color_background = value;
-      } else if (name == "color.font") {
-         this.color_font = value;
+      } else if (name == "settings.fontsize.small") {
+         this.color_foreground = value;
+      } else if (name == "settings.fontsize.large") {
+         this.color_foreground = value;
+      } else if (name == "settings.items.width") {
+         this.color_foreground = value;
+      } else if (name == "settings.items.height") {
+         this.color_button_background = value;
+      } else if (name == "settings.items.small.width") {
+         this.color_button_foreground = value;
+      } else if (name == "settings.items.small.height") {
+         this.color_error = value;
+      } else if (name == "settings.items.padding") {
+         this.color_border = value;
+      } else if (name == "settings.border.width") {
+         this.settings_border_width = value;
+      } else if (name == "settings.border.radius") {
+         this.settings_border_radius = value;
+      } else if (name == "settings.theme.path") {
+         this.settings_theme_path = value;
+      } else if (name == "color.background") {
+         this.color_background = value;
+      } else if (name == "color.foreground") {
+         this.color_foreground = value;
       } else if (name == "color.button.background") {
          this.color_button_background = value;
-      } else if (name == "color.button.font") {
-         this.color_button_font = value;
+      } else if (name == "color.button.foreground") {
+         this.color_button_foreground = value;
       } else if (name == "color.error") {
          this.color_error = value;
       } else if (name == "color.border") {
          this.color_border = value;
-      } else if (name == "border.width") {
-         this.border_width = value;
-      } else if (name == "border.radius") {
-         this.border_radius = value;
-      } else if (name == "theme.path") {
-         this.theme_path = value;
       }
 
-      int posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
-      int firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
-      int secondQuote = settingsFileString.indexOf("\"", firstQuote);
-      settingsFileString = settingsFileString.substring(0, firstQuote) + value + settingsFileString.substring(secondQuote);
+      if (name.startsWith("settings.")) {
+         int posOfColon = settingsFileString.indexOf(":", settingsFileString.indexOf(name));
+         int firstQuote = settingsFileString.indexOf("\"", posOfColon) + 1;
+         int secondQuote = settingsFileString.indexOf("\"", firstQuote);
+         settingsFileString = settingsFileString.substring(0, firstQuote) + value + settingsFileString.substring(secondQuote);
 
-      try {
-         File settingsFile = new File(SettingsHandler.settingsFilePath);
-         FileWriter fileWriter = new FileWriter(settingsFile);
-         fileWriter.append(settingsFileString);
-         fileWriter.close();
-      } catch (IOException e) {
-         // Auto-generated catch block
-         e.printStackTrace();
+         try {
+            File settingsFile = new File(SettingsHandler.settingsFilePath);
+            FileWriter fileWriter = new FileWriter(settingsFile);
+            fileWriter.append(settingsFileString);
+            fileWriter.close();
+         } catch (IOException e) {
+            // Auto-generated catch block
+            e.printStackTrace();
+         }
+      } else if (name.startsWith("color.")) {
+         int posOfColon = colorsFileString.indexOf(":", colorsFileString.indexOf(name));
+         int firstQuote = colorsFileString.indexOf("\"", posOfColon) + 1;
+         int secondQuote = colorsFileString.indexOf("\"", firstQuote);
+         colorsFileString = colorsFileString.substring(0, firstQuote) + value + colorsFileString.substring(secondQuote);
+
+         try {
+            File colorsFile = new File(colorsFilePath);
+            FileWriter fileWriter = new FileWriter(colorsFile);
+            fileWriter.append(colorsFileString);
+            fileWriter.close();
+         } catch (IOException e) {
+            // Auto-generated catch block
+            e.printStackTrace();
+         }
       }
-
    }
 }

@@ -50,7 +50,7 @@ public class SettingsPanel extends BackgroundPanel {
       // font color input
       InputPanel foregroundInputPanel = new InputPanel("Schriftfarbe", false);
       JTextField foregroundInput = new InputTextField();
-      foregroundInput.setText(SettingsHandler.getSettingString("color.font"));
+      foregroundInput.setText(SettingsHandler.getSettingString("color.foreground"));
       foregroundInputPanel.add(foregroundInput);
       GridBagConstraints foregroundInputPanelConstraints = doubleSecondConstraints;
       foregroundInputPanelConstraints.gridy = 1;
@@ -68,7 +68,7 @@ public class SettingsPanel extends BackgroundPanel {
       // button font color input
       InputPanel buttonForegroundInputPanel = new InputPanel("Schriftfarbe (Button)", false);
       JTextField buttonForegroundInput = new InputTextField();
-      buttonForegroundInput.setText(SettingsHandler.getSettingString("color.button.font"));
+      buttonForegroundInput.setText(SettingsHandler.getSettingString("color.button.foreground"));
       buttonForegroundInputPanel.add(buttonForegroundInput);
       GridBagConstraints buttonForegroundInputPanelConstraints = doubleSecondConstraints;
       buttonForegroundInputPanelConstraints.gridy = 2;
@@ -92,24 +92,6 @@ public class SettingsPanel extends BackgroundPanel {
       errorInputPanelConstraints.gridy = 3;
       wrapperPanel.add(errorInputPanel, errorInputPanelConstraints);
 
-      // border wirth input
-      InputPanel borderWidthInputPanel = new InputPanel("Borderbreite", false);
-      InputTextField borderWidthInput = new InputTextField();
-      borderWidthInput.setText(SettingsHandler.getSettingString("border.width"));
-      borderWidthInputPanel.add(borderWidthInput);
-      GridBagConstraints borderWidthInputPanelConstraints = doubleFirstConstraints;
-      borderWidthInputPanelConstraints.gridy = 4;
-      wrapperPanel.add(borderWidthInputPanel, borderWidthInputPanelConstraints);
-
-      // border radius input
-      InputPanel borderRadiusInputPanel = new InputPanel("Borderradius", false);
-      InputTextField borderRadiusInput = new InputTextField();
-      borderRadiusInput.setText(SettingsHandler.getSettingString("border.radius"));
-      borderRadiusInputPanel.add(borderRadiusInput);
-      GridBagConstraints borderRadiusInputPanelConstraints = doubleSecondConstraints;
-      borderRadiusInputPanelConstraints.gridy = 4;
-      wrapperPanel.add(borderRadiusInputPanel, borderRadiusInputPanelConstraints);
-
       // save button
       JButton saveButton = new InputButton("Speichern", true);
       saveButton.addActionListener(new ActionListener() {
@@ -123,7 +105,7 @@ public class SettingsPanel extends BackgroundPanel {
 
             if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
                foregroundInputPanel.setError("");
-               SettingsHandler.setSettingString("color.font", foregroundInput.getText());
+               SettingsHandler.setSettingString("color.foreground", foregroundInput.getText());
             } else {
                foregroundInputPanel.setError("Invalider Input");
             }
@@ -137,7 +119,7 @@ public class SettingsPanel extends BackgroundPanel {
 
             if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
                buttonForegroundInputPanel.setError("");
-               SettingsHandler.setSettingString("color.button.font", buttonForegroundInput.getText());
+               SettingsHandler.setSettingString("color.button.foreground", buttonForegroundInput.getText());
             } else {
                buttonForegroundInputPanel.setError("Invalider Input");
             }
@@ -155,32 +137,6 @@ public class SettingsPanel extends BackgroundPanel {
             } else {
                borderInputPanel.setError("Invalider Input");
             }
-
-            try {
-               if (borderWidthInput.getIntValue() < 0) {
-                  borderWidthInputPanel.setError("Zu klein");
-               } else if (borderWidthInput.getIntValue() > 4) {
-                  borderWidthInputPanel.setError("Zu groß");
-               } else {
-                  borderWidthInputPanel.setError("");
-                  SettingsHandler.setSettingString("border.width", borderWidthInput.getStringValue());
-               }
-            } catch (NumberFormatException err) {
-               borderWidthInputPanel.setError("Invalider Input");
-            }
-
-            try {
-               if (borderRadiusInput.getIntValue() < 0) {
-                  borderRadiusInputPanel.setError("Zu klein");
-               } else if (borderRadiusInput.getIntValue() > 17) {
-                  borderRadiusInputPanel.setError("Zu groß");
-               } else {
-                  borderRadiusInputPanel.setError("");
-                  SettingsHandler.setSettingString("border.radius", borderRadiusInput.getStringValue());
-               }
-            } catch (NumberFormatException err) {
-               borderRadiusInputPanel.setError("Invalider Input");
-            }
          }
       });
       GridBagConstraints saveButtonConstraints = defaultConstraints;
@@ -188,7 +144,7 @@ public class SettingsPanel extends BackgroundPanel {
       wrapperPanel.add(saveButton, saveButtonConstraints);
 
       // wrapperPanel
-      wrapperPanel.setLocation(170, 23);
+      wrapperPanel.setLocation(170, 68);
       this.add(wrapperPanel);
 
       // menu button
