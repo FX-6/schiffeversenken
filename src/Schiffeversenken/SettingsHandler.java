@@ -146,6 +146,12 @@ public class SettingsHandler {
       int invalidInputs = 0;
 
       try {
+         inputs[0] = inputFields[0].getIntValue();
+      } catch (NumberFormatException e) {
+         inputPanels[0].setError("Invalider Input");
+         invalidInputs++;
+      }
+      try {
          inputs[1] = inputFields[1].getIntValue();
       } catch (NumberFormatException e) {
          inputPanels[1].setError("Invalider Input");
@@ -167,12 +173,6 @@ public class SettingsHandler {
          inputs[4] = inputFields[4].getIntValue();
       } catch (NumberFormatException e) {
          inputPanels[4].setError("Invalider Input");
-         invalidInputs++;
-      }
-      try {
-         inputs[5] = inputFields[5].getIntValue();
-      } catch (NumberFormatException e) {
-         inputPanels[5].setError("Invalider Input");
          invalidInputs++;
       }
 
