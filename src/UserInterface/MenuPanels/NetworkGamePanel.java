@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 
 import Notifications.Notification;
 import Notifications.NotificationCenter;
+import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
@@ -164,6 +165,9 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       menuButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent event) {
             System.out.println(event.getActionCommand());
+            if (Main.currentGame != null) {
+            	parent.exitGame(GameExitStatus.GAME_DISCARDED);
+            }
             parent.showMenu();
          }
       });
@@ -207,6 +211,10 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
             else if (ipInput.getText().equals(text + " ...")) {
                ipInput.setText(text + " ");
             }
+            else if (ipInput.getText().startsWith("W")) {			// animateWaitingForServer() ist aktiviert worden
+            	timer.cancel();
+            	menuButton.setEnabled(true);
+            }
             else {
                ipInput.setText(ipInput.getText() + ".");
             }
@@ -223,7 +231,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 				   timer.cancel();
 			   }
 			   else if (ipInput.getText().equals("Warten auf Server ...")) {
-				   ipInput.setText("Warten auf Server");
+				   ipInput.setText("Warten auf Server ");
 			   }
 			   else {
 				   ipInput.setText(ipInput.getText() + ".");
@@ -235,7 +243,6 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 
    public void processNotification(String type, Object object) {
       if (type.equals("ServerConnected")) {
-    	  //parent.openGameWindow();
     	  joinGameAsHumanButton.setEnabled(false);
           createGameAsHumanButton.setEnabled(false);
           joinGameAsAiButton.setEnabled(false);
