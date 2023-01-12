@@ -197,6 +197,7 @@ public class NetworkPlayer extends Player implements Notification  {
 				game.setPitchSize(pitchSize);
 				this.updatePointsShot();
 				otherPlayer.updatePointsShot();
+				NotificationCenter.sendNotification("ReceivedGameData", null);
 				sendFirst("done");
 				break;
 				
@@ -208,6 +209,7 @@ public class NetworkPlayer extends Player implements Notification  {
 					ships[size-2]++;
 				}
 				game.setShips(ships);
+				NotificationCenter.sendNotification("ReceivedGameData", null);
 				sendFirst("done");
 				break;
 				

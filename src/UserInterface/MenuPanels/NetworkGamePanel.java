@@ -30,6 +30,8 @@ import UserInterface.UIComponents.WrapperPanel;
 public class NetworkGamePanel extends BackgroundPanel implements Notification {
    private static final long serialVersionUID = 1L;
 
+   private int receivedGameData = 0; 				// Zählt, ob Schiffe und Spielfeldgröße empfangen wurden. Wenn 2, dann wird GameWindow geöffnet
+   
    private Menu parent;
    private InputPanel ipInputPanel;
 
@@ -45,6 +47,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       // setup
       NotificationCenter.addObserver("ServerConnected", this);
       NotificationCenter.addObserver("ConnectionFailed", this);
+      NotificationCenter.addObserver("ReceivedGameData", this);
 
       // fill with content
       WrapperPanel wrapperPanel = new WrapperPanel();
@@ -211,14 +214,47 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       };
       timer.schedule(task, 0, 250);
    }
+   
+   private void animateWaitingForServer() {
+	   Timer timer = new Timer();
+	   TimerTask task = new TimerTask() {
+		   public void run() {
+			   if (ipInput.getText().equals("")) {
+				   timer.cancel();
+			   }
+			   else if (ipInput.getText().equals("Warten auf Server ...")) {
+				   ipInput.setText("Warten auf Server");
+			   }
+			   else {
+				   ipInput.setText(ipInput.getText() + ".");
+			   }
+		   }
+	   };
+	   timer.schedule(task, 0, 250);
+   }
 
    public void processNotification(String type, Object object) {
       if (type.equals("ServerConnected")) {
-         parent.openGameWindow();
+    	  //parent.openGameWindow();
+    	  joinGameAsHumanButton.setEnabled(false);
+          createGameAsHumanButton.setEnabled(false);
+          joinGameAsAiButton.setEnabled(false);
+          createGameAsAiButton.setEnabled(false);
+          ipInput.setEnabled(false);
+          
+          ipInput.setText("Warten auf Server ");
+          animateWaitingForServer();
       }
       if (type.equals("ConnectionFailed")) {
          ipInput.setText("");
-         ipInputPanel.setError("Verbindung fehlgeschlagen");
+         ipInputPanel.setError("Connection failed");
+      }
+      if (type.equals("ReceivedGameData")) {
+    	  receivedGameData++;
+    	  if (receivedGameData == 2) {
+    		  ipInput.setText("");
+    		  parent.openGameWindow();
+    	  }
       }
    }
 }
