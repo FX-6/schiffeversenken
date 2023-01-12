@@ -115,6 +115,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 
       // Start game button
       startGameButton = new InputButton("Spiel starten", true);
+      startGameButton.setEnabled(false);
       startGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             InputTextField[] inputTextFields = {sizeInput, ship2Input, ship3Input, ship4Input, ship5Input};
