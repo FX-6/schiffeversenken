@@ -8,6 +8,8 @@ import java.util.Arrays;
 
 import javax.swing.JButton;
 
+import Notifications.Notification;
+import Notifications.NotificationCenter;
 import Schiffeversenken.Game;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
@@ -21,12 +23,14 @@ import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
 import UserInterface.UIComponents.WrapperPanel;
 
-public class CreateSingleplayerGamePanel extends BackgroundPanel {
+public class CreateSingleplayerGamePanel extends BackgroundPanel implements Notification {
    private static final long serialVersionUID = 1L;
 
    Menu parent;
 
    public CreateSingleplayerGamePanel(Menu parent, GameType type) {
+	   NotificationCenter.addObserver("GameLoaded", this);
+	   
       this.parent = parent;
 
       // fill with content
@@ -145,5 +149,14 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel {
       });
 
       parent.createGame(4, type);
+   }
+   
+   
+   
+   
+   public void processNotification(String type, Object object) {
+	   if (type.equals("GameLoaded")) {
+		   parent.openGameWindow();
+	   }
    }
 }

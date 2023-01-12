@@ -33,9 +33,14 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
    private static final long serialVersionUID = 1L;
 
    private JButton startGameButton;
+   
+   Menu parent;
 
    public CreateNetworkGamePanel(Menu parent, GameType type) {
       NotificationCenter.addObserver("ClientConnected", this);
+      NotificationCenter.addObserver("GameLoaded", this);
+      
+      this.parent = parent;
 
       // fill with content
       WrapperPanel wrapperPanel = new WrapperPanel();
@@ -168,6 +173,10 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
    public void processNotification(String type, Object object) {
       if (type.equals("ClientConnected")) {
          startGameButton.setEnabled(true);
+      }
+      
+      else if (type.equals("GameLoaded")) {
+    	  parent.openGameWindow();
       }
    }
 }

@@ -49,6 +49,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       NotificationCenter.addObserver("ServerConnected", this);
       NotificationCenter.addObserver("ConnectionFailed", this);
       NotificationCenter.addObserver("ReceivedGameData", this);
+      NotificationCenter.addObserver("GameLoaded", this);
 
       // fill with content
       WrapperPanel wrapperPanel = new WrapperPanel();
@@ -252,16 +253,22 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
           ipInput.setText("Warten auf Server ");
           animateWaitingForServer();
       }
-      if (type.equals("ConnectionFailed")) {
+      
+      else if (type.equals("ConnectionFailed")) {
          ipInput.setText("");
          ipInputPanel.setError("Connection failed");
       }
-      if (type.equals("ReceivedGameData")) {
+      
+      else if (type.equals("ReceivedGameData")) {
     	  receivedGameData++;
     	  if (receivedGameData == 2) {
     		  ipInput.setText("");
     		  parent.openGameWindow();
     	  }
+      }
+      
+      else if (type.equals("GameLoaded")) {
+    	  parent.openGameWindow();
       }
    }
 }
