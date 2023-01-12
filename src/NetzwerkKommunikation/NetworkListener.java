@@ -31,7 +31,7 @@ public class NetworkListener extends Thread {
 			try {
 				message = "" + in.readLine();
 			} catch (IOException e) {
-				Main.currentGame.exit(Main.currentGame.getPlayer2(), GameExitStatus.CONNECTION_CLOSED);
+				if (Main.currentGame != null) Main.currentGame.exit(Main.currentGame.getPlayer2(), GameExitStatus.CONNECTION_CLOSED);
 				//e.printStackTrace();
 				break;
 			}
