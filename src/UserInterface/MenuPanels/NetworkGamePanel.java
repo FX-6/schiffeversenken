@@ -178,6 +178,8 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       menuButton.setEnabled(false);
       joinGameAsHumanButton.setEnabled(false);
       createGameAsHumanButton.setEnabled(false);
+      joinGameAsAiButton.setEnabled(false);
+      createGameAsAiButton.setEnabled(false);
       ipInput.setEnabled(false);
 
       String text = ipInput.getText();
@@ -195,6 +197,8 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
                menuButton.setEnabled(true);
                joinGameAsHumanButton.setEnabled(true);
                createGameAsHumanButton.setEnabled(true);
+               joinGameAsAiButton.setEnabled(true);
+               createGameAsAiButton.setEnabled(true);
                ipInput.setEnabled(true);
             }
             else if (ipInput.getText().equals(text + " ...")) {
