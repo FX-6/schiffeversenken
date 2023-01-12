@@ -1,10 +1,11 @@
 package UserInterface;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.*;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,7 +40,9 @@ public class GameWindow extends JFrame implements Notification {
 		addWindowListener(new WindowListener() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				Main.menuWindow.exitGame(GameExitStatus.GAME_DISCARDED);
+				try {
+					Main.menuWindow.exitGame(GameExitStatus.GAME_DISCARDED);
+				} catch (NullPointerException ex) {}
 			}
 
 			@Override

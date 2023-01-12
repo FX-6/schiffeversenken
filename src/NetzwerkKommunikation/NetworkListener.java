@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import Notifications.NotificationCenter;
+import Schiffeversenken.GameExitStatus;
+import Schiffeversenken.Main;
 
 
 /*
@@ -29,7 +31,8 @@ public class NetworkListener extends Thread {
 			try {
 				message = "" + in.readLine();
 			} catch (IOException e) {
-				e.printStackTrace();
+				Main.currentGame.exit(Main.currentGame.getPlayer2(), GameExitStatus.CONNECTION_CLOSED);
+				//e.printStackTrace();
 				break;
 			}
 			

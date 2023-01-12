@@ -13,7 +13,7 @@ public class NetworkPlayer extends Player implements Notification  {
 	private Connection connection;
 	
 	private boolean isPingPong;
-	private String queMessage;						// Warteschlange der Position 1 für Netzwerk-Nachrichten, wenn gerade nicht gesendet werden darf (isPingPong = false)
+	private String queMessage = "";						// Warteschlange der Position 1 für Netzwerk-Nachrichten, wenn gerade nicht gesendet werden darf (isPingPong = false)
 	
 	private String message = ""; 					// Wird gebraucht, um empfangene Nachrichten an Methoden weiterzuleiten, die auf eine Nachricht warten
 	
@@ -225,7 +225,7 @@ public class NetworkPlayer extends Player implements Notification  {
 					e.printStackTrace();
 				}
 				game.exit(this, GameExitStatus.CONNECTION_CLOSED);
-				break;
+				return;
 				
 			case "null":
 				try {
@@ -234,7 +234,7 @@ public class NetworkPlayer extends Player implements Notification  {
 					e.printStackTrace();
 				}
 				game.exit(this, GameExitStatus.CONNECTION_CLOSED);
-				break;
+				return;
 				
 			case "pass":
 				otherPlayer.pass();
