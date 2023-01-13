@@ -2,14 +2,18 @@ package UserInterface.MenuPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 import java.awt.event.*;
 import java.awt.GridBagConstraints;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JComboBox;
 
 import Notifications.Notification;
 import Notifications.NotificationCenter;
@@ -17,11 +21,13 @@ import Schiffeversenken.Game;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
+import Schiffeversenken.SaveGameHandler;
 import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
 import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
+import UserInterface.UIComponents.InputComboBox;
 import UserInterface.UIComponents.InputPanel;
 import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.MenuButton;
@@ -33,13 +39,13 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
    private static final long serialVersionUID = 1L;
 
    private JButton startGameButton;
-   
+
    Menu parent;
 
    public CreateNetworkGamePanel(Menu parent, GameType type) {
       NotificationCenter.addObserver("ClientConnected", this);
       NotificationCenter.addObserver("GameLoaded", this);
-      
+
       this.parent = parent;
 
       // fill with content
@@ -118,31 +124,66 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
          }
       });
 
+            // load game input
+      String[] savedGames = SettingsHandler.getSavedGames();
+      String[] loadGameOptions = new String[1 + savedGames.length];
+      loadGameOptions[0] = "Nichts laden";
+      Date date;
+      SimpleDateFormat sdf = new SimpleDateFormat("HH:mm '@' dd.MM.");
+      for (int i = 0; i < savedGames.length; i++) {
+         int extensionIndex = savedGames[i].lastIndexOf(".");
+         int seperatorIndex = savedGames[i].indexOf("#");
+         date = new Date(Long.valueOf(savedGames[i].substring(0, seperatorIndex)));
+
+         loadGameOptions[i + 1] = (i + 1) + ". " + savedGames[i].substring(seperatorIndex + 1, extensionIndex) + " (" + sdf.format(date) + ")";
+      }
+      InputPanel loadGameInputPanel = new InputPanel("Spiel laden", true);
+      JComboBox<String> loadGameInput = new InputComboBox<String>(loadGameOptions);
+      loadGameInputPanel.add(loadGameInput);
+      GridBagConstraints loadGameInputPanelConstraints = defaultConstraints;
+      loadGameInputPanelConstraints.gridy = 3;
+      wrapperPanel.add(loadGameInputPanel, loadGameInputPanelConstraints);
+
       // Start game button
       startGameButton = new InputButton("Spiel starten", true);
       startGameButton.setEnabled(false);
       startGameButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            InputTextField[] inputTextFields = {sizeInput, ship2Input, ship3Input, ship4Input, ship5Input};
-            InputPanel[] inputPanels = { sizeInputPanel, ship2InputPanel, ship3InputPanel, ship4InputPanel, ship5InputPanel};
+            String selectedLoadGame = (String)loadGameInput.getSelectedItem();
 
-            if (SettingsHandler.validateGameInput(inputTextFields, inputPanels)) {
-               Main.currentGame.setPitchSize(sizeInput.getIntValue());
+            if (selectedLoadGame.equalsIgnoreCase("Nichts laden")) {
+               InputTextField[] inputTextFields = {sizeInput, ship2Input, ship3Input, ship4Input, ship5Input};
+               InputPanel[] inputPanels = { sizeInputPanel, ship2InputPanel, ship3InputPanel, ship4InputPanel, ship5InputPanel};
 
-               int[] ships = new int[4];
-               ships[0] = ship2Input.getIntValue();
-               ships[1] = ship3Input.getIntValue();
-               ships[2] = ship4Input.getIntValue();
-               ships[3] = ship5Input.getIntValue();
-               Main.currentGame.setShips(ships);
-               Main.currentGame.transmittSizeAndShips();
+               if (SettingsHandler.validateGameInput(inputTextFields, inputPanels)) {
+                  Main.currentGame.setPitchSize(sizeInput.getIntValue());
 
-               parent.openGameWindow();
+                  int[] ships = new int[4];
+                  ships[0] = ship2Input.getIntValue();
+                  ships[1] = ship3Input.getIntValue();
+                  ships[2] = ship4Input.getIntValue();
+                  ships[3] = ship5Input.getIntValue();
+                  Main.currentGame.setShips(ships);
+                  Main.currentGame.transmittSizeAndShips();
+
+                  parent.openGameWindow();
+               }
+            } else {
+               startGameButton.setEnabled(false);
+               String savedGameID = savedGames[Integer.parseInt(selectedLoadGame.substring(0, selectedLoadGame.indexOf("."))) - 1];
+               try {
+                  new SaveGameHandler(savedGameID);
+               } catch (FileNotFoundException e1) {
+                  // TODO Auto-generated catch block (Felix)
+                  loadGameInputPanel.setError("Fehler beim Laden");
+                  startGameButton.setEnabled(true);
+                  e1.printStackTrace();
+               }
             }
          }
       });
       GridBagConstraints startGameButtonConstraints = defaultConstraints;
-      startGameButtonConstraints.gridy = 3;
+      startGameButtonConstraints.gridy = 4;
       wrapperPanel.add(startGameButton, startGameButtonConstraints);
 
       // wrapperPanel
@@ -174,7 +215,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
       if (type.equals("ClientConnected")) {
          startGameButton.setEnabled(true);
       }
-      
+
       else if (type.equals("GameLoaded")) {
     	  parent.openGameWindow();
       }
