@@ -96,7 +96,7 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel implements Noti
             Arrays.fill(ships, 0);
 
             if (SettingsHandler.validateSizeInput(sizeInput, sizeInputPanel)) {
-               ships = Game.getShipsLeft(sizeInput.getIntValue(), ships);
+               ships = Game.getRandomShipConfiguration(sizeInput.getIntValue());
 
                ship2Input.setValue(ships[0]);
                ship3Input.setValue(ships[1]);
