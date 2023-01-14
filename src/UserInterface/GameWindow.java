@@ -6,21 +6,28 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
+import java.awt.event.*;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import Notifications.Notification;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.Main;
+import Schiffeversenken.SaveGameHandler;
 import Schiffeversenken.SettingsHandler;
 import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.GameMapPanel;
 import UserInterface.UIComponents.GameMenuPanel;
 import UserInterface.UIComponents.HeaderLabel;
 import UserInterface.UIComponents.InputButton;
+import UserInterface.UIComponents.InputPanel;
+import UserInterface.UIComponents.InputTextField;
 import UserInterface.UIComponents.WrapperPanel;
 
 /*
@@ -89,6 +96,37 @@ public class GameWindow extends JFrame implements Notification {
       errorPanel.setVisible(false);
       this.add(errorPanel);
 
+      // save game input
+      WrapperPanel savePanel = new WrapperPanel();
+
+      InputPanel saveNameInputPanel = new InputPanel("Name", true);
+      JTextField saveNameInput = new InputTextField();
+      saveNameInputPanel.add(saveNameInput);
+      GridBagConstraints saveNameInputPanelConstraints = savePanel.defaultConstraints;
+      saveNameInputPanelConstraints.gridy = 0;
+      savePanel.add(saveNameInputPanel, saveNameInputPanelConstraints);
+
+      JButton savePanelButton = new InputButton("Speichern", true);
+      GridBagConstraints savePanelButtonConstraints = savePanel.defaultConstraints;
+      savePanelButtonConstraints.gridy = 1;
+      savePanel.add(savePanelButton, savePanelButtonConstraints);
+      savePanelButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            try {
+               new SaveGameHandler(String.valueOf(new Date().getTime()), saveNameInput.getText());
+               savePanel.setVisible(false);
+            } catch (IOException e1) {
+               // TODO Auto-generated catch block
+               e1.printStackTrace();
+               saveNameInputPanel.setError("Fehler beim speichern");
+            }
+         }
+      });
+
+      savePanel.setLocation(this.getWidth() / 2 - savePanel.getWidth() / 2, this.getHeight() / 2 - savePanel.getHeight() / 2);
+      savePanel.setVisible(false);
+      this.add(savePanel);
+
       // create menu for when in game
       GameMenuPanel gameMenu = new GameMenuPanel();
 
@@ -155,16 +193,30 @@ public class GameWindow extends JFrame implements Notification {
       remainingShipsSize5LabelConstraints.gridy = 3;
       gameMenu.add(remainingShipsSize5Label, remainingShipsSize5LabelConstraints);
 
+      JButton saveButton = new InputButton("Speichern", true);
+      saveButton.setMinimumSize(gameMenu.largeDimension());
+      saveButton.setPreferredSize(gameMenu.largeDimension());
+      saveButton.setMaximumSize(gameMenu.largeDimension());
+      saveButton.setSize(gameMenu.largeDimension());
+      GridBagConstraints saveButtonConstraints = gameMenu.defaultConstraints;
+      saveButtonConstraints.gridy = 4;
+      gameMenu.add(saveButton, saveButtonConstraints);
+      saveButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            savePanel.setVisible(true);
+         }
+      });
+
       JButton shootButton = new InputButton("SCHIEßEN", true); // ẞ (groß) oder ß (klein)?
       shootButton.setMinimumSize(gameMenu.largeDimension());
       shootButton.setPreferredSize(gameMenu.largeDimension());
       shootButton.setMaximumSize(gameMenu.largeDimension());
       shootButton.setSize(gameMenu.largeDimension());
       GridBagConstraints shootButtonConstraints = gameMenu.defaultConstraints;
-      shootButtonConstraints.gridy = 4;
+      shootButtonConstraints.gridy = 5;
       gameMenu.add(shootButton, shootButtonConstraints);
 
-      // gameMenu.setVisible(false);
+      gameMenu.setVisible(false);
       gameMenu.setLocation(this.getWidth() - gameMenu.getWidth() - 25, 10);
       this.add(gameMenu);
 
@@ -233,8 +285,14 @@ public class GameWindow extends JFrame implements Notification {
       GridBagConstraints addShipsReadyButtonConstraints = gameMenu.defaultConstraints;
       addShipsReadyButtonConstraints.gridy = 6;
       addShipsGameMenu.add(addShipsReadyButton, addShipsReadyButtonConstraints);
+      addShipsReadyButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            // TODO Send ready signal (Felix)
+            gameMenu.setVisible(true);
+            addShipsGameMenu.setVisible(false);
+         }
+      });
 
-      addShipsGameMenu.setVisible(false);
       addShipsGameMenu.setLocation(this.getWidth() - addShipsGameMenu.getWidth() - 25, 10);
       this.add(addShipsGameMenu);
 
@@ -248,11 +306,12 @@ public class GameWindow extends JFrame implements Notification {
       backgroundPanel2.setSize(this.getSize());
       // this.add(backgroundPanel2);
 
-      // reposition gameMenu after window resize
+      // reposition elements
       this.addComponentListener(new ComponentAdapter() {
          public void componentResized(ComponentEvent e) {
             addShipsGameMenu.setLocation(e.getComponent().getWidth() - addShipsGameMenu.getWidth() - 25, 10);
             errorPanel.setLocation(e.getComponent().getWidth() / 2 - errorPanel.getWidth() / 2, e.getComponent().getHeight() - errorPanel.getHeight() - 59);
+            savePanel.setLocation(e.getComponent().getWidth() / 2 - savePanel.getWidth() / 2, e.getComponent().getHeight() / 2 - savePanel.getHeight() / 2);
             backgroundPanel2.setSize(getSize());
          }
       });
