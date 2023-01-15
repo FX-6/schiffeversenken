@@ -107,24 +107,45 @@ public class AIPlayer extends Player {
 		shoot(maxs.get(ThreadLocalRandom.current().nextInt(0,maxs.size())));
 	}
 
-   public static void placeShipsAutomatically(Player player) {
-      // Für die Spielfeldgröße
-      // Main.currentGame.getPitchSize();
+	public static void placeShipsAutomatically(Player player) {
+		int[] remainingShipsToBePlaced = {0, 0, 0, 0, 0, 0};
+		for (int i = 2; i <= 5; i++) {
+			remainingShipsToBePlaced[i] = Main.currentGame.getNumberOfShips(i);
+		}
 
-      // Für die Anzahl der Schiffe einer größe
-      // Main.currentGame.getNumberOfShips(int size);
+		//int ships = remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5];
 
-      // Array mit anzahl der Schiffe der jeweiligen größe
-      // int[] remainingShipsToBePlaced = {0, 0, 0, 0};       // index = schiffsgröße - 2
-      // int[] remainingShipsToBePlaced = {0, 0, 0, 0, 0, 0}; // index = schiffsgröße
-      // for (int i = 2; i <= 5; i++) {
-      //    remainingShipsToBePlaced[i - 2] = Main.currentGame.getNumberOfShips(i); // wenn index = schiffsgröße - 2
-      //    remainingShipsToBePlaced[i] = Main.currentGame.getNumberOfShips(i);     // wenn index = schiffsgröße
-      // }
+		for (int i = 0; i < 10; i++) {
+			//System.out.println("reebreakpoint");
+			for (int j = 2; j < 6; j++) {
+				while (remainingShipsToBePlaced[j]>0) {
+					for (int k = 0; k < 500; k++) {
+						System.out.println("inner");
+						if (player.placeShipAt(new Ship(j, (int) Math.floor(Math.random() * 2)), new Point((int) (Math.random() * (Main.currentGame.getPitchSize() + 1)), (int) (Math.random() * (Main.currentGame.getPitchSize() + 1))))){
+							//remainingShipsToBePlaced[j]--;
+							k = 100;
+						}
+						if (k == 499) {
+							j = 6;
+						}
+					}
+					remainingShipsToBePlaced[j]--;
+				}
+			}
+		}
+		System.out.println("placeShipsAutomatically failed 10 times");
+    	// Für die Spielfeldgröße
+    	// Main.currentGame.getPitchSize();
 
-      // Zum Platzieren dann
-      // player.placeShipAt(Ship ship, Point point);
-   }
+    	// Für die Anzahl der Schiffe einer größe
+    	// Main.currentGame.getNumberOfShips(int size);
+
+    	// Array mit anzahl der Schiffe der jeweiligen größe
+      	
+
+    	// Zum Platzieren dann
+    	// player.placeShipAt(Ship ship, Point point);
+	}
 }
 
 /**
