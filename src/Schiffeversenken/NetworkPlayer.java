@@ -195,8 +195,6 @@ public class NetworkPlayer extends Player implements Notification  {
 			case "size":
 				int pitchSize = Integer.parseInt(args[1]);
 				game.setPitchSize(pitchSize);
-				this.updatePointsShot();
-				otherPlayer.updatePointsShot();
 				NotificationCenter.sendNotification("ReceivedGameData", null);
 				sendFirst("done");
 				break;
