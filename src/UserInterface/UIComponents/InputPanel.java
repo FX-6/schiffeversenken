@@ -8,6 +8,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 
+/**
+ * Wird als Container für Inpus genutzt.
+ */
 public class InputPanel extends UIPanel {
    private static final long serialVersionUID = 1L;
 
@@ -19,6 +22,12 @@ public class InputPanel extends UIPanel {
    private GridLayout singleGridLayout = new GridLayout(2, 1, 0, 0);
    private Font font = new Font("Titel", Font.PLAIN, fontSizeSmall);
 
+   /**
+    * Erstellt ein Panel mit den Userstyles, einem Label und passender Größe.
+    *
+    * @param label Text den das Label zeigen soll
+    * @param single <code>true</code> wenn es alleine in einer Zeile steht, ansonsten <code>false</code>
+    */
    public InputPanel(String label, boolean single) {
       super();
 
@@ -40,10 +49,18 @@ public class InputPanel extends UIPanel {
       this.add(inputLabelRow);
    }
 
+   /**
+    * Ändert die angezeigt Fehlermeldung.
+    *
+    * @param text Neue Fehlermeldung
+    */
    public void setError(String text) {
       errorLabel.setText(text);
    }
 
+   /**
+    * Wird intern genutzt um die Label anzuordnen.
+    */
    private class InputLabelRow extends UIPanel {
       private GridLayout dualGridLayout = new GridLayout(1, 2, 0, 0);
 
@@ -54,6 +71,9 @@ public class InputPanel extends UIPanel {
       }
    }
 
+   /**
+    * Wird intern als Label genutzt.
+    */
    private class InputLabel extends UILabel {
       InputLabel(String text) {
          super(text);
@@ -61,9 +81,12 @@ public class InputPanel extends UIPanel {
       }
    }
 
+   /**
+    * Wird intern als Errorlabel genutzt.
+    */
    private class ErrorLabel extends UILabel {
       ErrorLabel() {
-         super();
+         super("");
          this.setFont(font);
          this.setForeground(errorColor);
       }

@@ -6,6 +6,9 @@ import java.awt.Color;
 import java.awt.Font;
 import Schiffeversenken.SettingsHandler;
 
+/**
+ * Wird als DropDownMenu, das den Userstyles folgt, genutzt.
+ */
 public class InputComboBox<E> extends JComboBox<E> {
    private static final long serialVersionUID = 1L;
 
@@ -27,20 +30,18 @@ public class InputComboBox<E> extends JComboBox<E> {
    protected Color buttonFontColor = Color.decode(SettingsHandler.getSettingString("color.button.foreground"));
    protected Color errorColor = Color.decode(SettingsHandler.getSettingString("color.error"));
 
-   public InputComboBox() {
-      super();
-      setup();
-   }
-
+   /**
+    * Erstellt ein DropDownMenu mit Items.
+    * Sollte nur in einem {@link InputPanel} genutzt werden.
+    *
+    * @param items Ein Array der Objekte die eingefügt werden sollen
+    */
    public InputComboBox(E[] items) {
       super(items);
-      setup();
-   }
 
-   private void setup() {
-      setFont(new Font("Titel", Font.PLAIN, fontSizeLarge));
-      setBackground(buttonBackground);
-      setForeground(buttonFontColor);
-      setBorder(new MatteBorder(0, 0, borderWidth, 0, borderColor));
+      this.setFont(new Font("Titel", Font.PLAIN, fontSizeLarge));
+      this.setBackground(buttonBackground);
+      this.setForeground(buttonFontColor);
+      this.setBorder(new MatteBorder(0, 0, borderWidth, 0, borderColor));
    }
 }

@@ -4,6 +4,10 @@ import javax.swing.JLabel;
 import java.awt.Color;
 import Schiffeversenken.SettingsHandler;
 
+/**
+ * Wird genutzt um die Userstyles zu laden.
+ * Sollte nicht als Komponente in der UI genutzt werden.
+ */
 public class UILabel extends JLabel {
    private static final long serialVersionUID = 1L;
 
@@ -25,17 +29,14 @@ public class UILabel extends JLabel {
    protected Color buttonFontColor = Color.decode(SettingsHandler.getSettingString("color.button.foreground"));
    protected Color errorColor = Color.decode(SettingsHandler.getSettingString("color.error"));
 
-   public UILabel() {
-      super();
-      setup();
-   }
-
+   /**
+    * Erstellt Label mit den Userstyles und text.
+    *
+    * @param text Text den das Label zeigen soll.
+    */
    public UILabel(String text) {
       super(text);
-      setup();
-   }
 
-   private void setup() {
       this.setForeground(fontColor);
    }
 }

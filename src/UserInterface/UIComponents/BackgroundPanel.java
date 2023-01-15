@@ -4,17 +4,28 @@ import java.awt.Graphics;
 
 import Schiffeversenken.SettingsHandler;
 
+/*
+ * Wird als Hintergrund genutzt, rendert ein Bild gekachelt.
+ */
 public class BackgroundPanel extends UIPanel {
    private static final long serialVersionUID = 1L;
 
    protected String backgroundImage = "water.png";
 
+   /**
+    * Standard Hintergrund mit Wasser
+    */
    public BackgroundPanel() {
       super();
 
       this.setLayout(null);
    }
 
+   /**
+    * Hinterund mit bestimmten Bild.
+    *
+    * @param backgroundImage Name des Hintergrundbilds
+    */
    public BackgroundPanel(String backgroundImage) {
       super();
 

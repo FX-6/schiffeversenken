@@ -2,11 +2,20 @@ package UserInterface.UIComponents;
 
 import java.awt.Dimension;
 
+/**
+ * Wird als standard Textlabel, das den Userstyles folgt, genutzt.
+ */
 public class TextLabel extends UILabel {
    private static final long serialVersionUID = 1L;
 
    protected Dimension size = new Dimension(itemWidth, itemHeigth);
 
+   /**
+    * Erstellt ein Label mit den Userstyles, text und passender Größe.
+    *
+    * @param text Text den das Label zeigen soll
+    * @param single <code>true</code> wenn es alleine in einer Zeile steht, ansonsten <code>false</code>
+    */
    public TextLabel(String text, boolean single) {
       super(text);
 

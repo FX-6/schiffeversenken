@@ -8,6 +8,9 @@ import java.awt.Font;
 
 import Schiffeversenken.SettingsHandler;
 
+/**
+ * Wird als standard Button, der den Userstyles folgt, genutzt.
+ */
 public class InputButton extends JButton {
    private static final long serialVersionUID = 1L;
 
@@ -33,6 +36,12 @@ public class InputButton extends JButton {
    protected Font defaultFont = new Font("Titel", Font.PLAIN, fontSizeLarge);
    protected Font hoverFont = new Font("Titel", Font.BOLD, fontSizeLarge);
 
+   /**
+    * Erstellt einen Button mit Userstyles, text und passender Größe.
+    *
+    * @param text Text der im Button stehen soll
+    * @param single <code>true</code> wenn es alleine in einer Zeile steht, ansonsten <code>false</code>
+    */
    public InputButton(String text, boolean single) {
       super(text);
 

@@ -6,6 +6,9 @@ import java.awt.Color;
 import java.awt.Font;
 import Schiffeversenken.SettingsHandler;
 
+/**
+ * Wird als Textfeld, das den Userstyles folgt, genutzt.
+ */
 public class InputTextField extends JTextField {
    private static final long serialVersionUID = 1L;
 
@@ -27,30 +30,50 @@ public class InputTextField extends JTextField {
    protected Color buttonFontColor = Color.decode(SettingsHandler.getSettingString("color.button.foreground"));
    protected Color errorColor = Color.decode(SettingsHandler.getSettingString("color.error"));
 
+   /**
+    * Erstellt ein Textfeld mit den Userstyles.
+    */
    public InputTextField() {
       super();
-      setup();
+
+      this.setFont(new Font("Titel", Font.PLAIN, fontSizeLarge));
+      this.setBackground(buttonBackground);
+      this.setForeground(buttonFontColor);
+      this.setBorder(new MatteBorder(0, 0, borderWidth, 0, borderColor));
    }
 
-   private void setup() {
-      setFont(new Font("Titel", Font.PLAIN, fontSizeLarge));
-      setBackground(buttonBackground);
-      setForeground(buttonFontColor);
-      setBorder(new MatteBorder(0, 0, borderWidth, 0, borderColor));
-   }
-
+   /**
+    * Ändert den Wert des Textfeldes
+    *
+    * @param value Der neue Wert als <code>String</code>
+    */
    public void setValue(String value) {
       this.setText(value);
    }
 
+   /**
+    * Ändert den Wert des Textfeldes
+    *
+    * @param value Der neue Wert als <code>int</code>
+    */
    public void setValue(int value) {
       this.setText(Integer.toString(value));
    }
 
+   /**
+    * Liefert den Wert des Textfelds zurück.
+    *
+    * @return Der Wert als <code>String</code>
+    */
    public String getStringValue() {
       return this.getText();
    }
 
+   /**
+    * Liefert den Wert des Textfelds zurück.
+    *
+    * @return Der Wert als <code>int</code>
+    */
    public int getIntValue() {
       return Integer.parseInt(this.getStringValue());
    }

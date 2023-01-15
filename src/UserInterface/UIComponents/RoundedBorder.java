@@ -3,11 +3,21 @@ package UserInterface.UIComponents;
 import javax.swing.border.Border;
 import java.awt.*;
 
+/**
+ * Wird intern als abgerundete Border genutzt.
+ */
 public class RoundedBorder implements Border {
    private int borderRadius;
    private int borderWidth;
    private Color borderColor;
 
+   /**
+    * Erstellt eine neue runde Border.
+    *
+    * @param borderRadius Radius der Rundung
+    * @param borderWidth Breite der Border
+    * @param borderColor Farbe der Border
+    */
    public RoundedBorder(int borderRadius, int borderWidth, Color borderColor) {
       this.borderRadius = borderRadius;
       this.borderWidth = borderWidth;

@@ -8,6 +8,10 @@ import javax.swing.JPanel;
 
 import Schiffeversenken.SettingsHandler;
 
+/**
+ * Wird genutzt um die Userstyles und standard Constraints zu laden.
+ * Sollte nicht als Komponente in der UI genutzt werden.
+ */
 public class UIPanel extends JPanel {
    private static final long serialVersionUID = 1L;
 
@@ -33,6 +37,9 @@ public class UIPanel extends JPanel {
    public GridBagConstraints doubleFirstConstraints = new GridBagConstraints();
    public GridBagConstraints doubleSecondConstraints = new GridBagConstraints();
 
+   /**
+    * Erstellt ein Panel mit den Userstyles und den standard Constraints.
+    */
    public UIPanel() {
       super();
 

@@ -3,8 +3,8 @@ package UserInterface.UIComponents;
 import java.awt.Dimension;
 import java.awt.Font;
 
-/*
- * Ein label das als den Userstyles folgt und als Überschrift genutzt werden sollte.
+/**
+ * Wird als Überschrift, die den Userstyles folgt, genutzt.
  */
 public class HeaderLabel extends UILabel {
    private static final long serialVersionUID = 1L;
