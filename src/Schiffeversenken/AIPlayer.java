@@ -1,26 +1,21 @@
 package Schiffeversenken;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 
 public class AIPlayer extends Player {
 
 	private int[][] priorities = new int[game.getPitchSize()][game.getPitchSize()]; //Ein 2D Array mit Schussprioritaeten.
-	
+
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
 
-		for (int i = 0; i < priorities.length; i++) {							
-			for (int j = 0; j < priorities[i].length; j++) {					
+		for (int i = 0; i < priorities.length; i++) {
+			for (int j = 0; j < priorities[i].length; j++) {
 				priorities[i][j] = 100;											//Wert 100 als Standard Prioritaet in alle Arrayfelder
 			}
 		}
-
-		
 	}
 
 	@Override
@@ -41,7 +36,7 @@ public class AIPlayer extends Player {
 			}
 		}
 
-		for (int i = 0; i < priorities.length; i++) {							//setzt links und rechts oberhalb und 
+		for (int i = 0; i < priorities.length; i++) {							//setzt links und rechts oberhalb und
 			for (int j = 0; j < priorities[i].length; j++) {					//links und rechts unterhalb aller Treffer
 				if (priorities[i][j] == -1) {									//auf Prioritaet 0
 					for (int k = 0; k < 4; k++) {
@@ -52,7 +47,7 @@ public class AIPlayer extends Player {
 						}
 					}
 					if (i-- > 0) {												//setzt, wenn das Schiff mehr als 1 Feld getroffen ist,
-						if (priorities[i--][j] == -1) {							//für vertikale Schiffe die Felder links und rechts 
+						if (priorities[i--][j] == -1) {							//für vertikale Schiffe die Felder links und rechts
 							if (j-- > 0) {										//auf Prio 0
 								priorities[i][j--] = 0;							//und für horizontale Schiffe die Felder links und rechts
 							}													//auf Prio 0
@@ -111,11 +106,29 @@ public class AIPlayer extends Player {
 		}
 		shoot(maxs.get(ThreadLocalRandom.current().nextInt(0,maxs.size())));
 	}
+
+   public static void placeShipsAutomatically(Player player) {
+      // Für die Spielfeldgröße
+      // Main.currentGame.getPitchSize();
+
+      // Für die Anzahl der Schiffe einer größe
+      // Main.currentGame.getNumberOfShips(int size);
+
+      // Array mit anzahl der Schiffe der jeweiligen größe
+      // int[] remainingShipsToBePlaced = {0, 0, 0, 0};       // index = schiffsgröße - 2
+      // int[] remainingShipsToBePlaced = {0, 0, 0, 0, 0, 0}; // index = schiffsgröße
+      // for (int i = 2; i <= 5; i++) {
+      //    remainingShipsToBePlaced[i - 2] = Main.currentGame.getNumberOfShips(i); // wenn index = schiffsgröße - 2
+      //    remainingShipsToBePlaced[i] = Main.currentGame.getNumberOfShips(i);     // wenn index = schiffsgröße
+      // }
+
+      // Zum Platzieren dann
+      // player.placeShipAt(Ship ship, Point point);
+   }
 }
 
-
-
-/* Schiffe dürfen sich nicht berühren -> Felder neben Schiffen prio 0
+/**
+ * Schiffe dürfen sich nicht berühren -> Felder neben Schiffen prio 0
  * Schiffe sind mindestens 2 Felder lang und in einer Linie -> sobald 2 benachbarte Teile bekannt sind ist entweder:
  * 			  an einem Ende answer 0 -> an anderem Ende prio max
  * 				  für answer 1: offenes Ende prio max
@@ -126,10 +139,9 @@ public class AIPlayer extends Player {
  * 					für answer 2: Schiff zerstört
  * 				  für answer 2: Schiff zerstört
  * Schiffanzahl pro Länge bekannt -> Lücken die kleiner als größtes noch vorhandenes Schiff sind -> Felder prio 0
- * 
+ *
  * Bei answer 0: direkte Nachbarfelder: prio norm -10
  * 				 diagonale Nachbarfelder: prio norm -5
- * 
+ *
  * Schuss immer auf höchste prio
- * 
  */
