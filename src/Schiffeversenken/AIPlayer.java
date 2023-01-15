@@ -4,19 +4,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class AIPlayer extends Player {
 
+	private int[][] priorities = new int[game.getPitchSize()][game.getPitchSize()]; //Ein 2D Array mit Schussprioritaeten.
+	
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
 
-		int[][] priorities = new int[game.getPitchSize()][game.getPitchSize()]; //Ein 2D Array mit Schussprioritaeten.
 		for (int i = 0; i < priorities.length; i++) {							
 			for (int j = 0; j < priorities[i].length; j++) {					
-				priorities[i][j] = 100;											//Wert 100 als Standard Prioritaet
+				priorities[i][j] = 100;											//Wert 100 als Standard Prioritaet in alle Arrayfelder
 			}
 		}
+
+		
+	}
+
+	@Override
+	public void pass() {
+		// Teile der KI mit, dass sie einen weiteren Zug ausüben darf
+		otherPlayer.setMyTurn(false);
+		setMyTurn(true);
 
 		for (int i = 0; i < game.getPitchSize(); i++) {							//traegt die Werte aus PointsShot negativ ein
 			for (int j = 0; j < game.getPitchSize(); j++) {
@@ -83,16 +94,23 @@ public class AIPlayer extends Player {
 				}
 			}
 		}
-		
-	}
 
-	@Override
-	public void pass() {
-		// Teile der KI mit, dass sie einen weiteren Zug ausüben darf
-		otherPlayer.setMyTurn(false);
-		setMyTurn(true);
+		ArrayList<Point> maxs = new ArrayList<Point>();
+		int max = 0;
+		maxs.add(new Point(0, 0));
+		for (int i = 0; i < game.getPitchSize(); i++) {							//traegt die Werte aus PointsShot negativ ein
+			for (int j = 0; j < game.getPitchSize(); j++) {
+				if (priorities[i][j] > max) {
+					maxs.clear();
+					maxs.add(new Point(i, j));
+					max = priorities[i][j];
+				} else if (priorities[i][j] == max) {
+					maxs.add(new Point(i, j));
+				}
+			}
+		}
+		shoot(maxs.get(ThreadLocalRandom.current().nextInt(0,maxs.size())));
 	}
-
 }
 
 
