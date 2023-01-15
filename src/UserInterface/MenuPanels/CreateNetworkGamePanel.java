@@ -2,7 +2,6 @@ package UserInterface.MenuPanels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.awt.event.*;
 import java.awt.GridBagConstraints;
@@ -21,7 +20,6 @@ import Schiffeversenken.Game;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
-import Schiffeversenken.SaveGameHandler;
 import Schiffeversenken.SettingsHandler;
 import UserInterface.Menu;
 import UserInterface.UIComponents.BackgroundPanel;
@@ -171,13 +169,9 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
             } else {
                startGameButton.setEnabled(false);
                String savedGameID = savedGames[Integer.parseInt(selectedLoadGame.substring(0, selectedLoadGame.indexOf("."))) - 1];
-               try {
-                  new SaveGameHandler(savedGameID);
-               } catch (FileNotFoundException e1) {
-                  // TODO Auto-generated catch block (Felix)
+               if (!Main.currentGame.load(savedGameID, Main.currentGame.getPlayer1())) {
                   loadGameInputPanel.setError("Fehler beim Laden");
                   startGameButton.setEnabled(true);
-                  e1.printStackTrace();
                }
             }
          }

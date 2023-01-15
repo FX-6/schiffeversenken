@@ -6,7 +6,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.IOException;
 import java.awt.event.*;
 import java.util.Date;
 
@@ -19,7 +18,6 @@ import javax.swing.JTextField;
 import Notifications.Notification;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.Main;
-import Schiffeversenken.SaveGameHandler;
 import Schiffeversenken.SettingsHandler;
 import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.GameMapPanel;
@@ -112,12 +110,9 @@ public class GameWindow extends JFrame implements Notification {
       savePanel.add(savePanelButton, savePanelButtonConstraints);
       savePanelButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            try {
-               new SaveGameHandler(String.valueOf(new Date().getTime()), saveNameInput.getText());
+            if (Main.currentGame.save(String.valueOf(new Date().getTime()), saveNameInput.getText(), Main.currentGame.getPlayer1())) {
                savePanel.setVisible(false);
-            } catch (IOException e1) {
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
+            } else {
                saveNameInputPanel.setError("Fehler beim speichern");
             }
          }
