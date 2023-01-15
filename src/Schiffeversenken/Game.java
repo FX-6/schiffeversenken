@@ -13,8 +13,6 @@ import Notifications.NotificationCenter;
 /**
  * Stellt das Backend eines Schiffeversenken Spiels dar. Verwaltet Laden und Speichern eines Spiels, sowie die Vergabe des ersten Zugs an einen Spieler 
  * und das Übertragen der Spielfeldgröße und Anzahl der Schiffe an das Netzwerk, sofern das Spiel über das Netzwerk gespielt wird.
- * 
- * @author patrick
  *
  */
 
