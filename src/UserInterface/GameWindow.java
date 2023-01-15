@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Notifications.Notification;
+import Schiffeversenken.AIPlayer;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
@@ -235,6 +236,11 @@ public class GameWindow extends JFrame implements Notification {
       GridBagConstraints autoPlaceShipsButtonConstraints = addShipsGameMenu.defaultConstraints;
       autoPlaceShipsButtonConstraints.gridy = 1;
       addShipsGameMenu.add(autoPlaceShipsButton, autoPlaceShipsButtonConstraints);
+      autoPlaceShipsButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            AIPlayer.placeShipsAutomatically(Main.currentGame.getPlayer1());
+         }
+      });
 
       JButton addShips2Button = new InputButton("Größe 2: 0/1", true);
       addShips2Button.setMinimumSize(addShipsGameMenu.largeDimension());
