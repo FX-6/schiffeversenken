@@ -9,15 +9,30 @@ import javax.swing.JFrame;
 
 import Notifications.NotificationCenter;
 
+
+/**
+ * Stellt das Backend eines Schiffeversenken Spiels dar. Verwaltet Laden und Speichern eines Spiels, sowie die Vergabe des ersten Zugs an einen Spieler 
+ * und das Übertragen der Spielfeldgröße und Anzahl der Schiffe an das Netzwerk, sofern das Spiel über das Netzwerk gespielt wird.
+ * 
+ * @author patrick
+ *
+ */
+
 public class Game {
 	
-	private int pitchSize;
-	private Player player1;					// Mensch oder AI
-	private Player player2;					// Netzwerk oder AI
-	private int[] ships = new int[4];
+	private int pitchSize;					// Speicherung der Seitenlänge des Spielfelds
+	private Player player1;					// Speicherung des ersten Spielers (In jedem Fall entweder instanceof HumanPlayer oder AIPlayer)
+	private Player player2;					// Speicherung des zweiten Spielers (In jedem Fall entweder instanceof NetworkPlayer oder AIPlayer)
+	private int[] ships = new int[4];		// Speicherung der Anzahl der Schiffe pro Schiffsgröße. Schiffsgröße = Index + 2
 	
-	private int readyCount = 0;
+	private int readyCount = 0;				// Speicherung der Anzahl an Aufrufen von "this.setReady(Object sender)", also der Anzahl an Spieler, die ihre Schiffe gesetzt haben. Element der Menge {0, 1, 2}
 	
+	
+	/**
+	 * Erstellt eine neue Instanz des Backends eines Spiels.
+	 * 
+	 * @param pitchSize Seitenlänge In Feldern des Spielfelds für dieses Spiel.
+	 */
 	public Game(int pitchSize) {
 		this.pitchSize = pitchSize;
 		
@@ -30,9 +45,9 @@ public class Game {
 	public Player getPlayer2() {return this.player2;}
 	public int getNumberOfShips(int size) {return ships[size - 2];}
 	
-	public void setPitchSize(int size) {this.pitchSize = size;
-										player1.refreshPointsShot();
-										player2.refreshPointsShot();}
+	public void setPitchSize(int size) {this.pitchSize = size;			// Neu setzen der Spielfeldgröße. Wird vor jedem Spiel aufgerufen, da eine Instanz dieser Klasse bereits während der Menü-Phase
+										player1.refreshPointsShot();	// erezugt wird, bevor die Spielfeldgröße festgelegt wurde. Da dasselbe auch für die Objekte player1 und player2 gilt, müssen
+										player2.refreshPointsShot();}	// die Größen der zweidimensionalen Arrays "Player.pointsShot[][]" neu gesetzt werden
 	public void setShips(int[] ships) {this.ships = ships;}
 	public void setPlayer1(Player player) {this.player1 = player;}
 	public void setPlayer2(Player player) {this.player2 = player;}
@@ -52,8 +67,7 @@ public class Game {
 	 * 			beschrieben werden konnte.
 	 */
 	public boolean save(String id, String name, Object sender) {
-		// true, falls Speichern erfolgreich, andernfalls false
-		
+		// "save <id>"-Befehl an das Netzwerk übertragen, sofern das Spiel über das Netzwerk gespielt wird und das Speichern nicht durch einen über das Netzwerk empfangenen Befehl ausgelöst wird
 		if (!(sender instanceof NetworkPlayer) && player2 instanceof NetworkPlayer) {
 			NetworkPlayer player2 = (NetworkPlayer) this.player2;
 			player2.sendSave(id);
@@ -83,14 +97,13 @@ public class Game {
 	 * 			gelesen werden konnte.
 	 */
 	public boolean load(String id, Object sender) {
-		// true, falls Laden erfolgreich, andernfalls false
-		
+		// "load <id>"-Befehl an das Netzwerk übertragen, sofern das Spiel über das Netzwerk gespielt wird und das Laden nicht durch einen über das Netzwerk empfangenen Befehl ausgelöst wird
 		if (!(sender instanceof NetworkPlayer) && player2 instanceof NetworkPlayer) {
 			NetworkPlayer player2 = (NetworkPlayer) this.player2;
 			player2.sendLoad(id);
 		}
 		
-		// ... Spielstand laden
+		// Spielstand laden
 		try {
 			new SaveGameHandler(id);
 		} catch (FileNotFoundException e) {
@@ -103,7 +116,8 @@ public class Game {
 	
 	
 	/**
-	 * Überittelt im Falle eines Spiels über das Netzwerk die Größe des Spielfelds und die Anzahl der Schiffe über das Netzwerk.
+	 * Überittelt im Falle eines Spiels über das Netzwerk die Größe des Spielfelds und die Anzahl der Schiffe über das Netzwerk, sofern diese Instanz
+	 * des Spiels als Server agiert.
 	 */
 	public void transmittSizeAndShips() {
 		if (player2 instanceof NetworkPlayer) {
