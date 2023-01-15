@@ -21,6 +21,9 @@ import java.awt.image.BufferedImage;
 // TODO Change link to zip file? (Felix)
 // TODO Auto-generated catch blocks (Felix)
 
+/**
+ * Verwaltet die Einstellungen die der Spieler macht und speichert sie zugänglich für den Rest des Codes.
+ */
 public class SettingsHandler {
    private static String appName = "Schiffeversenken";
    public static String appDirectory = (
@@ -34,6 +37,9 @@ public class SettingsHandler {
    public static String saveGamesPath = appDirectory + File.separator + "Saves";
    public static SettingsValues settingsValues;
 
+   /**
+    * Läd alle Einstellungen aus den jeweiligen Files, muss zu beginn des Programms aufgerufen werden.
+    */
    public static void initSettings() {
       File appDir = new File(appDirectory);
       File saveDir = new File(saveGamesPath);
@@ -84,26 +90,61 @@ public class SettingsHandler {
       settingsValues.pullColors();
    }
 
+   /**
+    * Liefert den Wert einer Einstellung als <code>String</code>.
+    *
+    * @param name Name der Einstellung als <code>String</code>
+    * @return Gibt den Wert der Einstellung als <code>String</code> zurück
+    */
    public static String getSettingString(String name) {
       return settingsValues.getValue(name);
    }
 
+   /**
+    * Liefert den Wert einer Einstellung als <code>int</code>.
+    *
+    * @param name Name der Einstellung als <code>String</code>
+    * @return Gibt den Wert der Einstellung als <code>int</code> zurück
+    */
    public static int getSettingInt(String name) {
       return Integer.parseInt(SettingsHandler.getSettingString(name));
    }
 
+   /**
+    * Setzt den Wert einer Einstellung auf einen neuen Wert.
+    *
+    * @param name Name der Einstellung als <code>String</code>
+    * @param value Neuer Wert der Einstellung als <code>String</code>
+    */
    public static void setSettingString(String name, String value) {
       settingsValues.setValue(name, value);
    }
 
+   /**
+    * Setzt den Wert einer Einstellung auf einen neuen Wert.
+    *
+    * @param name Name der Einstellung als <code>String</code>
+    * @param value Neuer Wert der Einstellung als <code>int</code>
+    */
    public static void setSettingInt(String name, int value) {
       SettingsHandler.setSettingString(name, Integer.toString(value));
    }
 
+   /**
+    * Liefert alle Themename in einem Array zurück.
+    *
+    * @return Ein <code>String</code> Array mit allen Themenamen.
+    */
    public static String[] getThemes() {
       return new File(themesFolderPath).list();
    }
 
+   /**
+    * Liefert ein Bild als {@link BufferedImage} zurück.
+    *
+    * @param name Name des Bilds
+    * @return {@link BufferedImage} object des Bilds
+    */
    public static BufferedImage getImage(String name) {
       BufferedImage image = null;
 
@@ -117,10 +158,22 @@ public class SettingsHandler {
       return image;
    }
 
+   /**
+    * Liefert alle Dateinamen der speicherstände in einem Array zurück.
+    *
+    * @return Ein <code>String</code> Array mit allen Themenamen.
+    */
    public static String[] getSavedGames() {
       return new File(saveGamesPath).list();
    }
 
+   /**
+    * Prüft ob die übergebenen Inputs erlaubt sind.
+    *
+    * @param inputField Der Inputfield indem der Wert eingegeben wurde
+    * @param inputPanel Das Panel indem das InputField ist um einen error zu setzen
+    * @return <code>true</code> wenn es keinen fehler gab, ansonsten <code>false</code>
+    */
    public static boolean validateSizeInput(InputTextField inputField, InputPanel inputPanel) {
       int input = 0;
       try {
@@ -142,6 +195,13 @@ public class SettingsHandler {
       return true;
    }
 
+   /**
+    * Prüft ob die übergebenen Inputs erlaubt sind.
+    *
+    * @param inputField Die Inputfields indem der Wert eingegeben wurde als Array
+    * @param inputPanel Die Panels indem die InputFields sind als Array um einen error zu setzen
+    * @return <code>true</code> wenn es keinen fehler gab, ansonsten <code>false</code>
+    */
    public static boolean validateGameInput(InputTextField[] inputFields, InputPanel[] inputPanels) {
       int[] inputs = new int[5];
       int invalidInputs = 0;
@@ -210,15 +270,30 @@ public class SettingsHandler {
       return true;
    }
 
+   /**
+    * Liefert zurück ob der Input eine valid IPv4 ist
+    *
+    * @param ip Die IP als <code>String</code>
+    * @return <code>true</code> wenn die IP valid ist, ansonsten <code>false</code>
+    */
    public static boolean validateIP(String ip) {
       return ip.matches("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
    }
 
+   /**
+    * Liefert zurück ob der Input eine valid HEX-Color scheme ist.
+    *
+    * @param ip Die HEX-Color als <code>String</code> mit vorangehendem <code>#</code>.
+    * @return <code>true</code> wenn die HEX-Color valid ist, ansonsten <code>false</code>
+    */
    public static boolean validateHEXColor(String color) {
       return color.matches("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$");
    }
 }
 
+/*
+ * Wird intern genutzt um die Werte zu speichern, enthält auch Standardwerte.
+ */
 class SettingsValues {
    private String color_background = "#FFFFFF";
    private String color_foreground = "#000000";
@@ -243,6 +318,9 @@ class SettingsValues {
    private String settingsFileString = "";
    private String colorsFileString = "";
 
+   /**
+    * Holt sich die generellen Einstellungen
+    */
    public SettingsValues() {
       try {
          File settingsFile = new File(SettingsHandler.settingsFilePath);
@@ -326,6 +404,9 @@ class SettingsValues {
       }
    }
 
+   /**
+    * Holt sich das Colorscheme des aktuellen Themes
+    */
    public void pullColors() {
       try {
          File colorsFile = new File(this.colorsFilePath);
@@ -377,6 +458,12 @@ class SettingsValues {
       }
    }
 
+   /**
+    * Liefert intern den Wert einer Einstellung zurück.
+    *
+    * @param name Name der Einstellung als <code>String</code>
+    * @return Wert der Einstellung als <code>String</code>
+    */
    public String getValue(String name) {
       if (name == "settings.image.size") {
          return this.settings_image_size;
@@ -415,6 +502,12 @@ class SettingsValues {
       } else { return ""; }
    }
 
+   /**
+    * Setzt intern den Wert einer Einstellung auf einen neuen Wert.
+    *
+    * @param name Name der Einstellung als <code>String</code>
+    * @param value Neuer Wert der Einstellugn als <code>String</code>
+    */
    public void setValue(String name, String value) {
       if (name == "settings.image.size") {
          this.color_background = value;
