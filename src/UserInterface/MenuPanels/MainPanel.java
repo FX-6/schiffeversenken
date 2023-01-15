@@ -27,7 +27,7 @@ public class MainPanel extends BackgroundPanel {
       WrapperPanel wrapperPanel = new WrapperPanel();
 
       // title
-      JLabel headerLabel = new HeaderLabel("Schiffeversenken");
+      JLabel headerLabel = new HeaderLabel("Schiffeversenken", true);
       GridBagConstraints headerLabelConstraints = defaultConstraints;
       headerLabelConstraints.gridy = 0;
       wrapperPanel.add(headerLabel, headerLabelConstraints);

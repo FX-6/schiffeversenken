@@ -32,7 +32,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
    private static final long serialVersionUID = 1L;
 
    private int receivedGameData = 0; 				// Zählt, ob Schiffe und Spielfeldgröße empfangen wurden. Wenn 2, dann wird GameWindow geöffnet
-   
+
    private Menu parent;
    private InputPanel ipInputPanel;
 
@@ -84,7 +84,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       wrapperPanel.add(ipInputPanel, sizeInputPanelConstraints);
 
       // join game as header
-      JLabel joinGameAsLabel = new HeaderLabel("Spiel beitreten als");
+      JLabel joinGameAsLabel = new HeaderLabel("Spiel beitreten als", true);
       GridBagConstraints joinGameAsLabelConstraints = defaultConstraints;
       joinGameAsLabelConstraints.gridy = 1;
       wrapperPanel.add(joinGameAsLabel, joinGameAsLabelConstraints);
@@ -128,7 +128,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       wrapperPanel.add(joinGameAsAiButton, joinGameAsAiButtonConstraints);
 
       // create game as header
-      JLabel createGameAsLabel = new HeaderLabel("Spiel erstellen als");
+      JLabel createGameAsLabel = new HeaderLabel("Spiel erstellen als", true);
       GridBagConstraints createGameAsLabelConstraints = defaultConstraints;
       createGameAsLabelConstraints.gridy = 3;
       wrapperPanel.add(createGameAsLabel, createGameAsLabelConstraints);
@@ -223,7 +223,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
       };
       timer.schedule(task, 0, 250);
    }
-   
+
    private void animateWaitingForServer() {
 	   Timer timer = new Timer();
 	   TimerTask task = new TimerTask() {
@@ -249,16 +249,16 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
           joinGameAsAiButton.setEnabled(false);
           createGameAsAiButton.setEnabled(false);
           ipInput.setEnabled(false);
-          
+
           ipInput.setText("Warten auf Server ");
           animateWaitingForServer();
       }
-      
+
       else if (type.equals("ConnectionFailed")) {
          ipInput.setText("");
          ipInputPanel.setError("Connection failed");
       }
-      
+
       else if (type.equals("ReceivedGameData")) {
     	  receivedGameData++;
     	  if (receivedGameData == 2) {
@@ -266,7 +266,7 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
     		  parent.openGameWindow();
     	  }
       }
-      
+
       else if (type.equals("GameLoaded")) {
     	  parent.openGameWindow();
       }

@@ -50,7 +50,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
       WrapperPanel wrapperPanel = new WrapperPanel();
 
       // IP Address heading
-      JLabel ipAddressLabel = new HeaderLabel();
+      JLabel ipAddressLabel = new HeaderLabel("Lädt...", true);
       try {
          ipAddressLabel.setText("IP: " + Inet4Address.getLocalHost().getHostAddress());
       } catch (UnknownHostException e1) {

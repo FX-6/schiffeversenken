@@ -85,7 +85,7 @@ public class GameWindow extends JFrame implements Notification {
 
       // error Label
       WrapperPanel errorPanel = new WrapperPanel();
-      JLabel errorLabel = new HeaderLabel("Error");
+      JLabel errorLabel = new HeaderLabel("Error", true);
       errorLabel.setForeground(Color.decode(SettingsHandler.getSettingString("color.error")));
       GridBagConstraints errorLabelConstraints = errorPanel.defaultConstraints;
       errorLabelConstraints.gridy = 0;

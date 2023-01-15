@@ -28,7 +28,7 @@ public class TutorialPanel extends BackgroundPanel {
       WrapperPanel wrapperPanel = new WrapperPanel();
 
       // header
-      JLabel headerLabel = new HeaderLabel("Anleitung");
+      JLabel headerLabel = new HeaderLabel("Anleitung", true);
       GridBagConstraints headerLabelConstraints = defaultConstraints;
       headerLabelConstraints.gridy = 0;
       wrapperPanel.add(headerLabel, headerLabelConstraints);
