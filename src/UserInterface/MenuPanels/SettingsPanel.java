@@ -96,6 +96,8 @@ public class SettingsPanel extends BackgroundPanel {
       JButton saveButton = new InputButton("Speichern", true);
       saveButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
+            SettingsHandler.setSettingString("settings.theme.path", (String)themeInput.getSelectedItem());
+
             if (SettingsHandler.validateHEXColor(backgroundInput.getText())) {
                backgroundInputPanel.setError("");
                SettingsHandler.setSettingString("color.background", backgroundInput.getText());

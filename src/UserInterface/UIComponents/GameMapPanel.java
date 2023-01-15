@@ -14,6 +14,9 @@ public class GameMapPanel extends UIPanel {
    private Point prevMouseLocation, windowPosition;
    private double zoomFactor = 1;
 
+   private Image waterImage = SettingsHandler.getImage("image_water");
+   private Image zoomedWaterImage = waterImage;
+
    public GameMapPanel() {
       super();
 
@@ -49,6 +52,9 @@ public class GameMapPanel extends UIPanel {
                if (zoomFactor > 0.5) { zoomFactor -= 0.1; }
             }
 
+            int zoomedItemSize = (int)(imageSize * zoomFactor);
+            zoomedWaterImage = waterImage.getScaledInstance(zoomedItemSize, zoomedItemSize, Image.SCALE_FAST);
+
             repaint();
 
             recenter(oldWidth);
@@ -74,7 +80,7 @@ public class GameMapPanel extends UIPanel {
 
       for (int row = 0; row < Main.currentGame.getPitchSize(); row++) {
          for (int column = 0; column < Main.currentGame.getPitchSize(); column++) {
-            g.drawImage(SettingsHandler.getImage("water.png").getScaledInstance(zoomedItemSize, zoomedItemSize, Image.SCALE_FAST), row * zoomedItemSize, column * zoomedItemSize, null);
+            g.drawImage(zoomedWaterImage, row * zoomedItemSize, column * zoomedItemSize, null);
          }
       }
    }

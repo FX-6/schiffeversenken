@@ -10,7 +10,7 @@ import Schiffeversenken.SettingsHandler;
 public class BackgroundPanel extends UIPanel {
    private static final long serialVersionUID = 1L;
 
-   protected String backgroundImage = "water.png";
+   protected String backgroundImage = "image_water";
 
    /**
     * Standard Hintergrund mit Wasser

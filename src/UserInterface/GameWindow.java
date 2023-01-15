@@ -297,7 +297,7 @@ public class GameWindow extends JFrame implements Notification {
       this.add(gameMap);
 
       // create clouds as background background
-      JPanel backgroundPanel2 = new BackgroundPanel("cloud.png");
+      JPanel backgroundPanel2 = new BackgroundPanel("image_cloud");
       backgroundPanel2.setSize(this.getSize());
       // this.add(backgroundPanel2);
 

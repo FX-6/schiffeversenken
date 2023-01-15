@@ -143,19 +143,10 @@ public class SettingsHandler {
     * Liefert ein Bild als {@link BufferedImage} zurück.
     *
     * @param name Name des Bilds
-    * @return {@link BufferedImage} object des Bilds
+    * @return {@link BufferedImage} object des Bilds, <code>null</code> bei einem Fehler
     */
    public static BufferedImage getImage(String name) {
-      BufferedImage image = null;
-
-      try {
-         image = ImageIO.read(new File(currentThemePath + name));
-      } catch (IOException e) {
-         // Auto-generated catch block
-         e.printStackTrace();
-      }
-
-      return image;
+      return settingsValues.getImage(name);
    }
 
    /**
@@ -314,6 +305,17 @@ class SettingsValues {
    private String settings_border_radius = "15";
    private String settings_theme_path = "Default";
 
+   private BufferedImage image_water;
+   private BufferedImage image_clouds;
+   private BufferedImage image_ship_2_destroyed;
+   private BufferedImage image_ship_2_healthy;
+   private BufferedImage image_ship_3_destroyed;
+   private BufferedImage image_ship_3_healthy;
+   private BufferedImage image_ship_4_destroyed;
+   private BufferedImage image_ship_4_healthy;
+   private BufferedImage image_ship_5_destroyed;
+   private BufferedImage image_ship_5_healthy;
+
    private String colorsFilePath = "";
    private String settingsFileString = "";
    private String colorsFileString = "";
@@ -397,7 +399,24 @@ class SettingsValues {
          secondQuote = settingsFileString.indexOf("\"", firstQuote);
          this.setValue(name, settingsFileString.substring(firstQuote, secondQuote));
 
-         this.colorsFilePath = SettingsHandler.themesFolderPath + File.separator + settingsFileString.substring(firstQuote, secondQuote) + File.separator + "colors.json";
+         String internalCurrentThemePath = SettingsHandler.themesFolderPath + File.separator + settingsFileString.substring(firstQuote, secondQuote) + File.separator;
+
+         try {
+            image_water = ImageIO.read(new File(internalCurrentThemePath + "water.png"));
+            image_clouds = ImageIO.read(new File(internalCurrentThemePath + "clouds.png"));
+            image_ship_2_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_2_destroyed.png"));
+            image_ship_2_healthy = ImageIO.read(new File(internalCurrentThemePath + "ship_2_healthy.png"));
+            image_ship_3_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_3_destroyed.png"));
+            image_ship_3_healthy = ImageIO.read(new File(internalCurrentThemePath + "ship_3_healthy.png"));
+            image_ship_4_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_4_destroyed.png"));
+            image_ship_4_healthy = ImageIO.read(new File(internalCurrentThemePath + "ship_4_healthy.png"));
+            image_ship_5_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_5_destroyed.png"));
+            image_ship_5_healthy = ImageIO.read(new File(internalCurrentThemePath + "ship_5_healthy.png"));
+         } catch (IOException e) {
+            e.printStackTrace();
+         }
+
+         this.colorsFilePath = internalCurrentThemePath + "colors.json";
       } catch (FileNotFoundException e) {
          // Auto-generated catch block
          e.printStackTrace();
@@ -465,39 +484,39 @@ class SettingsValues {
     * @return Wert der Einstellung als <code>String</code>
     */
    public String getValue(String name) {
-      if (name == "settings.image.size") {
+      if (name.equals("settings.image.size")) {
          return this.settings_image_size;
-      } else if (name == "settings.fontsize.small") {
+      } else if (name.equals("settings.fontsize.small")) {
          return this.settings_fontsize_small;
-      } else if (name == "settings.fontsize.large") {
+      } else if (name.equals("settings.fontsize.large")) {
          return this.settings_fontsize_large;
-      } else if (name == "settings.items.width") {
+      } else if (name.equals("settings.items.width")) {
          return this.settings_items_width;
-      } else if (name == "settings.items.height") {
+      } else if (name.equals("settings.items.height")) {
          return this.settings_items_height;
-      } else if (name == "settings.items.small.width") {
+      } else if (name.equals("settings.items.small.width")) {
          return this.settings_items_small_width;
-      } else if (name == "settings.items.small.height") {
+      } else if (name.equals("settings.items.small.height")) {
          return this.settings_items_small_height;
-      } else if (name == "settings.items.padding") {
+      } else if (name.equals("settings.items.padding")) {
          return this.settings_items_padding;
-      } else if (name == "settings.border.width") {
+      } else if (name.equals("settings.border.width")) {
          return this.settings_border_width;
-      } else if (name == "settings.border.radius") {
+      } else if (name.equals("settings.border.radius")) {
          return this.settings_border_radius;
-      } else if (name == "settings.theme.path") {
+      } else if (name.equals("settings.theme.path")) {
          return this.settings_theme_path;
-      } else if (name == "color.background") {
+      } else if (name.equals("color.background")) {
          return this.color_background;
-      } else if (name == "color.foreground") {
+      } else if (name.equals("color.foreground")) {
          return this.color_foreground;
-      } else if (name == "color.button.background") {
+      } else if (name.equals("color.button.background")) {
          return this.color_button_background;
-      } else if (name == "color.button.foreground") {
+      } else if (name.equals("color.button.foreground")) {
          return this.color_button_foreground;
-      } else if (name == "color.error") {
+      } else if (name.equals("color.error")) {
          return this.color_error;
-      } else if (name == "color.border") {
+      } else if (name.equals("color.border")) {
          return this.color_border;
       } else { return ""; }
    }
@@ -509,39 +528,39 @@ class SettingsValues {
     * @param value Neuer Wert der Einstellugn als <code>String</code>
     */
    public void setValue(String name, String value) {
-      if (name == "settings.image.size") {
+      if (name.equals("settings.image.size")) {
          this.color_background = value;
-      } else if (name == "settings.fontsize.small") {
+      } else if (name.equals("settings.fontsize.small")) {
          this.color_foreground = value;
-      } else if (name == "settings.fontsize.large") {
+      } else if (name.equals("settings.fontsize.large")) {
          this.color_foreground = value;
-      } else if (name == "settings.items.width") {
+      } else if (name.equals("settings.items.width")) {
          this.color_foreground = value;
-      } else if (name == "settings.items.height") {
+      } else if (name.equals("settings.items.height")) {
          this.color_button_background = value;
-      } else if (name == "settings.items.small.width") {
+      } else if (name.equals("settings.items.small.width")) {
          this.color_button_foreground = value;
-      } else if (name == "settings.items.small.height") {
+      } else if (name.equals("settings.items.small.height")) {
          this.color_error = value;
-      } else if (name == "settings.items.padding") {
+      } else if (name.equals("settings.items.padding")) {
          this.color_border = value;
-      } else if (name == "settings.border.width") {
+      } else if (name.equals("settings.border.width")) {
          this.settings_border_width = value;
-      } else if (name == "settings.border.radius") {
+      } else if (name.equals("settings.border.radius")) {
          this.settings_border_radius = value;
-      } else if (name == "settings.theme.path") {
+      } else if (name.equals("settings.theme.path")) {
          this.settings_theme_path = value;
-      } else if (name == "color.background") {
+      } else if (name.equals("color.background")) {
          this.color_background = value;
-      } else if (name == "color.foreground") {
+      } else if (name.equals("color.foreground")) {
          this.color_foreground = value;
-      } else if (name == "color.button.background") {
+      } else if (name.equals("color.button.background")) {
          this.color_button_background = value;
-      } else if (name == "color.button.foreground") {
+      } else if (name.equals("color.button.foreground")) {
          this.color_button_foreground = value;
-      } else if (name == "color.error") {
+      } else if (name.equals("color.error")) {
          this.color_error = value;
-      } else if (name == "color.border") {
+      } else if (name.equals("color.border")) {
          this.color_border = value;
       }
 
@@ -576,5 +595,35 @@ class SettingsValues {
             e.printStackTrace();
          }
       }
+   }
+
+   /**
+    * Liefert intern ein Bild {@link BufferedImage} zurück.
+    *
+    * @param name Der Name des Bilds
+    * @return Das Bild als {@link BufferedImage}
+    */
+   public BufferedImage getImage(String name) {
+      if (name.equals("image_clouds")) {
+         return image_clouds;
+      } else if (name.equals("image_water")) {
+         return image_water;
+      } else if (name.equals("image_ship_2_destroyed")) {
+         return image_ship_2_destroyed;
+      } else if (name.equals("image_ship_2_healthy")) {
+         return image_ship_2_healthy;
+      } else if (name.equals("image_ship_3_destroyed")) {
+         return image_ship_3_destroyed;
+      } else if (name.equals("image_ship_3_healthy")) {
+         return image_ship_3_healthy;
+      } else if (name.equals("image_ship_4_destroyed")) {
+         return image_ship_4_destroyed;
+      } else if (name.equals("image_ship_4_healthy")) {
+         return image_ship_4_healthy;
+      } else if (name.equals("image_ship_5_destroyed")) {
+         return image_ship_5_destroyed;
+      } else if (name.equals("image_ship_5_healthy")) {
+         return image_ship_5_healthy;
+      } else { return null; }
    }
 }
