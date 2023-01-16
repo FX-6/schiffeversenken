@@ -75,6 +75,10 @@ public abstract class Player {
 	 */
 	public void refreshPointsShot() {
 		this.pointsShot = new int[game.getPitchSize()][game.getPitchSize()];
+		
+		for (int[] array : pointsShot) {
+			Arrays.fill(array, -1);
+		}
 	}
 	
 	
