@@ -19,13 +19,17 @@ public class GameMapPanel extends UIPanel {
    private double zoomFactor = 1;
    private boolean inMatch = false;
    private boolean viewingSelf = true;
+   private int currentFocusedX = Main.currentGame.getPitchSize() / 2;
+   private int currentFocusedY = Main.currentGame.getPitchSize() / 2;
+   private int currentlyPlacedShipSize = 2;
+   private int currentlyPlacedShipOrientation = 0;
 
    private Image cloudImage = SettingsHandler.getImage("image_clouds");
-   private Image zoomedCloudImage = cloudImage;
+   private Image zoomedCloudImage = cloudImage.getScaledInstance(100, 100, Image.SCALE_FAST);
    private Image waterImage = SettingsHandler.getImage("image_water");
-   private Image zoomedWaterImage = waterImage;
+   private Image zoomedWaterImage = waterImage.getScaledInstance(100, 100, Image.SCALE_FAST);
    private Image destroyedShipImage = SettingsHandler.getImage("image_ship_destroyed");
-   private Image zoomedDestroyedShipImage = destroyedShipImage;
+   private Image zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(100, 100, Image.SCALE_FAST);
 
    public GameMapPanel() {
       super();
@@ -48,6 +52,15 @@ public class GameMapPanel extends UIPanel {
             prevMouseLocation = currentMouseLocation;
             setLocation(windowPosition.x, windowPosition.y);
          }
+
+         public void mouseMoved(MouseEvent e) {
+            int zoomedItemSize = (int)(imageSize * zoomFactor);
+
+            currentFocusedX = e.getX() / zoomedItemSize;
+            currentFocusedY = e.getY() / zoomedItemSize;
+
+            repaint();
+         }
       });
 
       this.addMouseWheelListener(new MouseWheelListener() {
@@ -67,8 +80,6 @@ public class GameMapPanel extends UIPanel {
             zoomedWaterImage = waterImage.getScaledInstance(zoomedItemSize, zoomedItemSize, Image.SCALE_FAST);
             zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(zoomedItemSize, zoomedItemSize, Image.SCALE_FAST);
 
-            repaint();
-
             recenter(oldWidth);
          }
       });
@@ -78,14 +89,16 @@ public class GameMapPanel extends UIPanel {
 
    // TODO Fix (Felix)
    private void recenter(int oldWidth) {
-      int widthDif = oldWidth - this.getWidth();
-      this.setLocation(this.getX() + widthDif, this.getY() + widthDif);
+      // int widthDif = oldWidth - this.getWidth();
+      // this.setLocation(this.getX() + widthDif, this.getY() + widthDif);
       repaint();
    }
 
    public void finishedPlacing() { inMatch = true; repaint(); }
 
    public void changeDisplayedPlayer() { viewingSelf = !viewingSelf; repaint(); }
+
+   public void setCurrentlyPlacedShipSize(int size) { currentlyPlacedShipSize = size; }
 
    @Override
    protected void paintComponent(Graphics g) {
@@ -156,7 +169,7 @@ public class GameMapPanel extends UIPanel {
                      killedSize = i;
                   }
 
-                  Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + killedSize + "_destroyed").getScaledInstance(zoomedItemSize, zoomedItemSize, Image.SCALE_FAST);
+                  Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + killedSize + "_destroyed").getScaledInstance(zoomedItemSize * killedSize, zoomedItemSize, Image.SCALE_FAST);
 
                   AffineTransform backup = g2d.getTransform();
                   AffineTransform a = AffineTransform.getRotateInstance(Math.toRadians(90 * killedOrientation), 0, 0);
@@ -169,14 +182,17 @@ public class GameMapPanel extends UIPanel {
       } else if (!inMatch) {
          for (int row = 0; row < Main.currentGame.getPitchSize(); row++) {
             for (int column = 0; column < Main.currentGame.getPitchSize(); column++) {
+               System.out.println(getSize());
+               System.out.println(zoomedWaterImage.getWidth(null) + ", " + zoomedItemSize + ", " + row + ", " + column);
                g2d.drawImage(zoomedWaterImage, row * zoomedItemSize, column * zoomedItemSize, null);
+               g2d.drawRect(row * 100, column * 100, 100, 100);
             }
          }
 
          List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
 
          for (Ship ship : placedShips) {
-            Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + ship.getLength() + "_" + (ship.isDestroyed() ? "destroyed" : "healthy")).getScaledInstance(zoomedItemSize, zoomedItemSize, Image.SCALE_FAST);
+            Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + ship.getLength() + "_" + (ship.isDestroyed() ? "destroyed" : "healthy")).getScaledInstance(zoomedItemSize * ship.getLength(), zoomedItemSize, Image.SCALE_FAST);
 
             AffineTransform backup = g2d.getTransform();
             AffineTransform a = AffineTransform.getRotateInstance(Math.toRadians(90 * ship.getOrientation()), 0, 0);
@@ -194,6 +210,13 @@ public class GameMapPanel extends UIPanel {
                }
             }
          }
+
+         Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + currentlyPlacedShipSize + "_healthy").getScaledInstance(zoomedItemSize * currentlyPlacedShipSize, zoomedItemSize, Image.SCALE_FAST);
+         AffineTransform backup = g2d.getTransform();
+         AffineTransform a = AffineTransform.getRotateInstance(Math.toRadians(90 * currentlyPlacedShipOrientation), 0, 0);
+         g2d.setTransform(a);
+         g2d.drawImage(zoomedShipImage, currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, null);
+         g2d.setTransform(backup);
       }
    }
 }

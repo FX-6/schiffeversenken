@@ -255,7 +255,7 @@ public class GameWindow extends JFrame implements Notification {
          }
       });
 
-      JButton addShips2Button = new InputButton("Größe 2: 0/1", true);
+      JButton addShips2Button = new InputButton("Größe 2: 0/" + Main.currentGame.getNumberOfShips(2), true);
       addShips2Button.setMinimumSize(addShipsGameMenu.largeDimension());
       addShips2Button.setPreferredSize(addShipsGameMenu.largeDimension());
       addShips2Button.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -263,8 +263,13 @@ public class GameWindow extends JFrame implements Notification {
       GridBagConstraints addShips2ButtoncConstraints = addShipsGameMenu.defaultConstraints;
       addShips2ButtoncConstraints.gridy = 2;
       addShipsGameMenu.add(addShips2Button, addShips2ButtoncConstraints);
+      addShips2Button.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            gameMap.setCurrentlyPlacedShipSize(2);
+         }
+      });
 
-      JButton addShips3Button = new InputButton("Größe 3: 0/1", true);
+      JButton addShips3Button = new InputButton("Größe 3: 0/" + Main.currentGame.getNumberOfShips(3), true);
       addShips3Button.setMinimumSize(addShipsGameMenu.largeDimension());
       addShips3Button.setPreferredSize(addShipsGameMenu.largeDimension());
       addShips3Button.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -272,8 +277,13 @@ public class GameWindow extends JFrame implements Notification {
       GridBagConstraints addShips3ButtoncConstraints = addShipsGameMenu.defaultConstraints;
       addShips3ButtoncConstraints.gridy = 3;
       addShipsGameMenu.add(addShips3Button, addShips3ButtoncConstraints);
+      addShips3Button.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            gameMap.setCurrentlyPlacedShipSize(3);
+         }
+      });
 
-      JButton addShips4Button = new InputButton("Größe 4: 0/1", true);
+      JButton addShips4Button = new InputButton("Größe 4: 0/" + Main.currentGame.getNumberOfShips(4), true);
       addShips4Button.setMinimumSize(addShipsGameMenu.largeDimension());
       addShips4Button.setPreferredSize(addShipsGameMenu.largeDimension());
       addShips4Button.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -281,8 +291,13 @@ public class GameWindow extends JFrame implements Notification {
       GridBagConstraints addShips4ButtoncConstraints = addShipsGameMenu.defaultConstraints;
       addShips4ButtoncConstraints.gridy = 4;
       addShipsGameMenu.add(addShips4Button, addShips4ButtoncConstraints);
+      addShips4Button.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            gameMap.setCurrentlyPlacedShipSize(4);
+         }
+      });
 
-      JButton addShips5Button = new InputButton("Größe 5: 0/1", true);
+      JButton addShips5Button = new InputButton("Größe 5: 0/" + Main.currentGame.getNumberOfShips(5), true);
       addShips5Button.setMinimumSize(addShipsGameMenu.largeDimension());
       addShips5Button.setPreferredSize(addShipsGameMenu.largeDimension());
       addShips5Button.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -290,6 +305,11 @@ public class GameWindow extends JFrame implements Notification {
       GridBagConstraints addShips5ButtoncConstraints = gameMenu.defaultConstraints;
       addShips5ButtoncConstraints.gridy = 5;
       addShipsGameMenu.add(addShips5Button, addShips5ButtoncConstraints);
+      addShips5Button.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            gameMap.setCurrentlyPlacedShipSize(5);
+         }
+      });
 
       JButton addShipsReadyButton = new InputButton("BEREIT", true);
       addShipsReadyButton.setMinimumSize(addShipsGameMenu.largeDimension());
