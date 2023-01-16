@@ -116,7 +116,7 @@ public class AIPlayer extends Player {
 		//int ships = remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5];
 
 		for (int i = 0; i < 10; i++) {
-			player.removeAllShips();
+			
 			boolean done = false;
 			if (remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5] == 0) {
 				done = true;
@@ -125,7 +125,7 @@ public class AIPlayer extends Player {
 				System.out.println("succes!");
 				break;
 			}
-
+			player.removeAllShips();
 			for (int j = 2; j < 6; j++) {
 				boolean failed = false;
 				if (failed) {
