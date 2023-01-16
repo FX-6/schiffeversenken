@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.*;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,6 +21,7 @@ import Schiffeversenken.AIPlayer;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
+import Schiffeversenken.Ship;
 import UserInterface.UIComponents.BackgroundPanel;
 import UserInterface.UIComponents.GameMapPanel;
 import UserInterface.UIComponents.GameMenuPanel;
@@ -249,11 +251,6 @@ public class GameWindow extends JFrame implements Notification {
       GridBagConstraints autoPlaceShipsButtonConstraints = addShipsGameMenu.defaultConstraints;
       autoPlaceShipsButtonConstraints.gridy = 1;
       addShipsGameMenu.add(autoPlaceShipsButton, autoPlaceShipsButtonConstraints);
-      autoPlaceShipsButton.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            AIPlayer.placeShipsAutomatically(Main.currentGame.getPlayer1());
-         }
-      });
 
       JButton addShips2Button = new InputButton("Größe 2: 0/" + Main.currentGame.getNumberOfShips(2), true);
       addShips2Button.setMinimumSize(addShipsGameMenu.largeDimension());
@@ -325,6 +322,24 @@ public class GameWindow extends JFrame implements Notification {
             gameMenu.setVisible(true);
             addShipsGameMenu.setVisible(false);
             gameMap.finishedPlacing();
+         }
+      });
+
+      autoPlaceShipsButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            AIPlayer.placeShipsAutomatically(Main.currentGame.getPlayer1());
+
+            gameMap.repaint();
+
+            List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
+            int[] placedShipsOfSize = {0, 0, 0, 0, 0, 0};
+            for (Ship ship : placedShips) {
+               placedShipsOfSize[ship.getLength()]++;
+            }
+            addShips2Button.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+            addShips3Button.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+            addShips4Button.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+            addShips5Button.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
          }
       });
 

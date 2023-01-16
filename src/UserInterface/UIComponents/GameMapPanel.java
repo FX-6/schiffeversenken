@@ -182,33 +182,20 @@ public class GameMapPanel extends UIPanel {
       } else if (!inMatch) {
          for (int row = 0; row < Main.currentGame.getPitchSize(); row++) {
             for (int column = 0; column < Main.currentGame.getPitchSize(); column++) {
-               System.out.println(getSize());
-               System.out.println(zoomedWaterImage.getWidth(null) + ", " + zoomedItemSize + ", " + row + ", " + column);
                g2d.drawImage(zoomedWaterImage, row * zoomedItemSize, column * zoomedItemSize, null);
-               g2d.drawRect(row * 100, column * 100, 100, 100);
             }
          }
 
          List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
 
          for (Ship ship : placedShips) {
-            Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + ship.getLength() + "_" + (ship.isDestroyed() ? "destroyed" : "healthy")).getScaledInstance(zoomedItemSize * ship.getLength(), zoomedItemSize, Image.SCALE_FAST);
+            Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + ship.getLength() + "_healthy").getScaledInstance(zoomedItemSize * ship.getLength(), zoomedItemSize, Image.SCALE_FAST);
 
             AffineTransform backup = g2d.getTransform();
             AffineTransform a = AffineTransform.getRotateInstance(Math.toRadians(90 * ship.getOrientation()), 0, 0);
             g2d.setTransform(a);
             g2d.drawImage(zoomedShipImage, ship.getRootPoint().x * zoomedItemSize, ship.getRootPoint().y * zoomedItemSize, null);
             g2d.setTransform(backup);
-
-            if (!ship.isDestroyed() && ship.getDamage().length > 0) {
-               for (int damagePos : ship.getDamage()) {
-                  if (ship.getOrientation() == 0) {
-                     g2d.drawImage(zoomedDestroyedShipImage, (ship.getRootPoint().x + damagePos) * zoomedItemSize, ship.getRootPoint().y * zoomedItemSize, null);
-                  } else {
-                     g2d.drawImage(zoomedDestroyedShipImage, ship.getRootPoint().x * zoomedItemSize, (ship.getRootPoint().y + damagePos) * zoomedItemSize, null);
-                  }
-               }
-            }
          }
 
          Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + currentlyPlacedShipSize + "_healthy").getScaledInstance(zoomedItemSize * currentlyPlacedShipSize, zoomedItemSize, Image.SCALE_FAST);
