@@ -307,6 +307,7 @@ class SettingsValues {
 
    private BufferedImage image_water;
    private BufferedImage image_clouds;
+   private BufferedImage image_ship_destroyed;
    private BufferedImage image_ship_2_destroyed;
    private BufferedImage image_ship_2_healthy;
    private BufferedImage image_ship_3_destroyed;
@@ -404,6 +405,7 @@ class SettingsValues {
          try {
             image_water = ImageIO.read(new File(internalCurrentThemePath + "water.png"));
             image_clouds = ImageIO.read(new File(internalCurrentThemePath + "clouds.png"));
+            image_ship_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_destroyed.png"));
             image_ship_2_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_2_destroyed.png"));
             image_ship_2_healthy = ImageIO.read(new File(internalCurrentThemePath + "ship_2_healthy.png"));
             image_ship_3_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_3_destroyed.png"));
@@ -608,6 +610,8 @@ class SettingsValues {
          return image_clouds;
       } else if (name.equals("image_water")) {
          return image_water;
+      } else if (name.equals("image_ship_destroyed")) {
+         return image_ship_destroyed;
       } else if (name.equals("image_ship_2_destroyed")) {
          return image_ship_2_destroyed;
       } else if (name.equals("image_ship_2_healthy")) {
