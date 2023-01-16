@@ -84,6 +84,9 @@ public class GameWindow extends JFrame implements Notification {
       // no layout for absolute Positioning
       this.setLayout(null);
 
+      // background map
+      GameMapPanel gameMap = new GameMapPanel();
+
       // error Label
       WrapperPanel errorPanel = new WrapperPanel();
       JLabel errorLabel = new HeaderLabel("Error", true);
@@ -143,6 +146,16 @@ public class GameWindow extends JFrame implements Notification {
       GridBagConstraints changePlayerButtonConstraints = gameMenu.doubleSecondConstraints;
       changePlayerButtonConstraints.gridy = 0;
       gameMenu.add(changePlayerButton, changePlayerButtonConstraints);
+      changePlayerButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            gameMap.changeDisplayedPlayer();
+            if (currentPlayerLabel.getText().equals("Du")) {
+               currentPlayerLabel.setText("Gegner:in");
+            } else {
+               currentPlayerLabel.setText("Du");
+            }
+         }
+      });
 
       JLabel remainingShipsHeaderLabel = new HeaderLabel("Verbleibende Schiffe", true);
       remainingShipsHeaderLabel.setMinimumSize(gameMenu.largeDimension());
@@ -291,6 +304,7 @@ public class GameWindow extends JFrame implements Notification {
             // TODO Send ready signal (Felix)
             gameMenu.setVisible(true);
             addShipsGameMenu.setVisible(false);
+            gameMap.finishedPlacing();
          }
       });
 
@@ -298,7 +312,6 @@ public class GameWindow extends JFrame implements Notification {
       this.add(addShipsGameMenu);
 
       // create background as gameMap
-      JPanel gameMap = new GameMapPanel();
       gameMap.setLocation(this.getWidth() / 2 - gameMap.getWidth() / 2, this.getHeight() / 2 - gameMap.getHeight() / 2);
       this.add(gameMap);
 

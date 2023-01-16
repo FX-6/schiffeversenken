@@ -247,6 +247,7 @@ public class SaveGameHandler {
 			}
 			
 		}
+		reader.close();
 		
 		NotificationCenter.sendNotification("GameLoaded", null);				// Für UI zum aktualisieren
 		
