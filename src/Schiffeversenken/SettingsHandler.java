@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import UserInterface.UIComponents.InputPanel;
 import UserInterface.UIComponents.InputTextField;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 // TODO Change link to zip file? (Felix)
@@ -150,6 +151,16 @@ public class SettingsHandler {
    }
 
    /**
+    * Liefert ein um 90° im Uhrzeigersinn rotiertes Bild als {@link BufferedImage} zurück.
+    *
+    * @param name Name des Bilds
+    * @return {@link BufferedImage} object des Bilds, <code>null</code> bei einem Fehler
+    */
+   public static BufferedImage getRotatedImage(String name) {
+      return rotateImage(settingsValues.getImage(name));
+   }
+
+   /**
     * Liefert alle Dateinamen der speicherstände in einem Array zurück.
     *
     * @return Ein <code>String</code> Array mit allen Themenamen.
@@ -279,6 +290,26 @@ public class SettingsHandler {
     */
    public static boolean validateHEXColor(String color) {
       return color.matches("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$");
+   }
+
+   /**
+    * Dreht ein Bild um 90° im Uhrzeigersinn.
+    *
+    * @param sourceImage Des Bild das gedreht werden soll als {@link BufferedImage}
+    * @return Das gedrehte Bild als {@link BufferedImage}
+    */
+   public static BufferedImage rotateImage(BufferedImage sourceImage) {
+      int width = sourceImage.getWidth();
+      int height = sourceImage.getHeight();
+
+      BufferedImage rotatedImage = new BufferedImage(height, width, sourceImage.getType());
+
+      Graphics2D graphics2D = rotatedImage.createGraphics();
+      graphics2D.translate((height - width) / 2, (height - width) / 2);
+      graphics2D.rotate(Math.PI / 2, height / 2, width / 2);
+      graphics2D.drawRenderedImage(sourceImage, null);
+
+      return rotatedImage;
    }
 }
 

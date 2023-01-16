@@ -6,15 +6,20 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import Notifications.Notification;
 import Schiffeversenken.AIPlayer;
@@ -41,6 +46,9 @@ public class GameWindow extends JFrame implements Notification {
 	 *
 	 */
 	private static final long serialVersionUID = -6451215725250748331L;
+
+   private WrapperPanel errorPanel = new WrapperPanel();
+   private JLabel errorLabel = new HeaderLabel("", true);
 
 	public GameWindow() {
 		super("Schiffeversenken");
@@ -90,8 +98,6 @@ public class GameWindow extends JFrame implements Notification {
       GameMapPanel gameMap = new GameMapPanel();
 
       // error Label
-      WrapperPanel errorPanel = new WrapperPanel();
-      JLabel errorLabel = new HeaderLabel("Error", true);
       errorLabel.setForeground(Color.decode(SettingsHandler.getSettingString("color.error")));
       GridBagConstraints errorLabelConstraints = errorPanel.defaultConstraints;
       errorLabelConstraints.gridy = 0;
@@ -349,6 +355,60 @@ public class GameWindow extends JFrame implements Notification {
       // create background as gameMap
       gameMap.setLocation(this.getWidth() / 2 - gameMap.getWidth() / 2, this.getHeight() / 2 - gameMap.getHeight() / 2);
       this.add(gameMap);
+      gameMap.addMouseListener(new MouseAdapter() {
+         public void mouseClicked(MouseEvent e) {
+            if (SwingUtilities.isLeftMouseButton(e)) {
+               if (gameMap.placeShip()) {
+                  List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
+                  int[] placedShipsOfSize = {0, 0, 0, 0, 0, 0};
+                  for (Ship ship : placedShips) {
+                     placedShipsOfSize[ship.getLength()]++;
+                  }
+                  addShips2Button.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+                  addShips3Button.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+                  addShips4Button.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+                  addShips5Button.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+               } else { setError("Nicht möglich"); }
+            } else if (SwingUtilities.isRightMouseButton(e)) {
+               gameMap.changeCurrentlyPlacedShipOrientation();
+            }
+         }
+      });
+
+      this.addKeyListener(new KeyListener() {
+         @Override
+         public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+               if (gameMap.placeShip()) {
+                  List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
+                  int[] placedShipsOfSize = {0, 0, 0, 0, 0, 0};
+                  for (Ship ship : placedShips) {
+                     placedShipsOfSize[ship.getLength()]++;
+                  }
+                  addShips2Button.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+                  addShips3Button.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+                  addShips4Button.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+                  addShips5Button.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+               } else { setError("Nicht möglich"); }
+            } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+               gameMap.changeCurrentlyPlacedShipOrientation();
+            } else if (e.getExtendedKeyCode() == KeyEvent.VK_UP) {
+               gameMap.changeCurrentlyFocusedTile(false, -1);
+            } else if (e.getExtendedKeyCode() == KeyEvent.VK_RIGHT) {
+               gameMap.changeCurrentlyFocusedTile(true, 1);
+            } else if (e.getExtendedKeyCode() == KeyEvent.VK_DOWN) {
+               gameMap.changeCurrentlyFocusedTile(false, 1);
+            } else if (e.getExtendedKeyCode() == KeyEvent.VK_LEFT) {
+               gameMap.changeCurrentlyFocusedTile(true, -1);
+            }
+         }
+
+         @Override
+         public void keyTyped(KeyEvent e) {}
+
+         @Override
+         public void keyReleased(KeyEvent e) {}
+      });
 
       // create clouds as background background
       JPanel backgroundPanel2 = new BackgroundPanel("image_cloud");
@@ -364,6 +424,19 @@ public class GameWindow extends JFrame implements Notification {
             backgroundPanel2.setSize(getSize());
          }
       });
+   }
+
+   public void setError(String text) {
+      errorLabel.setText(text);
+
+      errorPanel.setVisible(true);
+
+      new Timer().schedule(new TimerTask() {
+         @Override
+         public void run() {
+            errorPanel.setVisible(false);
+         }
+      }, 2000);
    }
 
 	public void hideFrame() {

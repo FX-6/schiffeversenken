@@ -98,7 +98,25 @@ public class GameMapPanel extends UIPanel {
 
    public void changeDisplayedPlayer() { viewingSelf = !viewingSelf; repaint(); }
 
-   public void setCurrentlyPlacedShipSize(int size) { currentlyPlacedShipSize = size; }
+   public void changeCurrentlyFocusedTile(boolean horizontal, int amount) {
+      if (horizontal) {
+         if (currentFocusedX + amount >= 0 && currentFocusedX + amount < Main.currentGame.getPitchSize()) { currentFocusedX += amount; }
+      } else {
+         if (currentFocusedY + amount >= 0 && currentFocusedY + amount < Main.currentGame.getPitchSize()) { currentFocusedY += amount; }
+      }
+   }
+
+   public void setCurrentlyPlacedShipSize(int size) { currentlyPlacedShipSize = size; repaint(); }
+
+   public void changeCurrentlyPlacedShipOrientation() { currentlyPlacedShipOrientation = (currentlyPlacedShipOrientation == 1 ? 0 : 1); repaint(); }
+
+   public boolean placeShip() {
+      if (!inMatch) {
+         Boolean returnVal = Main.currentGame.getPlayer1().placeShipAt(new Ship(currentlyPlacedShipSize, currentlyPlacedShipOrientation), new Schiffeversenken.Point(currentFocusedX + 1, currentFocusedY + 1));
+         repaint();
+         return returnVal;
+      } else { return false; }
+   }
 
    @Override
    protected void paintComponent(Graphics g) {
@@ -189,21 +207,26 @@ public class GameMapPanel extends UIPanel {
          List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
 
          for (Ship ship : placedShips) {
-            Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + ship.getLength() + "_healthy").getScaledInstance(zoomedItemSize * ship.getLength(), zoomedItemSize, Image.SCALE_FAST);
+            if (ship.getOrientation() == 0) {
+               Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + ship.getLength() + "_healthy").getScaledInstance(zoomedItemSize * ship.getLength(), zoomedItemSize, Image.SCALE_FAST);
 
-            AffineTransform backup = g2d.getTransform();
-            AffineTransform a = AffineTransform.getRotateInstance(Math.toRadians(90 * ship.getOrientation()), 0, 0);
-            g2d.setTransform(a);
-            g2d.drawImage(zoomedShipImage, ship.getRootPoint().x * zoomedItemSize, ship.getRootPoint().y * zoomedItemSize, null);
-            g2d.setTransform(backup);
+               g2d.drawImage(zoomedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize, (ship.getRootPoint().y - 1) * zoomedItemSize, null);
+            } else {
+               Image zoomedShipImage = SettingsHandler.getRotatedImage("image_ship_" + ship.getLength() + "_healthy").getScaledInstance(zoomedItemSize, zoomedItemSize * ship.getLength(), Image.SCALE_FAST);
+
+               g2d.drawImage(zoomedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize, (ship.getRootPoint().y - 1) * zoomedItemSize, null);
+            }
          }
 
-         Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + currentlyPlacedShipSize + "_healthy").getScaledInstance(zoomedItemSize * currentlyPlacedShipSize, zoomedItemSize, Image.SCALE_FAST);
-         AffineTransform backup = g2d.getTransform();
-         AffineTransform a = AffineTransform.getRotateInstance(Math.toRadians(90 * currentlyPlacedShipOrientation), 0, 0);
-         g2d.setTransform(a);
-         g2d.drawImage(zoomedShipImage, currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, null);
-         g2d.setTransform(backup);
+         if (currentlyPlacedShipOrientation == 0) {
+            Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + currentlyPlacedShipSize + "_healthy").getScaledInstance(zoomedItemSize * currentlyPlacedShipSize, zoomedItemSize, Image.SCALE_FAST);
+
+            g2d.drawImage(zoomedShipImage, currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, null);
+         } else {
+            Image zoomedShipImage = SettingsHandler.getRotatedImage("image_ship_" + currentlyPlacedShipSize + "_healthy").getScaledInstance(zoomedItemSize, zoomedItemSize * currentlyPlacedShipSize, Image.SCALE_FAST);
+
+            g2d.drawImage(zoomedShipImage, currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, null);
+         }
       }
    }
 }
