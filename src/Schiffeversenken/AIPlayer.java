@@ -116,24 +116,50 @@ public class AIPlayer extends Player {
 		//int ships = remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5];
 
 		for (int i = 0; i < 10; i++) {
-			//System.out.println("reebreakpoint");
+			boolean done = false;
+			if (remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5] == 0) {
+				done = true;
+			}
+			if (done) {
+				System.out.println("succes!");
+				break;
+			}
+
 			for (int j = 2; j < 6; j++) {
+				boolean failed = false;
+				if (failed) {
+					break;
+				}
 				while (remainingShipsToBePlaced[j]>0) {
+					if (failed) {
+						break;
+					}
 					for (int k = 0; k < 500; k++) {
-						System.out.println("inner");
+						if (failed) {
+							break;
+						}
+						
 						if (player.placeShipAt(new Ship(j, (int) Math.floor(Math.random() * 2)), new Point((int) (Math.random() * (Main.currentGame.getPitchSize() + 1)), (int) (Math.random() * (Main.currentGame.getPitchSize() + 1))))){
-							//remainingShipsToBePlaced[j]--;
-							k = 100;
+							remainingShipsToBePlaced[j]--;
+							k = 500;
+							System.out.println("placed a ship");
+						} else {
+							System.out.println("missed a place");
 						}
 						if (k == 499) {
-							j = 6;
+							failed = true;
+							System.out.println("failed a try");
 						}
 					}
-					remainingShipsToBePlaced[j]--;
+					
 				}
 			}
 		}
-		System.out.println("placeShipsAutomatically failed 10 times");
+
+		if (remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5] > 0) {
+			System.out.println("placeShipsAutomatically failed 10 times");
+		}
+		
     	// Für die Spielfeldgröße
     	// Main.currentGame.getPitchSize();
 
