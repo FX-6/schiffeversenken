@@ -200,6 +200,25 @@ public abstract class Player {
 		return null;
 	}
 	
+	/**
+	 * Entfernt die Plazierung das übergebene Schiff.
+	 * Darf nur aufgerufen werden, wenn dieser Spieler "this.game.setReady(this)" noch NICHT aufgerufen hat.
+	 * 
+	 * @param ship Schiff, das entfernt werden soll.
+	 * @return
+	 */
+	public boolean removeShip(Ship ship) {
+		return ships.remove(ship);
+	}
+	
+	/**
+	 * Entfernt alle bereits plazierten Schiffe.
+	 * Darf nur aufgerufen werden, wenn dieser Spieler "this.game.setReady(this)" noch NICHT aufgerufen hat.
+	 */
+	public void removeAllShips() {
+		ships.clear();
+	}
+	
 	
 	
 	/**
