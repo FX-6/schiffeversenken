@@ -6,104 +6,121 @@ import Notifications.NotificationCenter;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
-import UserInterface.MenuPanels.CreateNetworkGamePanel;
-import UserInterface.MenuPanels.CreateSingleplayerGamePanel;
-import UserInterface.MenuPanels.MainPanel;
-import UserInterface.MenuPanels.NetworkGamePanel;
-import UserInterface.MenuPanels.SettingsPanel;
-import UserInterface.MenuPanels.TutorialPanel;
+import UserInterface.MenuPanels.*;
 
+/**
+ * Das Fenster des Menüs.
+ */
 public class Menu extends JFrame {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 2989383731928612512L;
+	private static final long serialVersionUID = 1L;
 
 	public GameWindow gameWindow;
 
+	/**
+	 * Erstellt das Fenster des Menüs.
+	 */
 	public Menu() {
 		super("Schiffeversenken");
 		showMenu();
-		setup();
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.pack();
+		this.setMinimumSize(getSize());
+		this.setSize(900, 650);
+		this.setLocationRelativeTo(null);
 		showFrame();
 	}
 
+	/**
+	 * Versteckt das Fenster.
+	 */
 	public void hideFrame() {
 		this.setVisible(false);
 	}
 
+	/**
+	 * Zeigt das Fenster.
+	 */
 	public void showFrame() {
 		this.setVisible(true);
 	}
 
-
-
-
-	private void setup() {
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		pack();
-		setMinimumSize(getSize());
-		setSize(900, 650);
-		setLocationRelativeTo(null);
-	}
-
-	// Zeigt das Hauptmenü in diesem Fenster an
+	/**
+	 * Zeigt das Hauptmenü in diesem Fenster an.
+	 */
 	public void showMenu() {
 		NotificationCenter.removeAllObservers(getContentPane());
 		MainPanel menu = new MainPanel(this);
-
-		setContentPane(menu);
-		validate();
+		this.setContentPane(menu);
+		this.validate();
 	}
 
-
-	// Zeigt die Einstellungen in diesem Fenster an
+	/**
+	 * Zeigt die Einstellungen in diesem Fenster an.
+	 */
 	public void showSettings() {
 		NotificationCenter.removeAllObservers(getContentPane());
 		SettingsPanel settings = new SettingsPanel(this);
-		setContentPane(settings);
-		validate();
+		this.setContentPane(settings);
+		this.validate();
 	}
 
-   // Zeigt die Spielanleitung
-   public void showTutorial() {
-      NotificationCenter.removeAllObservers(getContentPane());
-      TutorialPanel tutorial = new TutorialPanel(this);
-      setContentPane(tutorial);
-      validate();
-   }
+	/**
+	 * Zeigt die Spielanleitung.
+	 */
+	public void showTutorial() {
+		NotificationCenter.removeAllObservers(getContentPane());
+		TutorialPanel tutorial = new TutorialPanel(this);
+		this.setContentPane(tutorial);
+		this.validate();
+	}
 
-   // Zeigt die Inputs für's Singleplayer game
-   public void showCreateSingleplayerGame(GameType type) {
-      NotificationCenter.removeAllObservers(getContentPane());
-      CreateSingleplayerGamePanel newGame = new CreateSingleplayerGamePanel(this, type);
-      setContentPane(newGame);
-      validate();
-   }
+	/**
+	 * Zeigt die Inputs für's Singleplayer game.
+	 *
+	 * @param type Art des Spiels
+	 */
+	public void showCreateSingleplayerGame(GameType type) {
+		NotificationCenter.removeAllObservers(getContentPane());
+		CreateSingleplayerGamePanel newGame = new CreateSingleplayerGamePanel(this, type);
+		this.setContentPane(newGame);
+		this.validate();
+	}
 
-	// Zeigt die Paramter zum Spielstart an
+	/**
+	 * Zeigt die Paramter zum Spielstart an.
+	 *
+	 * @param type Art des Spiels
+	 */
 	public void showCreateNetworkGame(GameType type) {
 		NotificationCenter.removeAllObservers(getContentPane());
 		CreateNetworkGamePanel newGame = new CreateNetworkGamePanel(this, type);
-		setContentPane(newGame);
-		validate();
+		this.setContentPane(newGame);
+		this.validate();
 	}
 
-
+	/**
+	 * Zeigt die Inputs zum Beitreten eins Spiels an.
+	 *
+	 * @param type
+	 */
 	public void showNetworkGame(GameType type) {
 		NotificationCenter.removeAllObservers(getContentPane());
 		NetworkGamePanel joinGame = new NetworkGamePanel(this, type);
-		setContentPane(joinGame);
-		validate();
+		this.setContentPane(joinGame);
+		this.validate();
 	}
 
-
+	/**
+	 * Öffnet das Fenster zum Spielen.
+	 */
 	public void openGameWindow() {
 		this.hideFrame();
 		gameWindow = new GameWindow();
 	}
 
+	/**
+	 * Schliest das Fenster zum Spielen.
+	 */
 	public void closeGameWindow() {
 		if (gameWindow != null) {
 			NotificationCenter.removeAllObservers(gameWindow);
@@ -115,6 +132,12 @@ public class Menu extends JFrame {
 		this.showFrame();
 	}
 
+	/**
+	 * Erstellt ein Spiel.
+	 *
+	 * @param pitchSize Größe des Spielfelds
+	 * @param type      Art des Spiels
+	 */
 	public void createGame(int pitchSize, GameType type) {
 		new Thread(new Runnable() {
 			public void run() {
@@ -123,15 +146,13 @@ public class Menu extends JFrame {
 		}, "StartConnection").start();
 	}
 
+	/**
+	 * Verlässt ein Spiel.
+	 *
+	 * @param status Grund für das Verlassen
+	 */
 	public void exitGame(GameExitStatus status) {
 		Main.currentGame.exit(this, status);
-		closeGameWindow();
+		this.closeGameWindow();
 	}
-
-
-
-
-
-
-
 }
