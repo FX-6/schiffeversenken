@@ -108,26 +108,28 @@ public class AIPlayer extends Player {
 	}
 
 	public static void placeShipsAutomatically(Player player) {
-		int[] remainingShipsToBePlaced = {0, 0, 0, 0, 0, 0};
-		for (int i = 2; i <= 5; i++) {
-			remainingShipsToBePlaced[i] = Main.currentGame.getNumberOfShips(i);
-		}
-
+		player.removeAllShips();
+		boolean failed = false;
+		boolean done = false;
+		
+		
 		//int ships = remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5];
 
-		for (int i = 0; i < 10; i++) {
-			
-			boolean done = false;
-			if (remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5] == 0) {
-				done = true;
+		for (int i = 0; i < 2000; i++) {
+			failed = false;
+			int[] remainingShipsToBePlaced = {0, 0, 0, 0, 0, 0};
+			for (int i2 = 2; i2 <= 5; i2++) {
+				remainingShipsToBePlaced[i2] = Main.currentGame.getNumberOfShips(i2);
 			}
+			System.out.println(remainingShipsToBePlaced[2] + " " + remainingShipsToBePlaced[3] + " " + remainingShipsToBePlaced[4] + " " + remainingShipsToBePlaced[5]);
+
 			if (done) {
-				System.out.println("succes!");
+				System.out.println("succes! at try: " + i);
 				break;
 			}
 			player.removeAllShips();
 			for (int j = 2; j < 6; j++) {
-				boolean failed = false;
+				//failed = false;
 				if (failed) {
 					break;
 				}
@@ -142,24 +144,30 @@ public class AIPlayer extends Player {
 						
 						if (player.placeShipAt(new Ship(j, (int) Math.floor(Math.random() * 2)), new Point((int) (Math.random() * (Main.currentGame.getPitchSize() + 1)), (int) (Math.random() * (Main.currentGame.getPitchSize() + 1))))){
 							remainingShipsToBePlaced[j]--;
+							//System.out.println("placed ship type: " + j + " Number: " + (remainingShipsToBePlaced[j] + 1) + " at try " + (k+1));
 							k = 500;
-							System.out.println("placed a ship");
+							if (remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5] == 0) {
+								done = true;
+							}
 						} else {
-							System.out.println("missed a place");
+							//System.out.println("missed a place");
 						}
 						if (k == 499) {
 							failed = true;
-							System.out.println("failed a try");
+							System.out.println("failed try " + (i+1) + " at ship type: " + j + " Number: " + (remainingShipsToBePlaced[j]));
 						}
 					}
 				}
 			}
 		}
 
-		if (remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5] > 0) {
-			System.out.println("placeShipsAutomatically failed 10 times");
-		}
-		
+		//if (Main.currentGame.getNumberOfShips(2) + Main.currentGame.getNumberOfShips(3) + Main.currentGame.getNumberOfShips(4) + Main.currentGame.getNumberOfShips(5) > 0) {
+		//	System.out.println("placeShipsAutomatically failed 10 times");
+		//}
+		if (failed) {
+			player.removeAllShips();
+			System.out.println("Failed");
+		}		
     	// Für die Spielfeldgröße
     	// Main.currentGame.getPitchSize();
 
