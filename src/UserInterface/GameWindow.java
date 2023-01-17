@@ -43,6 +43,7 @@ import UserInterface.UIComponents.WrapperPanel;
 public class GameWindow extends JFrame implements Notification {
 	private static final long serialVersionUID = 1L;
 
+   private boolean inMatch = false;
    private boolean viewingSelf = true;
    private WrapperPanel errorPanel = new WrapperPanel();
    private JLabel errorLabel = new HeaderLabel("", true);
@@ -321,6 +322,7 @@ public class GameWindow extends JFrame implements Notification {
             // TODO Send ready signal (Felix)
             gameMenu.setVisible(true);
             addShipsGameMenu.setVisible(false);
+            inMatch = true;
             gameMap.finishedPlacing();
          }
       });
@@ -344,9 +346,9 @@ public class GameWindow extends JFrame implements Notification {
       gameMap.addMouseListener(new MouseAdapter() {
          public void mouseClicked(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e)) {
-               if (gameMap.placeShip()) {
+               if (!inMatch && gameMap.placeShip()) {
                   updateButtonLabels();
-               } else { setError("Nicht möglich"); }
+               } else { if (!inMatch) { setError("Platzieren nicht möglich"); } }
             } else if (SwingUtilities.isRightMouseButton(e)) {
                gameMap.changeCurrentlyPlacedShipOrientation();
             }
@@ -357,9 +359,9 @@ public class GameWindow extends JFrame implements Notification {
          @Override
          public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-               if (gameMap.placeShip()) {
+               if ( !inMatch && gameMap.placeShip()) {
                   updateButtonLabels();
-               } else { setError("Nicht möglich"); }
+               } else { if (!inMatch) { setError("Platzieren nicht möglich"); } }
             } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                gameMap.changeCurrentlyPlacedShipOrientation();
             } else if (e.getExtendedKeyCode() == KeyEvent.VK_UP) {
