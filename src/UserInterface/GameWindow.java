@@ -319,11 +319,27 @@ public class GameWindow extends JFrame implements Notification {
       addShipsGameMenu.add(addShipsReadyButton, addShipsReadyButtonConstraints);
       addShipsReadyButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            // TODO Send ready signal (Felix)
-            gameMenu.setVisible(true);
-            addShipsGameMenu.setVisible(false);
-            inMatch = true;
-            gameMap.finishedPlacing();
+            boolean allShipsPlaced = true;
+
+            int[] placedShipsOfSize = {0, 0, 0, 0, 0, 0};
+            List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
+            for (Ship ship : placedShips) {
+               placedShipsOfSize[ship.getLength()]++;
+            }
+
+            for (int i = 2; i <= 5; i++) {
+               if (placedShipsOfSize[i] != Main.currentGame.getNumberOfShips(i)) {
+                  allShipsPlaced = false;
+               }
+            }
+
+            if (allShipsPlaced) {
+               gameMenu.setVisible(true);
+               addShipsGameMenu.setVisible(false);
+               inMatch = true;
+               gameMap.finishedPlacing();
+               Main.currentGame.setReady(Main.currentGame.getPlayer1());
+            } else { setError("Nicht alles platziert."); }
          }
       });
 
