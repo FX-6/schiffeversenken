@@ -1,13 +1,9 @@
 package UserInterface.UIComponents;
 
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.util.List;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.*;
 
 import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
@@ -99,17 +95,31 @@ public class GameMapPanel extends UIPanel {
 	private void recenter(int oldWidth) {
 		// int widthDif = oldWidth - this.getWidth();
 		// this.setLocation(this.getX() + widthDif, this.getY() + widthDif);
-		repaint();
+		this.repaint();
 	}
 
 	public void finishedPlacing() {
 		inMatch = true;
-		repaint();
+
+		this.repaint();
 	}
 
 	public void changeDisplayedPlayer() {
 		viewingSelf = !viewingSelf;
-		repaint();
+
+		this.repaint();
+	}
+
+	public void changePositionByTiles(boolean horizontal, int amount) {
+		int zoomedItemSize = (int) (imageSize * zoomFactor);
+
+		if (horizontal) {
+			setLocation(getLocation().x + (zoomedItemSize * -amount), getLocation().y);
+		} else {
+			setLocation(getLocation().x, getLocation().y + (zoomedItemSize * -amount));
+		}
+
+		this.repaint();
 	}
 
 	public void changeCurrentlyFocusedTile(boolean horizontal, int amount) {
@@ -122,16 +132,20 @@ public class GameMapPanel extends UIPanel {
 				currentFocusedY += amount;
 			}
 		}
+
+		this.repaint();
 	}
 
 	public void setCurrentlyPlacedShipSize(int size) {
 		currentlyPlacedShipSize = size;
-		repaint();
+
+		this.repaint();
 	}
 
 	public void changeCurrentlyPlacedShipOrientation() {
 		currentlyPlacedShipOrientation = (currentlyPlacedShipOrientation == 1 ? 0 : 1);
-		repaint();
+
+		this.repaint();
 	}
 
 	public boolean placeShip() {
@@ -139,7 +153,7 @@ public class GameMapPanel extends UIPanel {
 			Boolean returnVal = Main.currentGame.getPlayer1().placeShipAt(
 					new Ship(currentlyPlacedShipSize, currentlyPlacedShipOrientation),
 					new Schiffeversenken.Point(currentFocusedX + 1, currentFocusedY + 1));
-			repaint();
+			this.repaint();
 			return returnVal;
 		} else {
 			return false;
