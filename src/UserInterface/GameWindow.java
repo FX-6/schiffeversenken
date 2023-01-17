@@ -41,14 +41,20 @@ import UserInterface.UIComponents.WrapperPanel;
  */
 
 public class GameWindow extends JFrame implements Notification {
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -6451215725250748331L;
-
+   private boolean viewingSelf = true;
    private WrapperPanel errorPanel = new WrapperPanel();
    private JLabel errorLabel = new HeaderLabel("", true);
+   private JButton addShips2Button = new InputButton("Größe 2: 0/" + Main.currentGame.getNumberOfShips(2), true);
+   private JButton addShips3Button = new InputButton("Größe 3: 0/" + Main.currentGame.getNumberOfShips(3), true);
+   private JButton addShips4Button = new InputButton("Größe 4: 0/" + Main.currentGame.getNumberOfShips(4), true);
+   private JButton addShips5Button = new InputButton("Größe 5: 0/" + Main.currentGame.getNumberOfShips(5), true);
+   private JLabel currentPlayerLabel = new HeaderLabel("Du", false);
+   private JLabel remainingShipsSize2Label = new HeaderLabel("Größe 2: 1/1", false);
+   private JLabel remainingShipsSize3Label = new HeaderLabel("Größe 3: 1/1", false);
+   private JLabel remainingShipsSize4Label = new HeaderLabel("Größe 4: 1/1", false);
+   private JLabel remainingShipsSize5Label = new HeaderLabel("Größe 5: 1/1", false);
 
 	public GameWindow() {
 		super("Schiffeversenken");
@@ -137,7 +143,6 @@ public class GameWindow extends JFrame implements Notification {
       // create menu for when in game
       GameMenuPanel gameMenu = new GameMenuPanel();
 
-      JLabel currentPlayerLabel = new HeaderLabel("Du", false);
       currentPlayerLabel.setMinimumSize(gameMenu.smallDimension());
       currentPlayerLabel.setPreferredSize(gameMenu.smallDimension());
       currentPlayerLabel.setMaximumSize(gameMenu.smallDimension());
@@ -157,11 +162,8 @@ public class GameWindow extends JFrame implements Notification {
       changePlayerButton.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
             gameMap.changeDisplayedPlayer();
-            if (currentPlayerLabel.getText().equals("Du")) {
-               currentPlayerLabel.setText("Gegner:in");
-            } else {
-               currentPlayerLabel.setText("Du");
-            }
+            viewingSelf = !viewingSelf;
+            updateButtonLabels();
          }
       });
 
@@ -174,7 +176,6 @@ public class GameWindow extends JFrame implements Notification {
       remainingShipsHeaderLabelConstraints.gridy = 1;
       gameMenu.add(remainingShipsHeaderLabel, remainingShipsHeaderLabelConstraints);
 
-      JLabel remainingShipsSize2Label = new HeaderLabel("Größe 2: 1/1", false);
       remainingShipsSize2Label.setMinimumSize(gameMenu.smallDimension());
       remainingShipsSize2Label.setPreferredSize(gameMenu.smallDimension());
       remainingShipsSize2Label.setMaximumSize(gameMenu.smallDimension());
@@ -183,7 +184,6 @@ public class GameWindow extends JFrame implements Notification {
       remainingShipsSize2LabelConstraints.gridy = 2;
       gameMenu.add(remainingShipsSize2Label, remainingShipsSize2LabelConstraints);
 
-      JLabel remainingShipsSize3Label = new HeaderLabel("Größe 3: 1/1", false);
       remainingShipsSize3Label.setMinimumSize(gameMenu.smallDimension());
       remainingShipsSize3Label.setPreferredSize(gameMenu.smallDimension());
       remainingShipsSize3Label.setMaximumSize(gameMenu.smallDimension());
@@ -192,7 +192,6 @@ public class GameWindow extends JFrame implements Notification {
       remainingShipsSize3LabelConstraints.gridy = 2;
       gameMenu.add(remainingShipsSize3Label, remainingShipsSize3LabelConstraints);
 
-      JLabel remainingShipsSize4Label = new HeaderLabel("Größe 4: 1/1", false);
       remainingShipsSize4Label.setMinimumSize(gameMenu.smallDimension());
       remainingShipsSize4Label.setPreferredSize(gameMenu.smallDimension());
       remainingShipsSize4Label.setMaximumSize(gameMenu.smallDimension());
@@ -201,7 +200,6 @@ public class GameWindow extends JFrame implements Notification {
       remainingShipsSize4LabelConstraints.gridy = 3;
       gameMenu.add(remainingShipsSize4Label, remainingShipsSize4LabelConstraints);
 
-      JLabel remainingShipsSize5Label = new HeaderLabel("Größe 5: 1/1", false);
       remainingShipsSize5Label.setMinimumSize(gameMenu.smallDimension());
       remainingShipsSize5Label.setPreferredSize(gameMenu.smallDimension());
       remainingShipsSize5Label.setMaximumSize(gameMenu.smallDimension());
@@ -258,7 +256,6 @@ public class GameWindow extends JFrame implements Notification {
       autoPlaceShipsButtonConstraints.gridy = 1;
       addShipsGameMenu.add(autoPlaceShipsButton, autoPlaceShipsButtonConstraints);
 
-      JButton addShips2Button = new InputButton("Größe 2: 0/" + Main.currentGame.getNumberOfShips(2), true);
       addShips2Button.setMinimumSize(addShipsGameMenu.largeDimension());
       addShips2Button.setPreferredSize(addShipsGameMenu.largeDimension());
       addShips2Button.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -272,7 +269,6 @@ public class GameWindow extends JFrame implements Notification {
          }
       });
 
-      JButton addShips3Button = new InputButton("Größe 3: 0/" + Main.currentGame.getNumberOfShips(3), true);
       addShips3Button.setMinimumSize(addShipsGameMenu.largeDimension());
       addShips3Button.setPreferredSize(addShipsGameMenu.largeDimension());
       addShips3Button.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -286,7 +282,6 @@ public class GameWindow extends JFrame implements Notification {
          }
       });
 
-      JButton addShips4Button = new InputButton("Größe 4: 0/" + Main.currentGame.getNumberOfShips(4), true);
       addShips4Button.setMinimumSize(addShipsGameMenu.largeDimension());
       addShips4Button.setPreferredSize(addShipsGameMenu.largeDimension());
       addShips4Button.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -300,7 +295,6 @@ public class GameWindow extends JFrame implements Notification {
          }
       });
 
-      JButton addShips5Button = new InputButton("Größe 5: 0/" + Main.currentGame.getNumberOfShips(5), true);
       addShips5Button.setMinimumSize(addShipsGameMenu.largeDimension());
       addShips5Button.setPreferredSize(addShipsGameMenu.largeDimension());
       addShips5Button.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -337,15 +331,7 @@ public class GameWindow extends JFrame implements Notification {
 
             gameMap.repaint();
 
-            List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
-            int[] placedShipsOfSize = {0, 0, 0, 0, 0, 0};
-            for (Ship ship : placedShips) {
-               placedShipsOfSize[ship.getLength()]++;
-            }
-            addShips2Button.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
-            addShips3Button.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
-            addShips4Button.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
-            addShips5Button.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+            updateButtonLabels();
          }
       });
 
@@ -359,15 +345,7 @@ public class GameWindow extends JFrame implements Notification {
          public void mouseClicked(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e)) {
                if (gameMap.placeShip()) {
-                  List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
-                  int[] placedShipsOfSize = {0, 0, 0, 0, 0, 0};
-                  for (Ship ship : placedShips) {
-                     placedShipsOfSize[ship.getLength()]++;
-                  }
-                  addShips2Button.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
-                  addShips3Button.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
-                  addShips4Button.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
-                  addShips5Button.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+                  updateButtonLabels();
                } else { setError("Nicht möglich"); }
             } else if (SwingUtilities.isRightMouseButton(e)) {
                gameMap.changeCurrentlyPlacedShipOrientation();
@@ -380,15 +358,7 @@ public class GameWindow extends JFrame implements Notification {
          public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                if (gameMap.placeShip()) {
-                  List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
-                  int[] placedShipsOfSize = {0, 0, 0, 0, 0, 0};
-                  for (Ship ship : placedShips) {
-                     placedShipsOfSize[ship.getLength()]++;
-                  }
-                  addShips2Button.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
-                  addShips3Button.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
-                  addShips4Button.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
-                  addShips5Button.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+                  updateButtonLabels();
                } else { setError("Nicht möglich"); }
             } else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                gameMap.changeCurrentlyPlacedShipOrientation();
@@ -426,7 +396,7 @@ public class GameWindow extends JFrame implements Notification {
       });
    }
 
-   public void setError(String text) {
+   private void setError(String text) {
       errorLabel.setText(text);
 
       errorPanel.setVisible(true);
@@ -437,6 +407,79 @@ public class GameWindow extends JFrame implements Notification {
             errorPanel.setVisible(false);
          }
       }, 2000);
+   }
+
+   private void updateButtonLabels() {
+      int[] placedShipsOfSize = {0, 0, 0, 0, 0, 0};
+
+      List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
+
+      for (Ship ship : placedShips) {
+         placedShipsOfSize[ship.getLength()]++;
+      }
+
+      addShips2Button.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+      addShips3Button.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+      addShips4Button.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+      addShips5Button.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+
+      if (viewingSelf) {
+         currentPlayerLabel.setText("Du");
+
+         for (Ship ship : placedShips) {
+            if (ship.isDestroyed()) {
+               placedShipsOfSize[ship.getLength()]--;
+            }
+         }
+
+         remainingShipsSize2Label.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+         remainingShipsSize3Label.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+         remainingShipsSize4Label.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+         remainingShipsSize5Label.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+      } else {
+         currentPlayerLabel.setText("Gegner:in");
+
+         int[][] pointsShot = Main.currentGame.getPlayer1().getPointsShot();
+
+         for (int xCord = 0; xCord < Main.currentGame.getPitchSize(); xCord++) {
+            for (int yCord = 0; yCord < Main.currentGame.getPitchSize(); yCord++) {
+               if (pointsShot[xCord][yCord] == 2) {
+                  int killedRootX = xCord, killedRootY = yCord;
+                  boolean searchingX = true, searchingY = true;
+
+                  while (searchingX || searchingY) {
+                     if (killedRootX - 1 >= 0 && pointsShot[killedRootX - 1][killedRootY] == 1) {
+                        killedRootX--;
+                     } else { searchingX = false; }
+
+                     if (killedRootY - 1 >= 0 && pointsShot[killedRootX][killedRootY - 1] == 1) {
+                        killedRootY--;
+                     } else { searchingY = false; }
+                  }
+
+                  pointsShot[killedRootX][killedRootY] = 2;
+
+                  searchingX = true; searchingY = true;
+                  for (int i = 1; searchingX || searchingY; i++) {
+                     if (killedRootX + i < pointsShot.length && pointsShot[killedRootX + i][killedRootY] >= 1) {
+                        pointsShot[killedRootX + i][killedRootY] = -2;
+                     } else { searchingX = false; }
+
+                     if (killedRootY + i < pointsShot.length && pointsShot[killedRootX][killedRootY + i] >= 1) {
+                        pointsShot[killedRootX][killedRootY + i] = -2;
+                     } else { searchingY = false; }
+
+                     placedShipsOfSize[i]--;
+                  }
+               }
+            }
+         }
+
+         remainingShipsSize2Label.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+         remainingShipsSize3Label.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+         remainingShipsSize4Label.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+         remainingShipsSize5Label.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+      }
    }
 
 	public void hideFrame() {

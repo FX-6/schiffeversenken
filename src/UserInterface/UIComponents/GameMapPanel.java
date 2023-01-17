@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.*;
 
 import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
@@ -21,7 +22,7 @@ public class GameMapPanel extends UIPanel {
    private boolean viewingSelf = true;
    private int currentFocusedX = Main.currentGame.getPitchSize() / 2;
    private int currentFocusedY = Main.currentGame.getPitchSize() / 2;
-   private int currentlyPlacedShipSize = 2;
+   private int currentlyPlacedShipSize = 0;
    private int currentlyPlacedShipOrientation = 0;
 
    private Image cloudImage = SettingsHandler.getImage("image_clouds");
@@ -135,7 +136,37 @@ public class GameMapPanel extends UIPanel {
             }
          }
 
+         List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
 
+         for (Ship ship : placedShips) {
+            if (ship.getOrientation() == 0) {
+               Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + ship.getLength() + "_" + (ship.isDestroyed() ? "destroyed" : "healthy")).getScaledInstance(zoomedItemSize * ship.getLength(), zoomedItemSize, Image.SCALE_FAST);
+
+               g2d.drawImage(zoomedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize, (ship.getRootPoint().y - 1) * zoomedItemSize, null);
+
+               for (int damgePos = 0; damgePos < ship.getDamage().length && !ship.isDestroyed(); damgePos++) {
+                  if (ship.getDamage()[damgePos] == 1) {
+                     g2d.drawImage(zoomedDestroyedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize, (ship.getRootPoint().y - 1 + damgePos) * zoomedItemSize, null);
+                  }
+               }
+            } else {
+               Image zoomedShipImage = SettingsHandler.getRotatedImage("image_ship_" + ship.getLength() + "_healthy").getScaledInstance(zoomedItemSize, zoomedItemSize * ship.getLength(), Image.SCALE_FAST);
+
+               g2d.drawImage(zoomedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize, (ship.getRootPoint().y - 1) * zoomedItemSize, null);
+
+               for (int damgePos = 0; damgePos < ship.getDamage().length && !ship.isDestroyed(); damgePos++) {
+                  if (ship.getDamage()[damgePos] == 1) {
+                     g2d.drawImage(zoomedDestroyedShipImage, (ship.getRootPoint().x - 1 + damgePos) * zoomedItemSize, (ship.getRootPoint().y - 1) * zoomedItemSize, null);
+
+                  }
+               }
+            }
+         }
+
+         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+         g2d.setStroke(new BasicStroke(borderWidth));
+         g2d.setColor(borderColor);
+         g2d.drawRoundRect(currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, zoomedItemSize, zoomedItemSize, borderRadius, borderRadius);
       } else if (inMatch && !viewingSelf) {
          // -2 = part of destroyed ship; -1 = not shot yet; 0 = water; 1 = hit; 2 = destroyed ship
          int[][] pointsShot = Main.currentGame.getPlayer1().getPointsShot();
@@ -197,6 +228,11 @@ public class GameMapPanel extends UIPanel {
                }
             }
          }
+
+         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+         g2d.setStroke(new BasicStroke(borderWidth));
+         g2d.setColor(borderColor);
+         g2d.drawRoundRect(currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, zoomedItemSize, zoomedItemSize, borderRadius, borderRadius);
       } else if (!inMatch) {
          for (int row = 0; row < Main.currentGame.getPitchSize(); row++) {
             for (int column = 0; column < Main.currentGame.getPitchSize(); column++) {
@@ -218,7 +254,12 @@ public class GameMapPanel extends UIPanel {
             }
          }
 
-         if (currentlyPlacedShipOrientation == 0) {
+         if (currentlyPlacedShipSize <= 1) {
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setStroke(new BasicStroke(borderWidth));
+            g2d.setColor(borderColor);
+            g2d.drawRoundRect(currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, zoomedItemSize, zoomedItemSize, borderRadius, borderRadius);
+         } else if (currentlyPlacedShipOrientation == 0) {
             Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + currentlyPlacedShipSize + "_healthy").getScaledInstance(zoomedItemSize * currentlyPlacedShipSize, zoomedItemSize, Image.SCALE_FAST);
 
             g2d.drawImage(zoomedShipImage, currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, null);
