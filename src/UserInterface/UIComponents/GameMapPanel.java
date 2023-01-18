@@ -2,7 +2,6 @@ package UserInterface.UIComponents;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.util.List;
 
 import Schiffeversenken.Main;
@@ -63,7 +62,7 @@ public class GameMapPanel extends UIPanel {
 
 		this.addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				int oldWidth = getWidth();
+				int oldZommedItemSize = (int) (imageSize * zoomFactor);
 
 				if (e.getWheelRotation() < 0) {
 					// zoom in
@@ -77,26 +76,22 @@ public class GameMapPanel extends UIPanel {
 					}
 				}
 
-				int zoomedItemSize = (int) (imageSize * zoomFactor);
-				zoomedCloudImage = cloudImage.getScaledInstance(zoomedItemSize, zoomedItemSize, Image.SCALE_FAST);
-				zoomedWaterImage = waterImage.getScaledInstance(zoomedItemSize, zoomedItemSize, Image.SCALE_FAST);
-				zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(zoomedItemSize, zoomedItemSize,
+				int newZoomedItemSize = (int) (imageSize * zoomFactor);
+				zoomedCloudImage = cloudImage.getScaledInstance(newZoomedItemSize, newZoomedItemSize, Image.SCALE_FAST);
+				zoomedWaterImage = waterImage.getScaledInstance(newZoomedItemSize, newZoomedItemSize, Image.SCALE_FAST);
+				zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(newZoomedItemSize, newZoomedItemSize,
 						Image.SCALE_FAST);
 
-				recenter(oldWidth);
+				int widthDiff = (oldZommedItemSize - newZoomedItemSize) * Main.currentGame.getPitchSize() / 2;
+				setLocation(getX() + widthDiff, getY() + widthDiff);
+
+				getParent().repaint();
 			}
 		});
 	}
 
 	private void updateWindowPositionVar() {
 		this.windowPosition = this.getLocation();
-	}
-
-	// TODO Fix (Felix)
-	private void recenter(int oldWidth) {
-		// int widthDif = oldWidth - this.getWidth();
-		// this.setLocation(this.getX() + widthDif, this.getY() + widthDif);
-		this.getParent().repaint();
 	}
 
 	public void finishedPlacing() {
@@ -256,6 +251,8 @@ public class GameMapPanel extends UIPanel {
 						int killedSize = 2;
 						int killedOrientation = 0;
 
+						pointsShot[xCord][yCord] = 1;
+
 						// get root of destroyed ship
 						int killedRootX = xCord, killedRootY = yCord;
 						boolean searchingX = true, searchingY = true;
@@ -296,15 +293,20 @@ public class GameMapPanel extends UIPanel {
 							killedSize = i;
 						}
 
-						Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + killedSize + "_destroyed")
-								.getScaledInstance(zoomedItemSize * killedSize, zoomedItemSize, Image.SCALE_FAST);
+						System.out.println("killedSize: " + killedSize);
 
-						AffineTransform backup = g2d.getTransform();
-						AffineTransform a = AffineTransform.getRotateInstance(Math.toRadians(90 * killedOrientation), 0,
-								0);
-						g2d.setTransform(a);
-						g2d.drawImage(zoomedShipImage, xCord * zoomedItemSize, yCord * zoomedItemSize, null);
-						g2d.setTransform(backup);
+						if (killedOrientation == 0) {
+							Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + killedSize + "_destroyed")
+									.getScaledInstance(zoomedItemSize * killedSize, zoomedItemSize, Image.SCALE_FAST);
+
+							g2d.drawImage(zoomedShipImage, xCord * zoomedItemSize, yCord * zoomedItemSize, null);
+						} else {
+							Image zoomedShipImage = SettingsHandler
+									.getRotatedImage("image_ship_" + killedSize + "_destroyed")
+									.getScaledInstance(zoomedItemSize, zoomedItemSize * killedSize, Image.SCALE_FAST);
+
+							g2d.drawImage(zoomedShipImage, xCord * zoomedItemSize, yCord * zoomedItemSize, null);
+						}
 					}
 				}
 			}
