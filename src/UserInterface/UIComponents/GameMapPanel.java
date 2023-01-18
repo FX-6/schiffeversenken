@@ -20,6 +20,7 @@ public class GameMapPanel extends UIPanel {
 	private int currentFocusedY = Main.currentGame.getPitchSize() / 2;
 	private int currentlyPlacedShipSize = 0;
 	private int currentlyPlacedShipOrientation = 0;
+	private Schiffeversenken.Point currentShootFocus = null;
 
 	private Image cloudImage = SettingsHandler.getImage("image_clouds");
 	private Image zoomedCloudImage = cloudImage.getScaledInstance(100, 100, Image.SCALE_FAST);
@@ -158,6 +159,20 @@ public class GameMapPanel extends UIPanel {
 		} else {
 			return false;
 		}
+	}
+
+	public void setShootFocus() {
+		currentShootFocus = new Schiffeversenken.Point(currentFocusedX, currentFocusedY);
+		this.getParent().repaint();
+	}
+
+	public Schiffeversenken.Point getShootFocus() {
+		return currentShootFocus;
+	}
+
+	public void clearShootFocus() {
+		currentShootFocus = null;
+		this.getParent().repaint();
 	}
 
 	@Override
@@ -299,6 +314,13 @@ public class GameMapPanel extends UIPanel {
 			g2d.setColor(borderColor);
 			g2d.drawRoundRect(currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, zoomedItemSize,
 					zoomedItemSize, borderRadius, borderRadius);
+
+			if (currentShootFocus != null) {
+				g2d.setColor(errorColor);
+				g2d.drawRoundRect(currentShootFocus.x * zoomedItemSize + borderWidth,
+						currentShootFocus.y * zoomedItemSize + borderWidth, zoomedItemSize - 2 * borderWidth,
+						zoomedItemSize - 2 * borderWidth, borderRadius, borderRadius);
+			}
 		} else if (!inMatch) {
 			for (int row = 0; row < Main.currentGame.getPitchSize(); row++) {
 				for (int column = 0; column < Main.currentGame.getPitchSize(); column++) {

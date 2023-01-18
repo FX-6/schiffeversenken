@@ -25,6 +25,7 @@ public class GameWindow extends JFrame implements Notification {
 	private boolean viewingSelf = true;
 	private WrapperPanel errorPanel = new WrapperPanel();
 	private JLabel errorLabel = new HeaderLabel("", true);
+	private WrapperPanel passTurnWarningPanel = new WrapperPanel();
 	private JButton addShips2Button = new InputButton("Größe 2: 0/0", true);
 	private JButton addShips3Button = new InputButton("Größe 3: 0/0", true);
 	private JButton addShips4Button = new InputButton("Größe 4: 0/0", true);
@@ -129,6 +130,38 @@ public class GameWindow extends JFrame implements Notification {
 				this.getHeight() / 2 - savePanel.getHeight() / 2);
 		savePanel.setVisible(false);
 		this.add(savePanel);
+
+		// pass turn to enemy warning
+		JLabel passTurnWarningLabel = new HeaderLabel("Zug überspringen?", true);
+		GridBagConstraints passTurnWarningLabelConstraints = passTurnWarningPanel.defaultConstraints;
+		passTurnWarningLabelConstraints.gridy = 0;
+		passTurnWarningPanel.add(passTurnWarningLabel, passTurnWarningLabelConstraints);
+
+		JButton passTurnWarningYesButton = new InputButton("Ja", false);
+		GridBagConstraints passTurnWarningYesButtonConstraints = passTurnWarningPanel.doubleFirstConstraints;
+		passTurnWarningYesButtonConstraints.gridy = 1;
+		passTurnWarningPanel.add(passTurnWarningYesButton, passTurnWarningYesButtonConstraints);
+		passTurnWarningYesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Main.currentGame.getPlayer2().pass();
+				passTurnWarningPanel.setVisible(false);
+			}
+		});
+
+		JButton passTurnWarningNoButton = new InputButton("Nein", false);
+		GridBagConstraints passTurnWarningNoButtonConstraints = passTurnWarningPanel.doubleSecondConstraints;
+		passTurnWarningNoButtonConstraints.gridy = 1;
+		passTurnWarningPanel.add(passTurnWarningNoButton, passTurnWarningNoButtonConstraints);
+		passTurnWarningNoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				passTurnWarningPanel.setVisible(false);
+			}
+		});
+
+		passTurnWarningPanel.setLocation(this.getWidth() / 2 - passTurnWarningPanel.getWidth() / 2,
+				this.getHeight() / 2 - passTurnWarningPanel.getHeight() / 2);
+		passTurnWarningPanel.setVisible(false);
+		this.add(passTurnWarningPanel);
 
 		// create menu for placing ships
 		GameMenuPanel addShipsGameMenu = new GameMenuPanel();
@@ -353,6 +386,34 @@ public class GameWindow extends JFrame implements Notification {
 		GridBagConstraints shootButtonConstraints = gameMenu.defaultConstraints;
 		shootButtonConstraints.gridy = 5;
 		gameMenu.add(shootButton, shootButtonConstraints);
+		shootButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
+					if (gameMap.getShootFocus() != null) {
+						int res = Main.currentGame.getPlayer1().shoot(gameMap.getShootFocus());
+						gameMap.clearShootFocus();
+
+						if (res == 0) {
+							setError("Daneben");
+						} else if (res == 1) {
+							setError("Treffer");
+						} else if (res == 2) {
+							setError("Treffer, versenkt");
+						} else {
+							setError("Fehler");
+						}
+					} else {
+						passTurnWarningPanel.setVisible(true);
+					}
+				} else {
+					if (Main.currentGame.getPlayer2().isMyTurn()) {
+						setError("Gegner:in am Zug");
+					} else {
+						setError("Gegner:in noch nicht bereit");
+					}
+				}
+			}
+		});
 
 		gameMenu.setVisible(false);
 		gameMenu.setLocation(this.getWidth() - gameMenu.getWidth() - 25, 10);
@@ -369,9 +430,13 @@ public class GameWindow extends JFrame implements Notification {
 				if (SwingUtilities.isLeftMouseButton(e)) {
 					if (!inMatch && gameMap.placeShip()) {
 						updateButtonLabels();
+					} else if (inMatch) {
+						gameMap.setShootFocus();
 					} else {
 						if (!inMatch) {
 							setError("Platzieren nicht möglich");
+						} else {
+							setError("Fehler");
 						}
 					}
 				} else if (SwingUtilities.isRightMouseButton(e)) {
@@ -381,76 +446,90 @@ public class GameWindow extends JFrame implements Notification {
 		});
 
 		// add key listener
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter_noCtrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
+				"enter_noCtrl");
 		gameMap.getActionMap().put("enter_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!inMatch && gameMap.placeShip()) {
 					updateButtonLabels();
+				} else if (inMatch) {
+					gameMap.setShootFocus();
 				} else {
 					if (!inMatch) {
 						setError("Platzieren nicht möglich");
+					} else {
+						setError("Fehler");
 					}
 				}
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), "enter_ctrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK), "enter_ctrl");
 		gameMap.getActionMap().put("enter_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameMap.changeCurrentlyPlacedShipOrientation();
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "up_noCtrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),
+				"up_noCtrl");
 		gameMap.getActionMap().put("up_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameMap.changeCurrentlyFocusedTile(false, -1);
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "down_noCtrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),
+				"down_noCtrl");
 		gameMap.getActionMap().put("down_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameMap.changeCurrentlyFocusedTile(false, 1);
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "left_noCtrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0),
+				"left_noCtrl");
 		gameMap.getActionMap().put("left_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameMap.changeCurrentlyFocusedTile(true, -1);
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "right_noCtrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0),
+				"right_noCtrl");
 		gameMap.getActionMap().put("right_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameMap.changeCurrentlyFocusedTile(true, 1);
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK), "up_ctrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK), "up_ctrl");
 		gameMap.getActionMap().put("up_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameMap.changePositionByTiles(false, -1);
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK), "down_ctrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK), "down_ctrl");
 		gameMap.getActionMap().put("down_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameMap.changePositionByTiles(false, 1);
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), "left_ctrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), "left_ctrl");
 		gameMap.getActionMap().put("left_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				gameMap.changePositionByTiles(true, -1);
 			}
 		});
-		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK), "right_ctrl");
+		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK), "right_ctrl");
 		gameMap.getActionMap().put("right_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
