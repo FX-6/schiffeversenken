@@ -390,7 +390,7 @@ public class GameWindow extends JFrame implements Notification {
 			public void actionPerformed(ActionEvent e) {
 				if (inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
 					if (gameMap.getShootFocus() != null) {
-						int res = Main.currentGame.getPlayer1().shoot(gameMap.getShootFocus());
+						int res = Main.currentGame.getPlayer1().shoot(gameMap.getShootFocus().add(1, 1));
 						gameMap.clearShootFocus();
 
 						if (res == 0) {
