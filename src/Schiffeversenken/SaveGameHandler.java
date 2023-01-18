@@ -10,6 +10,10 @@ import java.util.Scanner;
 
 import Notifications.NotificationCenter;
 
+/**
+ * Speichert den aktuellen Spielstand in einer neuen Datei oder lädt einen Spielstand aus einer Datei.
+ */
+
 public class SaveGameHandler {
 
 	/*
@@ -29,52 +33,63 @@ public class SaveGameHandler {
 	
 	private File file;
 	
-	// Um ein neues Spiel zu speichern
+	/**
+	 * Speichert den aktuellen Spielstand in einer Datei. Speicherformt ist konform zum JSON-Format.
+	 * Nach erzeugung eines Objekts durch diesen Konstruktor, ist dieses Objekt nicht mehr zu gebrauchen.
+	 * 
+	 * @param id Eindeutige ID, welche diesen Spielstand identifizieren soll.
+	 * @param name Optionaler Name, der die Identifizierbarkeit des Spielstands für den Nutzer bei der Auswahl im Ladevorgang erleichtert.
+	 * @throws IOException Der Spielstand konnte nicht in eine Datei geschrieben werden.
+	 */
 	public SaveGameHandler(String id, String name) throws IOException {
 		String fileName = id + "#" + name + ".json";
 		
 		file = new File(SettingsHandler.saveGamesPath + File.separator + fileName);
 		
 		
+		// Es werden nach und nach immer längere Strings erstellt, die Objekte mit ihren Attributen
+		// als JSON-String darstellen. Erst zum Schluss werden sie alle in eine Datei geschrieben.
 		
-		// Game
+		
+		// Speicherung von Game-Objekt
 		String[] game = new String[5];
-		game[0] = writeAttribute("name", name, "");
-		game[1] = writeAttribute("pitchSize", Main.currentGame.getPitchSize(), "");
+		game[0] = writeAttribute("name", name, "");																	// Übergebener Name; Wird beim Laden nicht benötigt/berücksichtigt
+		game[1] = writeAttribute("pitchSize", Main.currentGame.getPitchSize(), "");									// Größe des Spielfelds
 		
 		int[] ships = new int[4];
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++) {																				
 			ships[i] = Main.currentGame.getNumberOfShips(i + 2);
 		}
-		game[2] = writeArray("ships", ships, "\t");
+		game[2] = writeArray("ships", ships, "\t");																	// Anzahl der Schiffe für die Schiffsgrößen
 		
-		game[3] = writeAttribute("player1", Main.currentGame.getPlayer1().getClass().toString(), "");
-		game[4] = writeAttribute("player2", Main.currentGame.getPlayer2().getClass().toString(), "");
+		game[3] = writeAttribute("player1", Main.currentGame.getPlayer1().getClass().toString(), "");				// Art (Klasse) des ersten Spielers
+		game[4] = writeAttribute("player2", Main.currentGame.getPlayer2().getClass().toString(), "");				// Art (Klasse) des zweiten Spielers
 		
 		
 		
-		// Player 1
+		// Speicherung von Player1-Objekt
 		String[] player1 = new String[4];
-		player1[0] = writeAttribute("isMyTurn", Main.currentGame.getPlayer1().isMyTurn(), "");
-		player1[1] = writeAttribute("shipsDestroyed", Main.currentGame.getPlayer1().getShipsDestroyed(), "");
-		player1[2] = write2DArray("pointsShot", Main.currentGame.getPlayer1().getPointsShot() , "\t");
+		player1[0] = writeAttribute("isMyTurn", Main.currentGame.getPlayer1().isMyTurn(), "");						// Ob Spieler am Zug ist
+		player1[1] = writeAttribute("shipsDestroyed", Main.currentGame.getPlayer1().getShipsDestroyed(), "");		// Anzahl der beim Gegner zerstörten Schiffe
+		player1[2] = write2DArray("pointsShot", Main.currentGame.getPlayer1().getPointsShot() , "\t");				// Karte der bereits beschossenen Punkte
 		
 		List<Ship> list1 = Main.currentGame.getPlayer1().getShipList();
 		String[] shipList1 = new String[list1.size()];
 		for (Ship ship : list1) {
 			String[] attributes = new String[4];
-			attributes[0] = writeAttribute("rootPoint", ship.getRootPoint().toString(), "\t");
-			attributes[1] = writeAttribute("length", ship.getLength(), "\t");
-			attributes[2] = writeAttribute("orientation", ship.getOrientation(), "\t");
-			attributes[3] = writeArray("damage", ship.getDamage(), "\t");
+			attributes[0] = writeAttribute("rootPoint", ship.getRootPoint().toString(), "\t");						// Ursprung eines Schiffs
+			attributes[1] = writeAttribute("length", ship.getLength(), "\t");										// Länge eines Schiffs
+			attributes[2] = writeAttribute("orientation", ship.getOrientation(), "\t");								// Orientierung eines Schiffs
+			attributes[3] = writeArray("damage", ship.getDamage(), "\t");											// Beschädigungen eines Schiffs
 			
-			shipList1[list1.indexOf(ship)] = writeObject(attributes, "\t");
+			shipList1[list1.indexOf(ship)] = writeObject(attributes, "\t");											// Ein Schiff
 		}
-		player1[3] = writeArray("ships", shipList1, "\t", false);
+		player1[3] = writeArray("ships", shipList1, "\t", false);													// Liste aller eigenen Schiffe
 		
 		
 		
-		// Player 2
+		// Speicherung von Player2-Objekt
+		// Kommentarie siehe oben bei Player1
 		String[] player2 = new String[4];
 		player2[0] = writeAttribute("isMyTurn", Main.currentGame.getPlayer2().isMyTurn(), "");
 		player2[1] = writeAttribute("shipsDestroyed", Main.currentGame.getPlayer2().getShipsDestroyed(), "");
@@ -96,24 +111,31 @@ public class SaveGameHandler {
 		
 		
 		
-		
+		// Schreiben der JSON-Strings in die Datei.
 		
 		FileWriter writer = new FileWriter(file);
-		writer.write(writeObject(game, ""));
+		writer.write(writeObject(game, ""));				// Das Spiel
 		writer.write("\n");
-		writer.write(writeObject(player1, ""));
+		writer.write(writeObject(player1, ""));				// Spieler 1
 		writer.write("\n");
-		writer.write(writeObject(player2, ""));
+		writer.write(writeObject(player2, ""));				// Spieler 2
 		writer.flush();
 		writer.close();
 		
 	}
 	
 	
-	// Um ein gespeichertes Spiel zu laden
+	/**
+	 * Lädt einen Spielstand aus einer Datei.
+	 * Nach Erzeugung eines Objekts durch diesen Konstruktor, ist das Objekt nicht mehr zu gebrauchen.
+	 * 
+	 * @param id Eindeutige ID, welche den Spielstand, der geladen werden soll, identifiziert.
+	 * @throws FileNotFoundException Der Spielstand mit der übergebenen ID kann nicht geladen werden, da die zugehörige Datei nicht existiert.
+	 */
 	public SaveGameHandler(String id) throws FileNotFoundException {
 		File file = null;
 		
+		// Sucht die richtige Datei mit der übergebenen ID
 		for (String string : SettingsHandler.getSavedGames()) {
 			if (string.startsWith(".")) continue;
 			if (string.split("#")[0].equals(id)) {
@@ -121,16 +143,21 @@ public class SaveGameHandler {
 				break;
 			}
 		}
+		
+		
+		// Das Game-Objekt und die Objekte Player1 und Player2 existieren bereits. Es müssen lediglich ihre Attribute aktualisiert werden,
+		// die relevant für den Spielstand sind.
+		// Attribute, die den Zustand des Spiels, der Netzwerkverbindung, o.ä. speichern, müssen/dürfen nicht überschrieben werden.
+		
 				
 		Scanner reader = new Scanner(file);
 		
 		int objectDepth = 0;
-		
 		int object = 0;					// 1 = Game, 2 = Player1, 3 = Player2
 		
+		// Liest jede Zeile aus der Datei
 		while (reader.hasNextLine()) {
 			String line = reader.nextLine().trim();
-			//System.out.println(line);
 			
 			if (line.contains("{")) {
 				objectDepth++;
@@ -146,12 +173,12 @@ public class SaveGameHandler {
 				String value = line.split(":")[1].replace(",", "");
 				
 				
-				// pitchSize
+				// Liest Feldgröße ein -> Game
 				if (key.equals("pitchSize")) {
 					Main.currentGame.setPitchSize(Integer.parseInt(value));
 				}
 				
-				// ships of game
+				// Liest Anzahl der Schiffe pro Schiffsgrößen ein -> Game
 				else if (key.equals("ships") && object == 1) {
 					int[] ships = new int[4];
 					ships[0] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
@@ -162,28 +189,36 @@ public class SaveGameHandler {
 					Main.currentGame.setShips(ships);
 				}
 				
+				// Liest Wert, ob Spieler am Zug ist, ein -> Player
 				else if (key.equals("isMyTurn")) {
+					// -> Player1
 					if (object == 2) {
 						Main.currentGame.getPlayer1().setMyTurn(Boolean.parseBoolean(value));
 					}
+					// -> Player2
 					else if (object == 3) {
 						Main.currentGame.getPlayer2().setMyTurn(Boolean.parseBoolean(value));
 					}
 				}
 				
+				// Liest Anzahl der beim Gegner zerstörten Schiffe ein -> Player
 				else if (key.equals("shipsDestroyed")) {
+					// -> Player1
 					if (object == 2) {
 						Main.currentGame.getPlayer1().setShipsDestroyed(Integer.parseInt(value));
 					}
+					// -> Player2
 					else if (object == 3) {
 						Main.currentGame.getPlayer2().setShipsDestroyed(Integer.parseInt(value));
 					}
 				}
 				
+				// List Karte der bereits beschossenen Punkte ein -> Player
 				else if (key.equals("pointsShot")) {
 					int pitchSize = Main.currentGame.getPitchSize();
 					int[][] shots = new int[pitchSize][pitchSize];
 					
+					// Setzt Karte zusammen
 					for (int x = 0; x < pitchSize; x++) {
 						reader.nextLine();
 						for (int y = 0; y < pitchSize; y++) {
@@ -192,14 +227,17 @@ public class SaveGameHandler {
 						reader.nextLine();
 					}
 					
+					// -> Player1
 					if (object == 2) {
 						Main.currentGame.getPlayer1().setPointsShot(shots);
 					}
+					// -> Player2
 					else if (object == 3) {
 						Main.currentGame.getPlayer2().setPointsShot(shots);
 					}
 				}
 				
+				// Liest Schiffe des Spielers ein -> Player
 				else if (key.equals("ships") && object > 1) {
 					int numberOfShips = Main.currentGame.getNumberOfShips(2) + Main.currentGame.getNumberOfShips(3) + Main.currentGame.getNumberOfShips(4) + Main.currentGame.getNumberOfShips(5);
 					
@@ -209,52 +247,57 @@ public class SaveGameHandler {
 						reader.nextLine();
 						
 						String[] coords = reader.nextLine().trim().split(":")[1].replace("\"", "").split(",");
-						Point rootPoint = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
+						Point rootPoint = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));				// Ursprung des Schiffs
 						
-						int length = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));
-						int orientation = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));
+						int length = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));				// Länge des Schiffs
+						int orientation = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));		// Orientierung des Schiffs
 						
 						reader.nextLine();
 						
 						int[] damage = new int[length];
 						for (int j = 0; j < length; j++) {
-							damage[j] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+							damage[j] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));						// Beschädigungen am Schiff
 						}
 						
+						// Erzeugt neues Schiffs-Objekt aus eingelesenen Daten
 						Ship ship = new Ship(length, orientation);
 						ship.setRootPoint(rootPoint);
 						ship.setDamage(damage);
 						
 						ships.add(ship);
-						
-						System.out.println(ships.size());
-						
+												
 						reader.nextLine();
 						reader.nextLine();
 					}
 					
+					// -> Player1
 					if (object == 2) {
 						Main.currentGame.getPlayer1().setShips(ships);
 					}
+					// -> Player2
 					else if (object == 3) {
 						Main.currentGame.getPlayer2().setShips(ships);
 					}
 					
 				}
-				
-				System.out.println(objectDepth + "\t" + object + "\t -> " + line);
-				
+								
 			}
 			
 		}
 		reader.close();
 		
-		NotificationCenter.sendNotification("GameLoaded", null);				// Für UI zum aktualisieren
+		NotificationCenter.sendNotification("GameLoaded", null);				// Dass die UI sich aktualisieren kann, wenn das Spiel geladen wurde
 		
 	}
 	
 	
-	
+	/**
+	 * Erzeugung eines JSON-Strings für ein Objekt.
+	 * 
+	 * @param attributes Alle Attribute des Objekts.
+	 * @param indentation Einrückung.
+	 * @return JSON-String.
+	 */
 	private String writeObject(String[] attributes, String indentation) {
 		String string = indentation + "{\n";
 		
@@ -268,6 +311,14 @@ public class SaveGameHandler {
 	}
 	
 	
+	/**
+	 * Erzeugung eines JSON-String für ein Attribut.
+	 * 
+	 * @param key Attribut-Name.
+	 * @param value Attribut-Wert.
+	 * @param indentation Einrückung.
+	 * @return JSON-String.
+	 */
 	private String writeAttribute(String key, Object value, String indentation) {
 		if (value instanceof String) {
 			return indentation + "\"" + key + "\":\"" + value + "\"";
@@ -276,6 +327,15 @@ public class SaveGameHandler {
 	}
 	
 	
+	/**
+	 * Erzeugung eines JSON-Strings für ein Attribut, das ein Array als Wert hat.
+	 * 
+	 * @param key Attribut-Name.
+	 * @param values Attribut-Wert.
+	 * @param indentation Einrückung.
+	 * @param isString Sollen die Elemente des Arrays als String gespeichert werden.
+	 * @return JSON-String.
+	 */
 	private String writeArray(String key, Object[] values, String indentation, boolean isString) {
 		String string = "\"" + key + "\":[\n";
 		if (isString) {
@@ -293,6 +353,15 @@ public class SaveGameHandler {
 		return string;
 	}
 	
+	
+	/**
+	 * Erzeugung eines JSON-Strings für ein Attribut, das ein Integer-Array als Wert hat.
+	 * 
+	 * @param key Attribut-Name.
+	 * @param values Attribut-Wert.
+	 * @param indentation Einrückung.
+	 * @return JSON-String.
+	 */
 	private String writeArray(String key, int[] values, String indentation) {
 		String string = "\"" + key + "\":[\n";
 		for (int obj : values) {
@@ -304,6 +373,14 @@ public class SaveGameHandler {
 	}
 	
 	
+	/**
+	 * Erzeugung eines JSONStrings für ein Attribut, das ein zweidimensionales Array als Wert hat.
+	 * 
+	 * @param key Attribut-Name.
+	 * @param array Attribut-Wert.
+	 * @param indentation Einrückung.
+	 * @return JSON-String.
+	 */
 	private String write2DArray(String key, int[][] array, String indentation) {
 		String string = "\"" + key + "\":[\n";
 		for (int[] values : array) {
