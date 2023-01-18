@@ -1,6 +1,7 @@
 package Schiffeversenken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AIPlayer extends Player {
@@ -11,10 +12,15 @@ public class AIPlayer extends Player {
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
 
-		for (int i = 0; i < priorities.length; i++) {
-			for (int j = 0; j < priorities[i].length; j++) {
-				priorities[i][j] = 100; // Wert 100 als Standard Prioritaet in alle Arrayfelder
-			}
+		// for (int i = 0; i < priorities.length; i++) {
+		// for (int j = 0; j < priorities[i].length; j++) {
+		// priorities[i][j] = 100; // Wert 100 als Standard Prioritaet in alle
+		// Arrayfelder
+		// }
+		// }
+
+		for (int[] priorityRow : priorities) {
+			Arrays.fill(priorityRow, 100);
 		}
 		AIPlayer.placeShipsAutomatically(this);
 		Main.currentGame.setReady(this);
