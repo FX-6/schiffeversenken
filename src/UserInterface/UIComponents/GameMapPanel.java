@@ -56,7 +56,7 @@ public class GameMapPanel extends UIPanel {
 				currentFocusedX = e.getX() / zoomedItemSize;
 				currentFocusedY = e.getY() / zoomedItemSize;
 
-				repaint();
+				getParent().repaint();
 			}
 		});
 
@@ -95,19 +95,19 @@ public class GameMapPanel extends UIPanel {
 	private void recenter(int oldWidth) {
 		// int widthDif = oldWidth - this.getWidth();
 		// this.setLocation(this.getX() + widthDif, this.getY() + widthDif);
-		this.repaint();
+		this.getParent().repaint();
 	}
 
 	public void finishedPlacing() {
 		inMatch = true;
 
-		this.repaint();
+		this.getParent().repaint();
 	}
 
 	public void changeDisplayedPlayer() {
 		viewingSelf = !viewingSelf;
 
-		this.repaint();
+		this.getParent().repaint();
 	}
 
 	public void changePositionByTiles(boolean horizontal, int amount) {
@@ -119,7 +119,7 @@ public class GameMapPanel extends UIPanel {
 			setLocation(getLocation().x, getLocation().y + (zoomedItemSize * -amount));
 		}
 
-		this.repaint();
+		this.getParent().repaint();
 	}
 
 	public void changeCurrentlyFocusedTile(boolean horizontal, int amount) {
@@ -133,19 +133,19 @@ public class GameMapPanel extends UIPanel {
 			}
 		}
 
-		this.repaint();
+		this.getParent().repaint();
 	}
 
 	public void setCurrentlyPlacedShipSize(int size) {
 		currentlyPlacedShipSize = size;
 
-		this.repaint();
+		this.getParent().repaint();
 	}
 
 	public void changeCurrentlyPlacedShipOrientation() {
 		currentlyPlacedShipOrientation = (currentlyPlacedShipOrientation == 1 ? 0 : 1);
 
-		this.repaint();
+		this.getParent().repaint();
 	}
 
 	public boolean placeShip() {
@@ -153,7 +153,7 @@ public class GameMapPanel extends UIPanel {
 			Boolean returnVal = Main.currentGame.getPlayer1().placeShipAt(
 					new Ship(currentlyPlacedShipSize, currentlyPlacedShipOrientation),
 					new Schiffeversenken.Point(currentFocusedX + 1, currentFocusedY + 1));
-			this.repaint();
+			this.getParent().repaint();
 			return returnVal;
 		} else {
 			return false;

@@ -25,16 +25,16 @@ public class GameWindow extends JFrame implements Notification {
 	private boolean viewingSelf = true;
 	private WrapperPanel errorPanel = new WrapperPanel();
 	private JLabel errorLabel = new HeaderLabel("", true);
-	private JButton addShips2Button = new InputButton("Größe 2: 0/" + Main.currentGame.getNumberOfShips(2), true);
-	private JButton addShips3Button = new InputButton("Größe 3: 0/" + Main.currentGame.getNumberOfShips(3), true);
-	private JButton addShips4Button = new InputButton("Größe 4: 0/" + Main.currentGame.getNumberOfShips(4), true);
-	private JButton addShips5Button = new InputButton("Größe 5: 0/" + Main.currentGame.getNumberOfShips(5), true);
+	private JButton addShips2Button = new InputButton("Größe 2: 0/0", true);
+	private JButton addShips3Button = new InputButton("Größe 3: 0/0", true);
+	private JButton addShips4Button = new InputButton("Größe 4: 0/0", true);
+	private JButton addShips5Button = new InputButton("Größe 5: 0/0", true);
 	private GameMenuPanel gameMenu = new GameMenuPanel();
 	private JLabel currentPlayerLabel = new HeaderLabel("Du", false);
-	private JLabel remainingShipsSize2Label = new HeaderLabel("Größe 2: 1/1", false);
-	private JLabel remainingShipsSize3Label = new HeaderLabel("Größe 3: 1/1", false);
-	private JLabel remainingShipsSize4Label = new HeaderLabel("Größe 4: 1/1", false);
-	private JLabel remainingShipsSize5Label = new HeaderLabel("Größe 5: 1/1", false);
+	private JLabel remainingShipsSize2Label = new HeaderLabel("Größe 2: 0/0", false);
+	private JLabel remainingShipsSize3Label = new HeaderLabel("Größe 3: 0/0", false);
+	private JLabel remainingShipsSize4Label = new HeaderLabel("Größe 4: 0/0", false);
+	private JLabel remainingShipsSize5Label = new HeaderLabel("Größe 5: 0/0", false);
 
 	public GameWindow() {
 		super("Schiffeversenken");
@@ -154,7 +154,7 @@ public class GameWindow extends JFrame implements Notification {
 			public void actionPerformed(ActionEvent e) {
 				AIPlayer.placeShipsAutomatically(Main.currentGame.getPlayer1());
 
-				gameMap.repaint();
+				repaint();
 
 				updateButtonLabels();
 			}
