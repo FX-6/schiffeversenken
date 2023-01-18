@@ -18,12 +18,31 @@ import Notifications.NotificationCenter;
 
 public class Game {
 	
-	private int pitchSize;					// Speicherung der Seitenlänge des Spielfelds
-	private Player player1;					// Speicherung des ersten Spielers (In jedem Fall entweder instanceof HumanPlayer oder AIPlayer)
-	private Player player2;					// Speicherung des zweiten Spielers (In jedem Fall entweder instanceof NetworkPlayer oder AIPlayer)
-	private int[] ships = new int[4];		// Speicherung der Anzahl der Schiffe pro Schiffsgröße. Schiffsgröße = Index + 2
+	/**
+	 * Speicherung der Seitenlänge des Spielfelds
+	 */
+	private int pitchSize;
 	
-	private int readyCount = 0;				// Speicherung der Anzahl an Aufrufen von "this.setReady(Object sender)", also der Anzahl an Spieler, die ihre Schiffe gesetzt haben. Element der Menge {0, 1, 2}
+	/**
+	 * Speicherung des ersten Spielers (In jedem Fall entweder instanceof HumanPlayer oder AIPlayer)
+	 */
+	private Player player1;
+	
+	/**
+	 * Speicherung des zweiten Spielers (In jedem Fall entweder instanceof NetworkPlayer oder AIPlayer)
+	 */
+	private Player player2;
+	
+	/**
+	 * Speicherung der Anzahl der Schiffe pro Schiffsgröße. Schiffsgröße = Index + 2
+	 */
+	private int[] ships = new int[4];
+	
+	
+	/**
+	 * Speicherung der Anzahl an Aufrufen von "this.setReady(Object sender)", also der Anzahl an Spieler, die ihre Schiffe gesetzt haben. Element der Menge {0, 1, 2}
+	 */
+	private int readyCount = 0;
 	
 	
 	/**

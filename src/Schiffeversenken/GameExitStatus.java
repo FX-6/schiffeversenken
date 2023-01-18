@@ -1,9 +1,27 @@
 package Schiffeversenken;
 
+/**
+ * Grund für das Beenden eines Spiels.
+ */
 public enum GameExitStatus {
-	CONNECTION_REFUESED,	// Es konnte keine Verbindung hergestellt werden
-	CONNECTION_CLOSED,		// Die Verbindung wurde unterbrochen
-	GAME_FINISHED,			// Das Spiel ist beendet
-	GAME_DISCARDED,			// Das Spiel wurde abgebrochen
-	FILE_NOT_FOUND;			// Der Spielstand konnte nicht gefunden wurden
+	/**
+	 * Es konnte keine Verbindung hergestellt werden.
+	 */
+	CONNECTION_REFUESED,
+	/**
+	 * Die Verbindung wurde unterbrochen.
+	 */
+	CONNECTION_CLOSED,
+	/**
+	 * Das Spiel ist zu Ende gespielt.
+	 */
+	GAME_FINISHED,
+	/**
+	 * Das Spiel wurde abgebrochen.
+	 */
+	GAME_DISCARDED,
+	/**
+	 * Der Spielstand konnte nicht gefunden werden.
+	 */
+	FILE_NOT_FOUND;
 }

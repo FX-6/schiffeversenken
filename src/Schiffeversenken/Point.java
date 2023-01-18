@@ -20,9 +20,15 @@ public class Point {
 	}
 	
 	
+	/**
+	 * x-Koordinate (horizontale Achse; Spalte des Spielfelds)
+	 */
+	public final int x;
 	
-	public final int x;			// x-Koordinate (horizontale Achse; Spalte des Spielfelds)
-	public final int y;			// y-Koordinate (vertikale Achse; Zeile des Spielfelds)
+	/**
+	 * y-Koordinate (vertikale Achse; Zeile des Spielfelds)
+	 */
+	public final int y;
 	
 	/**
 	 * Erzeugt eine Instanz eines Punktes.

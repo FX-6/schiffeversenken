@@ -4,10 +4,21 @@ import UserInterface.Menu;
 
 public class Main {
 
-	public static Game currentGame = null;			// Speichert das aktuelle Spiel ("null", falls keins gespielt oder vorbereitet wird) 
-	public static String hostAddress = null;		// Speicherung der IP-Adresse des Servers, falls ein Spiel über das Netzwerk gespielt werden soll, in welchem diese Instanz des Spiels als Client agieren wird
+	/**
+	 * Speichert das aktuelle Spiel ("null", falls keins gespielt oder vorbereitet wird) 
+	 */
+	public static Game currentGame = null;
+	
+	/**
+	 * Speicherung der IP-Adresse des Servers, falls ein Spiel über das Netzwerk gespielt werden soll, in welchem diese Instanz des Spiels als Client agieren wird
+	 */
+	public static String hostAddress = null;
 
-	public static Menu menuWindow = null;			// Speicherung des Menü-Fensters
+	
+	/**
+	 * Speicherung des Menü-Fensters
+	 */
+	public static Menu menuWindow = null;
 
 	public static void main(String[] args) {
 

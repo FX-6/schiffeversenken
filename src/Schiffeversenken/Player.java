@@ -11,13 +11,36 @@ import java.util.List;
  */
 public abstract class Player {
 
-	protected Game game;				// Speichert das Spiel, zu welchem dieser Spieler gehört
-	protected Player otherPlayer;		// Speichert den anderen Spieler, gegen welchen dieser Spieler das Spiel spielt
-	private List<Ship> ships;			// Speichert alle Schiffe, die dieser Spieler auf seinem Feld plaziert hat
-	private int[][] pointsShot;			// Speichert alle Punkte, die dieser Spieler bei seinem Gegner bereits beschossen hat. Indizes ergeben sich aus den Koordinaten eines Punktes. Index = [<x> - 1][<y> - 1] (da Koordinaten im Interval [1; <pitchSize>] liegen)
-	private int shipsDestroyed = 0;		// Speichert Anzahl der gegnerischen Schiffe, die dieser Spieler beim Gegner bereits zerstört hat.
+	/**
+	 * Speichert das Spiel, zu welchem dieser Spieler gehört
+	 */
+	protected Game game;
 	
-	private boolean isMyTurn = false;	// Speichert, ob dieser Spieler gerade am Zug ist und schießen darf, oder nicht
+	/**
+	 * Speichert den anderen Spieler, gegen welchen dieser Spieler das Spiel spielt
+	 */
+	protected Player otherPlayer;
+	
+	/**
+	 * Speichert alle Schiffe, die dieser Spieler auf seinem Feld plaziert hat
+	 */
+	private List<Ship> ships;
+	
+	/**
+	 * Speichert alle Punkte, die dieser Spieler bei seinem Gegner bereits beschossen hat. Indizes ergeben sich aus den Koordinaten eines Punktes. Index = [<x> - 1][<y> - 1] (da Koordinaten im Interval [1; <pitchSize>] liegen)
+	 */
+	private int[][] pointsShot;
+	
+	/**
+	 * Speichert Anzahl der gegnerischen Schiffe, die dieser Spieler beim Gegner bereits zerstört hat.
+	 */
+	private int shipsDestroyed = 0;
+	
+	
+	/**
+	 * Speichert, ob dieser Spieler gerade am Zug ist und schießen darf, oder nicht
+	 */
+	private boolean isMyTurn = false;
 		
 	/**
 	 * Erstellt im Zusammenhang mit einer von dieser Klasse erbenden Klasse eine neue Instanz eines Spielers.

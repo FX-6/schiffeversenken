@@ -8,15 +8,30 @@ import java.util.Arrays;
 
 public class Ship {
 
-	private int[] damage;			// Speicherung, an welcher Stelle das Schiff bereits beschossen wurde. Index = Entfernung zum Wurzelpunkt ind Feldern
-	private int length;				// Speichert die Länge des Schiffs (2 <= length <= 5)
-	private int orientation;		// Speichert die Orientierung des Schiffs (0 = horizontal, 1 = vertikal)
-	private Point rootPoint;		// Speichert den Wurzelpunkt des Schiffs (dieser liegt graphisch gesehen immer oben links. Er hat also die kleinste x- und die kleinste y-Koordinate des Schiffs)
+	/**
+	 *  Speicherung, an welcher Stelle das Schiff bereits beschossen wurde. Index = Entfernung zum Wurzelpunkt ind Feldern; 0 = Nicht beschädigt, 1 = beschädigt.
+	 */
+	private int[] damage;
+	
+	/**
+	 * Speichert die Länge des Schiffs (2 <= length <= 5)
+	 */
+	private int length;
+	
+	/**
+	 * Speichert die Orientierung des Schiffs (0 = horizontal, 1 = vertikal)
+	 */
+	private int orientation;
+	
+	/**
+	 * Speichert den Wurzelpunkt des Schiffs (dieser liegt graphisch gesehen immer oben links. Er hat also die kleinste x- und die kleinste y-Koordinate des Schiffs)
+	 */
+	private Point rootPoint;
 	
 	/**
 	 * Erzeugt eine neue Instanz eines Schiffs.
 	 * 
-	 * @param length Länge, die das Schiff haben soll (2 <= length <= 5).
+	 * @param length Länge, die das Schiff haben soll (Länge zwischen 2 und 5).
 	 * @param orientation Orientierung, die das Schiff haben soll (0 = horizontal, 1 = vertikal).
 	 */
 	public Ship(int length, int orientation) {
@@ -25,7 +40,7 @@ public class Ship {
 		this.orientation = orientation;
 		this.damage = new int[this.length];
 		
-		Arrays.fill(damage, 0);					// Fuellt damage mit 0 (zur Sicherheit)
+		Arrays.fill(damage, 0);					// Füllt damage mit 0 (zur Sicherheit)
 	}
 	
 	// Getter und Setter
@@ -85,10 +100,10 @@ public class Ship {
 	}
 	
 	/**
-	 * Überprüft, ob dieses Schiff mit übergebenem Schiff kollidiert (=> Es gibt ein Feld für das gilt: Abstand von diesem Schiff und übergebenem Schiff ist < 1)
+	 * Überprüft, ob dieses Schiff mit übergebenem Schiff kollidiert (=> Es gibt ein Feld für das gilt: Abstand von diesem Schiff und übergebenem Schiff ist kleiner als 1)
 	 * 
 	 * @param oShip Schiff, welches auf Kollisionen mit diesem Schiff überprüft werden soll.
-	 * @return True, falls der Abstand der beiden Schiffe an irgendeinem Punkt < 1 ist. Andernfalls false.
+	 * @return True, falls der Abstand der beiden Schiffe an irgendeinem Punkt kleiner als 1 ist. Andernfalls false.
 	 */
 	public boolean hasColission(Ship oShip) {
 		// Der ganze Algorithmus ist eine effizientere Implementierung eines Algortihmus, der für jeden Punkt des einen Schiffs überprüft, ob ein Punkt des anderen Schiffs dort liegt
