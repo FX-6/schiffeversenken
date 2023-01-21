@@ -107,7 +107,7 @@ public class AIPlayer extends Player implements Notification {
 		maxs.add(new Point(0, 0));
 		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot negativ ein
 			for (int j = 0; j < game.getPitchSize(); j++) {
-				System.out.println(priorities.length);
+				//System.out.println(priorities.length + "a " + i  + " " + j);
 				if (priorities[i][j] > max) {
 					maxs.clear();
 					maxs.add(new Point(i, j));
@@ -117,7 +117,9 @@ public class AIPlayer extends Player implements Notification {
 				}
 			}
 		}
-		shoot(maxs.get(ThreadLocalRandom.current().nextInt(0, maxs.size())));
+		Point target = maxs.get(ThreadLocalRandom.current().nextInt(0, maxs.size())).add(1,1);
+		System.out.println(target.x + " " + target.y);
+		shoot(target);
 	}
 
 	public static void placeShipsAutomatically(Player player) {
