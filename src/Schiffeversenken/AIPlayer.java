@@ -15,7 +15,7 @@ public class AIPlayer extends Player implements Notification {
 
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
-		NotificationCenter.addObserver("ReceivedGameData", this);
+		NotificationCenter.addObserver("AIPlayerPlaceShips", this);
 		// for (int i = 0; i < priorities.length; i++) {
 		// for (int j = 0; j < priorities[i].length; j++) {
 		// priorities[i][j] = 100; // Wert 100 als Standard Prioritaet in alle
@@ -204,17 +204,14 @@ public class AIPlayer extends Player implements Notification {
 	@Override
 	public void processNotification(String type, Object object) {
 		// TODO Auto-generated method stub
-		if (type.equals("ReceivedGameData")) {
-			receivedGameData++;
-			System.out.println(receivedGameData);
-			if (receivedGameData == 2) {
-				priorities = new int[game.getPitchSize()][game.getPitchSize()];
-				for (int[] priorityRow : priorities) {
-					Arrays.fill(priorityRow, 100);
-				}
-				AIPlayer.placeShipsAutomatically(this);
-				Main.currentGame.setReady(this);
+		if (type.equals("AIPlayerPlaceShips")) {
+			System.out.println("AIPlayerPlaceShips");
+			priorities = new int[game.getPitchSize()][game.getPitchSize()];
+			for (int[] priorityRow : priorities) {
+				Arrays.fill(priorityRow, 100);
 			}
+			AIPlayer.placeShipsAutomatically(this);
+			Main.currentGame.setReady(this);
 		}
 
 	}

@@ -143,6 +143,8 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel implements Noti
 						ships[3] = ship5Input.getIntValue();
 						Main.currentGame.setShips(ships);
 						Main.currentGame.transmittSizeAndShips();
+						
+						NotificationCenter.sendNotification("AIPlayerPlaceShips", null);
 
 						parent.openGameWindow();
 					}
