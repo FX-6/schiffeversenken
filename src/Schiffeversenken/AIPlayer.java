@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AIPlayer extends Player {
+import Notifications.Notification;
+import Notifications.NotificationCenter;
+
+public class AIPlayer extends Player implements Notification {
 
 	private int[][] priorities = new int[game.getPitchSize()][game.getPitchSize()]; // Ein 2D Array mit
 																					// Schussprioritaeten.
+	private int receivedGameData = 0;
 
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
-
+		NotificationCenter.addObserver("ReceivedGameData", this);
 		// for (int i = 0; i < priorities.length; i++) {
 		// for (int j = 0; j < priorities[i].length; j++) {
 		// priorities[i][j] = 100; // Wert 100 als Standard Prioritaet in alle
@@ -19,11 +23,11 @@ public class AIPlayer extends Player {
 		// }
 		// }
 
-		for (int[] priorityRow : priorities) {
-			Arrays.fill(priorityRow, 100);
-		}
-		AIPlayer.placeShipsAutomatically(this);
-		Main.currentGame.setReady(this);
+		// for (int[] priorityRow : priorities) {
+		// Arrays.fill(priorityRow, 100);
+		// }
+		// AIPlayer.placeShipsAutomatically(this);
+		// Main.currentGame.setReady(this);
 	}
 
 	@Override
@@ -103,6 +107,7 @@ public class AIPlayer extends Player {
 		maxs.add(new Point(0, 0));
 		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot negativ ein
 			for (int j = 0; j < game.getPitchSize(); j++) {
+				System.out.println(priorities.length);
 				if (priorities[i][j] > max) {
 					maxs.clear();
 					maxs.add(new Point(i, j));
@@ -194,6 +199,24 @@ public class AIPlayer extends Player {
 
 		// Zum Platzieren dann
 		// player.placeShipAt(Ship ship, Point point);
+	}
+
+	@Override
+	public void processNotification(String type, Object object) {
+		// TODO Auto-generated method stub
+		if (type.equals("ReceivedGameData")) {
+			receivedGameData++;
+			System.out.println(receivedGameData);
+			if (receivedGameData == 2) {
+				priorities = new int[game.getPitchSize()][game.getPitchSize()];
+				for (int[] priorityRow : priorities) {
+					Arrays.fill(priorityRow, 100);
+				}
+				AIPlayer.placeShipsAutomatically(this);
+				Main.currentGame.setReady(this);
+			}
+		}
+
 	}
 }
 
