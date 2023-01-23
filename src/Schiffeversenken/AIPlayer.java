@@ -36,21 +36,21 @@ public class AIPlayer extends Player implements Notification {
 		otherPlayer.setMyTurn(false);
 		setMyTurn(true);
 
-		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot negativ ein
+		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot ein
 			for (int j = 0; j < game.getPitchSize(); j++) {
-				if (getPointsShot()[i][j] == 0) {
+				if (getPointsShot()[i][j] == 0) {			//verfehlt wird als 0 eingetragen
 					priorities[i][j] = 0;
-				} else if (getPointsShot()[i][j] == 1) {
+				} else if (getPointsShot()[i][j] == 1) {	//treffer wird als -1 eingetragen
 					priorities[i][j] = -1;
-				} else if (getPointsShot()[i][j] == 2) {
+				} else if (getPointsShot()[i][j] == 2) {	//versenkt wird als -2 eingetragen
 					priorities[i][j] = -2;
 				}
 			}
 		}
 
-		for (int i = 0; i < priorities.length; i++) { // setzt links und rechts oberhalb und
-			for (int j = 0; j < priorities[i].length; j++) { // links und rechts unterhalb aller Treffer
-				if (priorities[i][j] == -1) { // auf Prioritaet 0
+		for (int i = 0; i < priorities.length; i++) { 			// setzt links und rechts oberhalb und
+			for (int j = 0; j < priorities[i].length; j++) {	// links und rechts unterhalb aller Treffer
+				if (priorities[i][j] == -1) { 					// auf Prioritaet 0
 					for (int k = 0; k < 4; k++) {
 						int tempi = i - (k < 2 ? 1 : 0);
 						int tempj = j - (k % 2 == 0 ? 1 : 0);
@@ -58,11 +58,11 @@ public class AIPlayer extends Player implements Notification {
 							priorities[tempi][tempj] = 0;
 						}
 					}
-					if (i-- > 0) { // setzt, wenn das Schiff mehr als 1 Feld getroffen ist,
+					if (i-- > 0) { 						// setzt, wenn das Schiff mehr als 1 Feld getroffen ist,
 						if (priorities[i--][j] == -1) { // für vertikale Schiffe die Felder links und rechts
-							if (j-- > 0) { // auf Prio 0
+							if (j-- > 0) { 				// auf Prio 0
 								priorities[i][j--] = 0; // und für horizontale Schiffe die Felder links und rechts
-							} // auf Prio 0
+							} 							// auf Prio 0
 							if (j++ < game.getPitchSize()) {
 								priorities[i][j++] = 0;
 							}
@@ -105,7 +105,7 @@ public class AIPlayer extends Player implements Notification {
 		ArrayList<Point> maxs = new ArrayList<Point>();
 		int max = 0;
 		maxs.add(new Point(0, 0));
-		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot negativ ein
+		for (int i = 0; i < game.getPitchSize(); i++) { //sucht alle Felder mit höchstem Prioritätswert
 			for (int j = 0; j < game.getPitchSize(); j++) {
 				//System.out.println(priorities.length + "a " + i  + " " + j);
 				if (priorities[i][j] > max) {
@@ -119,10 +119,10 @@ public class AIPlayer extends Player implements Notification {
 		}
 		Point target = maxs.get(ThreadLocalRandom.current().nextInt(0, maxs.size())).add(1,1);
 		System.out.println(target.x + " " + target.y);
-		shoot(target);
+		shoot(target);					//schießt zufällig auf ein Feld mit höchstem Prioritätswert
 	}
 
-	public static void placeShipsAutomatically(Player player) {
+	public static void placeShipsAutomatically(Player player) { //setzt auomatisch Schiffe nach dem Zufallsprinzip
 		player.removeAllShips();
 		boolean failed = false;
 		boolean done = false;
@@ -130,7 +130,7 @@ public class AIPlayer extends Player implements Notification {
 		// int ships = remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] +
 		// remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5];
 
-		for (int i = 0; i < 2000; i++) {
+		for (int i = 0; i < 2000; i++) {	//versucht bis zu 2000 mal alle Schiffe zu platzieren
 			failed = false;
 			int[] remainingShipsToBePlaced = { 0, 0, 0, 0, 0, 0 };
 			for (int i2 = 2; i2 <= 5; i2++) {
@@ -144,17 +144,17 @@ public class AIPlayer extends Player implements Notification {
 				break;
 			}
 			player.removeAllShips();
-			for (int j = 2; j < 6; j++) {
+			for (int j = 2; j < 6; j++) { //platziert die SChiffe von klein nach groß
 				// failed = false;
 				if (failed) {
 					break;
 				}
-				while (remainingShipsToBePlaced[j] > 0) {
+				while (remainingShipsToBePlaced[j] > 0) { //platziert allee Schiffe einer Größe
 					if (failed) {
 						break;
 					}
-					for (int k = 0; k < 500; k++) {
-						if (failed) {
+					for (int k = 0; k < 500; k++) { //bis zu 500 platzierungsversuche pro Schiff
+						if (failed) {				//nach 500 Versuchen werden alle Schiffe gelöscht und der nächste Versuch startet
 							break;
 						}
 
@@ -204,9 +204,8 @@ public class AIPlayer extends Player implements Notification {
 	}
 
 	@Override
-	public void processNotification(String type, Object object) {
-		// TODO Auto-generated method stub
-		if (type.equals("AIPlayerPlaceShips")) {
+	public void processNotification(String type, Object object) {	//wenn man gegen den Bot spielt lässt dieser seine Schiffe automatisch
+		if (type.equals("AIPlayerPlaceShips")) {			//platzieren sobald Feldgröße und Schiffanzahlen festgelegt sind
 			System.out.println("AIPlayerPlaceShips");
 			priorities = new int[game.getPitchSize()][game.getPitchSize()];
 			for (int[] priorityRow : priorities) {
