@@ -146,9 +146,17 @@ public class GameMapPanel extends UIPanel {
 
 	public boolean placeShip() {
 		if (!inMatch) {
-			Boolean returnVal = Main.currentGame.getPlayer1().placeShipAt(
-					new Ship(currentlyPlacedShipSize, currentlyPlacedShipOrientation),
-					new Schiffeversenken.Point(currentFocusedX + 1, currentFocusedY + 1));
+			boolean returnVal = false;
+
+			System.out.println(currentlyPlacedShipSize);
+
+			if (currentlyPlacedShipSize >= 2) {
+				returnVal = Main.currentGame.getPlayer1().placeShipAt(
+						new Ship(currentlyPlacedShipSize, currentlyPlacedShipOrientation),
+						new Schiffeversenken.Point(currentFocusedX + 1, currentFocusedY + 1));
+			} else {
+				returnVal = removeShip();
+			}
 			this.getParent().repaint();
 			return returnVal;
 		} else {
@@ -156,9 +164,31 @@ public class GameMapPanel extends UIPanel {
 		}
 	}
 
-	public void setShootFocus() {
-		currentShootFocus = new Schiffeversenken.Point(currentFocusedX, currentFocusedY);
+	private boolean removeShip() {
+		if (!inMatch) {
+			boolean returnVal = Main.currentGame.getPlayer1()
+					.removeShip(Main.currentGame.getPlayer1()
+							.getShipAt(new Schiffeversenken.Point(currentFocusedX + 1, currentFocusedY + 1)));
+			return returnVal;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean setShootFocus() {
+		boolean returnVal = false;
+
+		if (currentShootFocus != null && currentShootFocus.x == currentFocusedX
+				&& currentShootFocus.y == currentFocusedY) {
+			returnVal = false;
+		} else {
+			currentShootFocus = new Schiffeversenken.Point(currentFocusedX, currentFocusedY);
+			returnVal = true;
+		}
+
 		this.getParent().repaint();
+
+		return returnVal;
 	}
 
 	public Schiffeversenken.Point getShootFocus() {
@@ -168,6 +198,14 @@ public class GameMapPanel extends UIPanel {
 	public void clearShootFocus() {
 		currentShootFocus = null;
 		this.getParent().repaint();
+	}
+
+	public void clearShootFocusIfSame() {
+		if (currentShootFocus != null && currentShootFocus.x == currentFocusedX
+				&& currentShootFocus.y == currentFocusedY) {
+			currentShootFocus = null;
+			this.getParent().repaint();
+		}
 	}
 
 	@Override
@@ -191,6 +229,8 @@ public class GameMapPanel extends UIPanel {
 			List<Ship> placedShips = Main.currentGame.getPlayer1().getShipList();
 
 			for (Ship ship : placedShips) {
+				int[] damageOfShip = ship.getDamage();
+
 				if (ship.getOrientation() == 0) {
 					Image zoomedShipImage = SettingsHandler
 							.getImage("image_ship_" + ship.getLength() + "_"
@@ -200,10 +240,12 @@ public class GameMapPanel extends UIPanel {
 					g2d.drawImage(zoomedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize,
 							(ship.getRootPoint().y - 1) * zoomedItemSize, null);
 
-					for (int damgePos = 0; damgePos < ship.getDamage().length && !ship.isDestroyed(); damgePos++) {
-						if (ship.getDamage()[damgePos] == 1) {
-							g2d.drawImage(zoomedDestroyedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize,
-									(ship.getRootPoint().y - 1 + damgePos) * zoomedItemSize, null);
+					for (int damgePos = 0; damgePos < damageOfShip.length && !ship.isDestroyed(); damgePos++) {
+						if (damageOfShip[damgePos] == 1) {
+							ship.toString();
+							g2d.drawImage(zoomedDestroyedShipImage,
+									(ship.getRootPoint().x - 1 + damgePos) * zoomedItemSize,
+									(ship.getRootPoint().y - 1) * zoomedItemSize, null);
 						}
 					}
 				} else {
@@ -214,11 +256,11 @@ public class GameMapPanel extends UIPanel {
 					g2d.drawImage(zoomedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize,
 							(ship.getRootPoint().y - 1) * zoomedItemSize, null);
 
-					for (int damgePos = 0; damgePos < ship.getDamage().length && !ship.isDestroyed(); damgePos++) {
-						if (ship.getDamage()[damgePos] == 1) {
+					for (int damgePos = 0; damgePos < damageOfShip.length && !ship.isDestroyed(); damgePos++) {
+						if (damageOfShip[damgePos] == 1) {
 							g2d.drawImage(zoomedDestroyedShipImage,
-									(ship.getRootPoint().x - 1 + damgePos) * zoomedItemSize,
-									(ship.getRootPoint().y - 1) * zoomedItemSize, null);
+									(ship.getRootPoint().x - 1) * zoomedItemSize,
+									(ship.getRootPoint().y - 1 + damgePos) * zoomedItemSize, null);
 
 						}
 					}
@@ -231,7 +273,7 @@ public class GameMapPanel extends UIPanel {
 			g2d.drawRoundRect(currentFocusedX * zoomedItemSize, currentFocusedY * zoomedItemSize, zoomedItemSize,
 					zoomedItemSize, borderRadius, borderRadius);
 		} else if (inMatch && !viewingSelf) {
-			// -2 = part of destroyed ship; -1 = not shot yet; 0 = water; 1 = hit; 2 =
+			// 1 = not shot yet; 0 = water; 1 = hit; 2 = destroyed ship; 3 = part of
 			// destroyed ship
 			int[][] pointsShot = Main.currentGame.getPlayer1().getPointsShot();
 
@@ -251,7 +293,7 @@ public class GameMapPanel extends UIPanel {
 						int killedSize = 2;
 						int killedOrientation = 0;
 
-						pointsShot[xCord][yCord] = 1;
+						pointsShot[xCord][yCord] = 3;
 
 						// get root of destroyed ship
 						int killedRootX = xCord, killedRootY = yCord;
@@ -276,15 +318,17 @@ public class GameMapPanel extends UIPanel {
 						searchingX = true;
 						searchingY = true;
 						for (int i = 1; searchingX || searchingY; i++) {
-							if (killedRootX + i < pointsShot.length && pointsShot[killedRootX + i][killedRootY] >= 1) {
-								pointsShot[killedRootX + i][killedRootY] = -2;
+							if (searchingX && killedRootX + i < pointsShot.length
+									&& pointsShot[killedRootX + i][killedRootY] >= 1) {
+								pointsShot[killedRootX + i][killedRootY] = 3;
 								killedOrientation = 0;
 							} else {
 								searchingX = false;
 							}
 
-							if (killedRootY + i < pointsShot.length && pointsShot[killedRootX][killedRootY + i] >= 1) {
-								pointsShot[killedRootX][killedRootY + i] = -2;
+							if (searchingY && killedRootY + i < pointsShot.length
+									&& pointsShot[killedRootX][killedRootY + i] >= 1) {
+								pointsShot[killedRootX][killedRootY + i] = 3;
 								killedOrientation = 1;
 							} else {
 								searchingY = false;

@@ -23,6 +23,7 @@ public class GameWindow extends JFrame implements Notification {
 
 	private boolean inMatch = false;
 	private boolean viewingSelf = true;
+	private GameMapPanel gameMap = new GameMapPanel();
 	private WrapperPanel errorPanel = new WrapperPanel();
 	private JLabel errorLabel = new HeaderLabel("", true);
 	private WrapperPanel passTurnWarningPanel = new WrapperPanel();
@@ -36,6 +37,7 @@ public class GameWindow extends JFrame implements Notification {
 	private JLabel remainingShipsSize3Label = new HeaderLabel("Größe 3: 0/0", false);
 	private JLabel remainingShipsSize4Label = new HeaderLabel("Größe 4: 0/0", false);
 	private JLabel remainingShipsSize5Label = new HeaderLabel("Größe 5: 0/0", false);
+	JButton shootButton = new InputButton("SCHIEßEN", true); // ẞ (groß) oder ß (klein)?
 
 	public GameWindow() {
 		super("Schiffeversenken");
@@ -88,9 +90,6 @@ public class GameWindow extends JFrame implements Notification {
 		// no layout for absolute Positioning
 		this.setLayout(null);
 
-		// background map
-		GameMapPanel gameMap = new GameMapPanel();
-
 		// error Label
 		errorLabel.setForeground(Color.decode(SettingsHandler.getSettingString("color.error")));
 		GridBagConstraints errorLabelConstraints = errorPanel.defaultConstraints;
@@ -111,8 +110,8 @@ public class GameWindow extends JFrame implements Notification {
 		saveNameInputPanelConstraints.gridy = 0;
 		savePanel.add(saveNameInputPanel, saveNameInputPanelConstraints);
 
-		JButton savePanelButton = new InputButton("Speichern", true);
-		GridBagConstraints savePanelButtonConstraints = savePanel.defaultConstraints;
+		JButton savePanelButton = new InputButton("Speichern", false);
+		GridBagConstraints savePanelButtonConstraints = savePanel.doubleFirstConstraints;
 		savePanelButtonConstraints.gridy = 1;
 		savePanel.add(savePanelButton, savePanelButtonConstraints);
 		savePanelButton.addActionListener(new ActionListener() {
@@ -123,6 +122,16 @@ public class GameWindow extends JFrame implements Notification {
 				} else {
 					saveNameInputPanel.setError("Fehler beim speichern");
 				}
+			}
+		});
+
+		JButton cancelSavePanelButton = new InputButton("Abbrechen", false);
+		GridBagConstraints cancelSavePanelButtonConstraints = savePanel.doubleSecondConstraints;
+		cancelSavePanelButtonConstraints.gridy = 1;
+		savePanel.add(cancelSavePanelButton, cancelSavePanelButtonConstraints);
+		cancelSavePanelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				savePanel.setVisible(false);
 			}
 		});
 
@@ -378,7 +387,6 @@ public class GameWindow extends JFrame implements Notification {
 			}
 		});
 
-		JButton shootButton = new InputButton("SCHIEßEN", true); // ẞ (groß) oder ß (klein)?
 		shootButton.setMinimumSize(gameMenu.largeDimension());
 		shootButton.setPreferredSize(gameMenu.largeDimension());
 		shootButton.setMaximumSize(gameMenu.largeDimension());
@@ -388,31 +396,7 @@ public class GameWindow extends JFrame implements Notification {
 		gameMenu.add(shootButton, shootButtonConstraints);
 		shootButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
-					if (gameMap.getShootFocus() != null) {
-						System.out.println(gameMap.getShootFocus().x + " " + gameMap.getShootFocus().y);
-						int res = Main.currentGame.getPlayer1().shoot(gameMap.getShootFocus().add(1, 1));
-						gameMap.clearShootFocus();
-
-						if (res == 0) {
-							setError("Daneben");
-						} else if (res == 1) {
-							setError("Treffer");
-						} else if (res == 2) {
-							setError("Treffer, versenkt");
-						} else {
-							setError("Fehler");
-						}
-					} else {
-						passTurnWarningPanel.setVisible(true);
-					}
-				} else {
-					if (Main.currentGame.getPlayer2().isMyTurn()) {
-						setError("Gegner:in am Zug");
-					} else {
-						setError("Gegner:in noch nicht bereit");
-					}
-				}
+				shootAtFocus();
 			}
 		});
 
@@ -431,8 +415,10 @@ public class GameWindow extends JFrame implements Notification {
 				if (SwingUtilities.isLeftMouseButton(e)) {
 					if (!inMatch && gameMap.placeShip()) {
 						updateButtonLabels();
-					} else if (inMatch) {
-						gameMap.setShootFocus();
+					} else if (inMatch && !viewingSelf) {
+						if (!gameMap.setShootFocus()) {
+							shootAtFocus();
+						}
 					} else {
 						if (!inMatch) {
 							setError("Platzieren nicht möglich");
@@ -441,7 +427,11 @@ public class GameWindow extends JFrame implements Notification {
 						}
 					}
 				} else if (SwingUtilities.isRightMouseButton(e)) {
-					gameMap.changeCurrentlyPlacedShipOrientation();
+					if (!inMatch) {
+						gameMap.changeCurrentlyPlacedShipOrientation();
+					} else {
+						gameMap.clearShootFocusIfSame();
+					}
 				}
 			}
 		});
@@ -454,8 +444,10 @@ public class GameWindow extends JFrame implements Notification {
 			public void actionPerformed(ActionEvent e) {
 				if (!inMatch && gameMap.placeShip()) {
 					updateButtonLabels();
-				} else if (inMatch) {
-					gameMap.setShootFocus();
+				} else if (inMatch && !viewingSelf) {
+					if (!gameMap.setShootFocus()) {
+						shootAtFocus();
+					}
 				} else {
 					if (!inMatch) {
 						setError("Platzieren nicht möglich");
@@ -470,7 +462,11 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("enter_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gameMap.changeCurrentlyPlacedShipOrientation();
+				if (!inMatch) {
+					gameMap.changeCurrentlyPlacedShipOrientation();
+				} else {
+					gameMap.clearShootFocusIfSame();
+				}
 			}
 		});
 		gameMap.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),
@@ -653,13 +649,13 @@ public class GameWindow extends JFrame implements Notification {
 						searchingY = true;
 						for (int i = 1; searchingX || searchingY; i++) {
 							if (killedRootX + i < pointsShot.length && pointsShot[killedRootX + i][killedRootY] >= 1) {
-								pointsShot[killedRootX + i][killedRootY] = -2;
+								pointsShot[killedRootX + i][killedRootY] = 3;
 							} else {
 								searchingX = false;
 							}
 
 							if (killedRootY + i < pointsShot.length && pointsShot[killedRootX][killedRootY + i] >= 1) {
-								pointsShot[killedRootX][killedRootY + i] = -2;
+								pointsShot[killedRootX][killedRootY + i] = 3;
 							} else {
 								searchingY = false;
 							}
@@ -678,6 +674,41 @@ public class GameWindow extends JFrame implements Notification {
 					.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
 			remainingShipsSize5Label
 					.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+
+		}
+
+		if (viewingSelf || !Main.currentGame.getPlayer1().isMyTurn()) {
+			shootButton.setEnabled(false);
+		} else {
+			shootButton.setEnabled(true);
+		}
+	}
+
+	private void shootAtFocus() {
+		if (inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
+			if (gameMap.getShootFocus() != null) {
+				System.out.println(gameMap.getShootFocus().x + " " + gameMap.getShootFocus().y);
+				int res = Main.currentGame.getPlayer1().shoot(gameMap.getShootFocus().add(1, 1));
+				gameMap.clearShootFocus();
+
+				if (res == 0) {
+					setError("Daneben");
+				} else if (res == 1) {
+					setError("Treffer");
+				} else if (res == 2) {
+					setError("Treffer, versenkt");
+				} else {
+					setError("Fehler");
+				}
+			} else {
+				passTurnWarningPanel.setVisible(true);
+			}
+		} else {
+			if (Main.currentGame.getPlayer2().isMyTurn()) {
+				setError("Gegner:in am Zug");
+			} else {
+				setError("Gegner:in noch nicht bereit");
+			}
 		}
 	}
 
