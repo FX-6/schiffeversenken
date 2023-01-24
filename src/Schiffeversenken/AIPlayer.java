@@ -11,8 +11,6 @@ public class AIPlayer extends Player implements Notification {
 
 	private int[][] priorities = new int[game.getPitchSize()][game.getPitchSize()]; // Ein 2D Array mit
 																					// Schussprioritaeten.
-	private int receivedGameData = 0;
-
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
 		NotificationCenter.addObserver("AIPlayerPlaceShips", this);
@@ -37,6 +35,10 @@ public class AIPlayer extends Player implements Notification {
 		otherPlayer.setMyTurn(false);
 		setMyTurn(true);
 
+		handleShoot();
+	}
+
+	private void handleShoot() {
 		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot ein
 			for (int j = 0; j < game.getPitchSize(); j++) {
 				if (getPointsShot()[i][j] == 0) { // verfehlt wird als 0 eingetragen
@@ -128,7 +130,11 @@ public class AIPlayer extends Player implements Notification {
 
 		Point target = maxs.get(ThreadLocalRandom.current().nextInt(0, maxs.size())).add(1, 1);
 		System.out.println(target.x + " " + target.y);
-		System.out.println(shoot(target)); // schießt zufällig auf ein Feld mit höchstem Prioritätswert
+		int res = shoot(target); // schießt zufällig auf ein Feld mit höchstem Prioritätswert
+		System.out.println(res);
+		if (isMyTurn()) {
+			this.handleShoot();
+		}
 	}
 
 	public static void placeShipsAutomatically(Player player) { // setzt auomatisch Schiffe nach dem Zufallsprinzip
