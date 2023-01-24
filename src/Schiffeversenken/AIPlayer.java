@@ -40,12 +40,10 @@ public class AIPlayer extends Player implements Notification {
 						if (tempi >= 0 && tempi < game.getPitchSize() && tempj >= 0 && tempj < game.getPitchSize()) {
 							priorities[tempi][tempj] = 0;
 						}
-
 						if (k == 0)        { tempi = i - 1; tempj = j; //setzt links, rechts oberhalb und unterhalb des treffers auf Prio 200
 						} else if (k == 1) { tempi = i; tempj = j - 1;
 						} else if (k == 2) { tempi = i; tempj = j + 1;
-						} else if (k == 3) { tempi = i + 1; tempj = j;
-						}
+						} else if (k == 3) { tempi = i + 1; tempj = j;}
 						if (tempi >= 0 && tempi < game.getPitchSize() && tempj >= 0 && tempj < game.getPitchSize() && priorities[tempi][tempj] == 100) {
 							priorities[tempi][tempj] = 200;
 						}
@@ -69,90 +67,68 @@ public class AIPlayer extends Player implements Notification {
 		}
 
 		// for (int i = 0; i < priorities.length; i++) {
-		// 	for (int j = 0; j < priorities.length; j++) {
-		// 		System.out.printf("%3s, ", Integer.toString(priorities[j][i]));
-		// 	}
+		// 	for (int j = 0; j < priorities.length; j++) System.out.printf("%3s, ", Integer.toString(priorities[j][i]));
 		// 	System.out.println(" ");
 		// }
 
 		Point target = maxs.get(ThreadLocalRandom.current().nextInt(0, maxs.size())).add(1, 1);
-		int res = shoot(target); // schießt zufällig auf ein Feld mit höchstem Prioritätswert
-		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot ein
+		int res = shoot(target); 							// schießt zufällig auf ein Feld mit höchstem Prioritätswert
+		for (int i = 0; i < game.getPitchSize(); i++) { 							// traegt die Werte aus PointsShot ein
 			for (int j = 0; j < game.getPitchSize(); j++) {
-				if (getPointsShot()[i][j] == 0) { // verfehlt wird als 0 eingetragen
-					priorities[i][j] = 0;
-				} else if (getPointsShot()[i][j] == 1) { // treffer wird als -1 eingetragen
-					priorities[i][j] = -1;
-				} else if (getPointsShot()[i][j] == 2) { // versenkt wird als -2 eingetragen
-					priorities[i][j] = -2;
-				}
+				if (getPointsShot()[i][j] == 0) { priorities[i][j] = 0; 			// verfehlt wird als 0 eingetragen
+				} else if (getPointsShot()[i][j] == 1) { priorities[i][j] = -1; 	// treffer wird als -1 eingetragen
+				} else if (getPointsShot()[i][j] == 2) { priorities[i][j] = -2; }	// versenkt wird als -2 eingetragen
 			}
 		}
-		if (res == 2) {											//nachdem ein Schiff zerstört wurde
-			for (int i = 0; i < priorities.length; i++) {		//
-				for (int j = 0; j < priorities.length; j++) {	//
-					if (priorities[j][i] == 200) {				//werden alle Prio 200
-						priorities[j][i] = 0;					//mit 0 ersetzt
+		if (res == 2) {																//nachdem ein Schiff zerstört wurde
+			for (int i = 0; i < priorities.length; i++) {
+				for (int j = 0; j < priorities.length; j++) {
+					if (priorities[j][i] == 200) {	priorities[j][i] = 0;			//werden alle Prio 200 mit 0 ersetzt
 					} else if (priorities[j][i] == -2) {		//und alle Felder um das letzte zerstoerte Schiffsteil 
 						for (int k = 0; k < 8; k++) {			//werden zu Prio 0 gesetzt
 							int tempI = i + ((k<3)?(-1):((k>2)&&(k<5))?(0):(k>4)?(1):0);
 							int tempJ = j + (((k==0)||(k==3)||(k==5))?(-1):((k==1)||(k==6))?(0):((k==2)||(k==4)||(k==7))?(1):0);
 							if (tempI >= 0 && tempJ >= 0 && tempI < priorities.length && tempJ < priorities.length) {
-								if (priorities[tempJ][tempI] > 0) {
-									priorities[tempJ][tempI] = 0;
-								}
+								if (priorities[tempJ][tempI] > 0) { priorities[tempJ][tempI] = 0; }
 							}
 						}
 					}
 				}
 			}
 		}
-		if (res != 0) {			//wenn eine Schiff getroffen oder zerstört wurde nochmal schießen
-			this.handleShoot();
-		}
+		if (res != 0) {	this.handleShoot();} //wenn eine Schiff getroffen oder zerstört wurde nochmal schießen
 	}
 
 	public static void placeShipsAutomatically(Player player) { // setzt auomatisch Schiffe nach dem Zufallsprinzip
-		player.removeAllShips(); //entfernt alle bereits gesetzten Schiffe
+		player.removeAllShips(); 								//entfernt alle bereits gesetzten Schiffe
 		boolean failed = false;
 		boolean done = false;
 
-		for (int i = 0; i < 2000; i++) { // versucht bis zu 2000 mal alle Schiffe zu platzieren
+		for (int i = 0; i < 2000; i++) { 					// versucht bis zu 2000 mal alle Schiffe zu platzieren
 			failed = false;
 			int[] remainingShipsToBePlaced = { 0, 0, 0, 0, 0, 0 };
 			for (int i2 = 2; i2 <= 5; i2++) {
 				remainingShipsToBePlaced[i2] = Main.currentGame.getNumberOfShips(i2);
 			}
 
-			if (done) {
-				break;
-			}
+			if (done) { break;}
 			player.removeAllShips();
-			for (int j = 2; j < 6; j++) { // platziert die SChiffe von klein nach groß
-				if (failed) {
-					break;
-				}
-				while (remainingShipsToBePlaced[j] > 0) { // platziert allee Schiffe einer Größe
-					if (failed) {
-						break;
-					}
-					for (int k = 0; k < 500; k++) { // bis zu 500 platzierungsversuche pro Schiff
-						if (failed) { // nach 500 Versuchen werden alle Schiffe gelöscht und der nächste Versuch
-							break;	  // startet
-						}
+			for (int j = 2; j < 6; j++) { 					// platziert die SChiffe von klein nach groß
+				if (failed) { break;}
+				while (remainingShipsToBePlaced[j] > 0) { 	// platziert allee Schiffe einer Größe
+					if (failed) { break;}
+					for (int k = 0; k < 500; k++) { 		// bis zu 500 platzierungsversuche pro Schiff
+						if (failed) { break;}				// nach 500 Versuchen werden alle Schiffe gelöscht und der nächste Versuch startet
 						if (player.placeShipAt(new Ship(j, (int) Math.floor(Math.random() * 2)),
 								new Point((int) (Math.random() * (Main.currentGame.getPitchSize() + 1)),
 										(int) (Math.random() * (Main.currentGame.getPitchSize() + 1))))) {
 							remainingShipsToBePlaced[j]--;
 							k = 500;
-							if (remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4]
-									+ remainingShipsToBePlaced[5] == 0) {
+							if (remainingShipsToBePlaced[2] + remainingShipsToBePlaced[3] + remainingShipsToBePlaced[4] + remainingShipsToBePlaced[5] == 0) {
 								done = true;
 							}
 						}
-						if (k == 499) {
-							failed = true;
-						}
+						if (k == 499) { failed = true;}
 					}
 				}
 			}
