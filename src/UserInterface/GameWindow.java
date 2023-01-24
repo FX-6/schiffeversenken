@@ -710,6 +710,7 @@ public class GameWindow extends JFrame implements Notification {
 				} else if (res == 1) {
 					setError("Treffer");
 				} else if (res == 2) {
+					updateButtonLabels();
 					setError("Treffer, versenkt");
 				} else {
 					setError("Fehler");
