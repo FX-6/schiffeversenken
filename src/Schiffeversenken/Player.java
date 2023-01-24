@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import Notifications.NotificationCenter;
+
 
 /**
  * Stell im Zusammenhang mit einer erbenden Klasse eine Instaz eines Spielers dar. Hier sind alle Methoden untergebracht, die von dem UserInterface aufgerufen werden müssen, 
@@ -28,6 +30,7 @@ public abstract class Player {
 	
 	/**
 	 * Speichert alle Punkte, die dieser Spieler bei seinem Gegner bereits beschossen hat. Indizes ergeben sich aus den Koordinaten eines Punktes. Index = [<x> - 1][<y> - 1] (da Koordinaten im Interval [1; <pitchSize>] liegen)
+	 * -1, falls Feld noch nicht beschossen. 0, falls beschossen und Wasser. 1, falls beschossen und Schiff. 2, falls beschossen und Schiff wurde versenkt.
 	 */
 	private int[][] pointsShot;
 	
@@ -125,16 +128,77 @@ public abstract class Player {
 		
 		// Falls kein Schiff getroffen wurde
 		if (result == 0) {
-			otherPlayer.pass();								// Gegnerischem Spieler den Zug geben
+			// Neuer Thread, damit Antwort returnt wird
+			new Thread(new Runnable() {
+				public void run() {
+					otherPlayer.pass();						// Gegner den Zug geben
+				}
+			}, "NeuerZug").start();;
+		}
+		
+		// Falls ein Schiff getroffen wurde
+		else if (result >= 1) {
+			// Punkte, an denen kein Schiff liegen darf (-> 1 Feld Wasser zwischen Schiffen) markieren
+			if (point.x - 2 >= 0 && point.y - 2 >= 0) pointsShot[point.x - 2][point.y - 2] = 0;							// links oben
+			if (point.x - 2 >= 0 && point.y < game.getPitchSize()) pointsShot[point.x - 2][point.y] = 0;				// unten links
+			if (point.x < game.getPitchSize() && point.y - 2 >= 0) pointsShot[point.x][point.y - 2] = 0;				// rechts oben
+			if (point.x < game.getPitchSize() && point.y < game.getPitchSize()) pointsShot[point.x][point.y] = 0;		// rechts unten
 		}
 		
 		// Falls ein Schiff versenkt wurde
-		else if (result == 2) {
+		if (result == 2) {
 			shipsDestroyed++;
+			
+			
+			// Restliche Felder markieren, an denen kein Schiff liegen darf (Kopfseiten des Schiffs)
+			int x = point.x - 1;
+			int y = point.y - 1;
+			
+			if (x > 0 && pointsShot[x-1][y] >= 1) {
+				while (x >= 0 && pointsShot[x][y] >= 1) x--;
+				if (x >= 0) pointsShot[x][y] = 0;
+				x++;
+				while (x < game.getPitchSize() && pointsShot[x][y] >= 1) x++;
+				if (x < game.getPitchSize()) pointsShot[x][y] = 0;
+			}
+			else if (x < game.getPitchSize() - 1 && pointsShot[x+1][y] == 1) {
+				while (x >= 0 && pointsShot[x][y] >= 1) x--;
+				if (x >= 0) pointsShot[x][y] = 0;
+				x++;
+				while (x < game.getPitchSize() && pointsShot[x][y] >= 1) x++;
+				if (x < game.getPitchSize()) pointsShot[x][y] = 0;
+			}
+			
+			else if (y > 0 && pointsShot[x][y-1] >= 1) {
+				while (y >= 0 && pointsShot[x][y] >= 1) y--;
+				if (y >= 0) pointsShot[x][y] = 0;
+				y++;
+				while (y < game.getPitchSize() && pointsShot[x][y] >= 1) y++;
+				if (y < game.getPitchSize()) pointsShot[x][y] = 0;
+			}
+			else if (y < game.getPitchSize() - 1 && pointsShot[x][y+1] >= 1) {
+				while (y >= 0 && pointsShot[x][y] >= 1) y--;
+				if (y >= 0) pointsShot[x][y] = 0;
+				y++;
+				while (y < game.getPitchSize() && pointsShot[x][y] >= 1) y++;
+				if (y < game.getPitchSize()) pointsShot[x][y] = 0;
+			}
+				
+				
 			// Falls alle Schiffe versenkt wurden und das Spiel somit vorbei ist
 			if (shipsDestroyed == (game.getNumberOfShips(2) + game.getNumberOfShips(3) + game.getNumberOfShips(4) + game.getNumberOfShips(5))) {
 				// Spiel wird beendet, dieser Spieler ist Sieger
-				System.out.println("SPIEL BEENDEN");
+				Player player = this;
+				new Thread(new Runnable() {
+					public void run() {
+						if (player == game.getPlayer1()) {
+							NotificationCenter.sendNotification("WinPlayer1", null);
+						} else {
+							NotificationCenter.sendNotification("WinPlayer2", null);
+						}
+						game.exit(this, GameExitStatus.GAME_FINISHED);
+					}
+				}, "SpielBeenden").start();
 			}
 		}
 		
