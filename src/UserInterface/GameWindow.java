@@ -15,8 +15,12 @@ import Notifications.NotificationCenter;
 import Schiffeversenken.*;
 import UserInterface.UIComponents.*;
 
-/*
- * TODO: Wenn das Spiel beendet wird, dann muss das Fenster wieder geschlossen werden!!
+/**
+ * TODO UI Fixes (Felix), 4 remaining
+ * - Eigene beschossene Schiffe werden nicht korrekt gerendert
+ * - Anzeige bei remaining ships labeln fixen
+ * - Anzeige wer dran ist
+ * - Wiederholtes beschießen verhindern
  */
 
 /**
@@ -43,12 +47,12 @@ public class GameWindow extends JFrame implements Notification {
 	private GameMenuPanel gameMenu = new GameMenuPanel();
 	private JLabel currentPlayerLabel = new HeaderLabel("Du", false);
 	private JButton changePlayerButton = new InputButton("Ändern", false);
-	private JLabel remainingShipsSize2Label = new HeaderLabel("Größe 2: 0/0", false);
-	private JLabel remainingShipsSize3Label = new HeaderLabel("Größe 3: 0/0", false);
-	private JLabel remainingShipsSize4Label = new HeaderLabel("Größe 4: 0/0", false);
-	private JLabel remainingShipsSize5Label = new HeaderLabel("Größe 5: 0/0", false);
+	private JLabel remainingShipsSize2Label = new HeaderLabel("2er: 0/0", false);
+	private JLabel remainingShipsSize3Label = new HeaderLabel("3er: 0/0", false);
+	private JLabel remainingShipsSize4Label = new HeaderLabel("4er: 0/0", false);
+	private JLabel remainingShipsSize5Label = new HeaderLabel("5er: 0/0", false);
 	private JButton saveButton = new InputButton("Speichern", true);
-	private JButton shootButton = new InputButton("SCHIEßEN", true); // ẞ (groß) oder ß (klein)?
+	private JButton shootButton = new InputButton("SCHIEẞEN", true); // ẞ (groß) oder ß (klein)?
 
 	/**
 	 * Erstellt das Fenster für's Spiel.
@@ -100,7 +104,7 @@ public class GameWindow extends JFrame implements Notification {
 	private void setup() {
 		NotificationCenter.addObserver("WinPlayer1", this);
 		NotificationCenter.addObserver("WinPlayer2", this);
-		
+
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.pack();
 		this.setMinimumSize(getSize());
@@ -468,10 +472,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("enter_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				if (!inMatch && gameMap.placeShip()) {
 					updateButtonLabels();
 				} else if (inMatch && !viewingSelf) {
@@ -492,10 +492,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("enter_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				if (!inMatch) {
 					gameMap.changeCurrentlyPlacedShipOrientation();
 				} else {
@@ -508,10 +504,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("up_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				gameMap.changeCurrentlyFocusedTile(false, -1);
 			}
 		});
@@ -520,10 +512,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("down_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				gameMap.changeCurrentlyFocusedTile(false, 1);
 			}
 		});
@@ -532,10 +520,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("left_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				gameMap.changeCurrentlyFocusedTile(true, -1);
 			}
 		});
@@ -544,10 +528,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("right_noCtrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				gameMap.changeCurrentlyFocusedTile(true, 1);
 			}
 		});
@@ -556,10 +536,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("up_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				gameMap.changePositionByTiles(false, -1);
 			}
 		});
@@ -568,10 +544,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("down_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				gameMap.changePositionByTiles(false, 1);
 			}
 		});
@@ -580,10 +552,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("left_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				gameMap.changePositionByTiles(true, -1);
 			}
 		});
@@ -592,10 +560,6 @@ public class GameWindow extends JFrame implements Notification {
 		gameMap.getActionMap().put("right_ctrl", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (gameOver) {
-					return;
-				}
-
 				gameMap.changePositionByTiles(true, 1);
 			}
 		});
@@ -609,6 +573,8 @@ public class GameWindow extends JFrame implements Notification {
 						e.getComponent().getHeight() - errorPanel.getHeight() - 59);
 				savePanel.setLocation(e.getComponent().getWidth() / 2 - savePanel.getWidth() / 2,
 						e.getComponent().getHeight() / 2 - savePanel.getHeight() / 2);
+				gameOverPanel.setLocation(e.getComponent().getWidth() / 2 - gameOverPanel.getWidth() / 2,
+						e.getComponent().getHeight() - gameOverPanel.getHeight() - 59);
 			}
 		});
 
@@ -680,13 +646,13 @@ public class GameWindow extends JFrame implements Notification {
 			}
 
 			remainingShipsSize2Label
-					.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+					.setText("2er: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
 			remainingShipsSize3Label
-					.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+					.setText("3er: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
 			remainingShipsSize4Label
-					.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+					.setText("4er: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
 			remainingShipsSize5Label
-					.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+					.setText("5er: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
 		} else {
 			currentPlayerLabel.setText("Gegner:in");
 
@@ -736,14 +702,13 @@ public class GameWindow extends JFrame implements Notification {
 			}
 
 			remainingShipsSize2Label
-					.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+					.setText("2er: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
 			remainingShipsSize3Label
-					.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+					.setText("3er: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
 			remainingShipsSize4Label
-					.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+					.setText("4er: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
 			remainingShipsSize5Label
-					.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
-
+					.setText("5er: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
 		}
 
 		if (viewingSelf || !Main.currentGame.getPlayer1().isMyTurn()) {
@@ -753,7 +718,6 @@ public class GameWindow extends JFrame implements Notification {
 		}
 
 		if (gameOver) {
-			changePlayerButton.setEnabled(false);
 			saveButton.setEnabled(false);
 			shootButton.setEnabled(false);
 			savePanelButton.setEnabled(false);
@@ -779,7 +743,7 @@ public class GameWindow extends JFrame implements Notification {
 				} else {
 					setError("Fehler");
 				}
-			} else {
+			} else if (!gameOver) {
 				passTurnWarningPanel.setVisible(true);
 			}
 		} else {
@@ -808,12 +772,14 @@ public class GameWindow extends JFrame implements Notification {
 	public void processNotification(String type, Object object) {
 		if (type.equals("WinPlayer1")) {
 			gameOver = true;
+			gameMap.setGameOver();
 			updateButtonLabels();
 
 			gameOverLabel.setText("Du hast gewonnen :)");
 			gameOverPanel.setVisible(true);
 		} else if (type.equals("WinPlayer2")) {
 			gameOver = true;
+			gameMap.setGameOver();
 			updateButtonLabels();
 
 			gameOverLabel.setText("Du hast verloren :(");

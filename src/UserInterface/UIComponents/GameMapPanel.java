@@ -17,6 +17,7 @@ public class GameMapPanel extends UIPanel {
 
 	private Point prevMouseLocation, windowPosition;
 	private double zoomFactor = 1;
+	private boolean gameOver = false;
 	private boolean inMatch = false;
 	private boolean viewingSelf = true;
 	private int currentFocusedX = Main.currentGame.getPitchSize() / 2;
@@ -31,6 +32,9 @@ public class GameMapPanel extends UIPanel {
 	private Image zoomedWaterImage = waterImage.getScaledInstance(imageSize, imageSize, Image.SCALE_FAST);
 	private Image destroyedShipImage = SettingsHandler.getImage("image_ship_destroyed");
 	private Image zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(imageSize, imageSize,
+			Image.SCALE_FAST);
+	private Image destroyedWaterImage = SettingsHandler.getImage("image_water_destroyed");
+	private Image zoomedDestroyedWaterImage = destroyedWaterImage.getScaledInstance(imageSize, imageSize,
 			Image.SCALE_FAST);
 
 	/**
@@ -92,6 +96,8 @@ public class GameMapPanel extends UIPanel {
 				zoomedCloudImage = cloudImage.getScaledInstance(newZoomedItemSize, newZoomedItemSize, Image.SCALE_FAST);
 				zoomedWaterImage = waterImage.getScaledInstance(newZoomedItemSize, newZoomedItemSize, Image.SCALE_FAST);
 				zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(newZoomedItemSize, newZoomedItemSize,
+						Image.SCALE_FAST);
+				zoomedDestroyedWaterImage = destroyedWaterImage.getScaledInstance(newZoomedItemSize, newZoomedItemSize,
 						Image.SCALE_FAST);
 
 				int widthDiff = (oldZommedItemSize - newZoomedItemSize) * Main.currentGame.getPitchSize() / 2;
@@ -235,6 +241,10 @@ public class GameMapPanel extends UIPanel {
 	 *         entfernt wurde
 	 */
 	public boolean setShootFocus() {
+		if (gameOver) {
+			return false;
+		}
+
 		boolean returnVal = false;
 
 		if (currentShootFocus != null && currentShootFocus.x == currentFocusedX
@@ -264,6 +274,10 @@ public class GameMapPanel extends UIPanel {
 	 * Repaints parent.
 	 */
 	public void clearShootFocus() {
+		if (gameOver) {
+			return;
+		}
+
 		currentShootFocus = null;
 		this.getParent().repaint();
 	}
@@ -272,11 +286,22 @@ public class GameMapPanel extends UIPanel {
 	 * Löscht den Focus, falls man auf ihm hovert.
 	 */
 	public void clearShootFocusIfSame() {
+		if (gameOver) {
+			return;
+		}
+
 		if (currentShootFocus != null && currentShootFocus.x == currentFocusedX
 				&& currentShootFocus.y == currentFocusedY) {
 			currentShootFocus = null;
 			this.getParent().repaint();
 		}
+	}
+
+	/**
+	 * Sagt der Map dass das Spiel vorbei ist.
+	 */
+	public void setGameOver() {
+		gameOver = true;
 	}
 
 	@Override
@@ -291,9 +316,15 @@ public class GameMapPanel extends UIPanel {
 				zoomedItemSize * Main.currentGame.getPitchSize());
 
 		if (inMatch && viewingSelf) {
-			for (int row = 0; row < Main.currentGame.getPitchSize(); row++) {
-				for (int column = 0; column < Main.currentGame.getPitchSize(); column++) {
-					g2d.drawImage(zoomedWaterImage, row * zoomedItemSize, column * zoomedItemSize, null);
+			int[][] enemyPointsShot = Main.currentGame.getPlayer2().getPointsShot();
+
+			for (int xCord = 0; xCord < enemyPointsShot.length; xCord++) {
+				for (int yCord = 0; yCord < enemyPointsShot.length; yCord++) {
+					if (enemyPointsShot[xCord][yCord] == 0) {
+						g2d.drawImage(zoomedDestroyedWaterImage, xCord * zoomedItemSize, yCord * zoomedItemSize, null);
+					} else {
+						g2d.drawImage(zoomedWaterImage, xCord * zoomedItemSize, yCord * zoomedItemSize, null);
+					}
 				}
 			}
 
@@ -321,7 +352,8 @@ public class GameMapPanel extends UIPanel {
 					}
 				} else {
 					Image zoomedShipImage = SettingsHandler
-							.getRotatedImage("image_ship_" + ship.getLength() + "_healthy")
+							.getRotatedImage("image_ship_" + ship.getLength() + "_"
+									+ (ship.isDestroyed() ? "destroyed" : "healthy"))
 							.getScaledInstance(zoomedItemSize, zoomedItemSize * ship.getLength(), Image.SCALE_FAST);
 
 					g2d.drawImage(zoomedShipImage, (ship.getRootPoint().x - 1) * zoomedItemSize,
