@@ -114,6 +114,9 @@ public class Game {
 	 * 			gelesen werden konnte.
 	 */
 	public boolean load(String id, Object sender) {
+		
+		id = id.split("#")[0];
+		
 		// "load <id>"-Befehl an das Netzwerk übertragen, sofern das Spiel über das Netzwerk gespielt wird und das Laden nicht durch einen über das Netzwerk empfangenen Befehl ausgelöst wird
 		if (!(sender instanceof NetworkPlayer) && player2 instanceof NetworkPlayer) {
 			NetworkPlayer player2 = (NetworkPlayer) this.player2;
