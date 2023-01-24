@@ -222,7 +222,7 @@ public class SaveGameHandler {
 					for (int x = 0; x < pitchSize; x++) {
 						reader.nextLine();
 						for (int y = 0; y < pitchSize; y++) {
-							shots[x][y] = Integer.parseInt(reader.nextLine().trim().substring(0, 1));
+							shots[x][y] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
 						}
 						reader.nextLine();
 					}
@@ -245,7 +245,7 @@ public class SaveGameHandler {
 					
 					for (int i = 0; i < numberOfShips; i++) {
 						reader.nextLine();
-						
+												
 						String[] coords = reader.nextLine().trim().split(":")[1].replace("\"", "").split(",");
 						Point rootPoint = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));				// Ursprung des Schiffs
 						
