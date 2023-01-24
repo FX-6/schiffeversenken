@@ -16,9 +16,8 @@ import Schiffeversenken.*;
 import UserInterface.UIComponents.*;
 
 /**
- * TODO UI Fixes (Felix), 4 remaining
+ * TODO UI Fixes (Felix), 2 remaining
  * - Eigene beschossene Schiffe werden nicht korrekt gerendert
- * - Anzeige bei remaining ships labeln fixen
  * - Anzeige wer dran ist
  */
 
@@ -663,6 +662,8 @@ public class GameWindow extends JFrame implements Notification {
 						int killedRootX = xCord, killedRootY = yCord;
 						boolean searchingX = true, searchingY = true;
 
+						pointsShot[killedRootX][killedRootY] = 3;
+
 						while (searchingX || searchingY) {
 							if (killedRootX - 1 >= 0 && pointsShot[killedRootX - 1][killedRootY] == 1) {
 								killedRootX--;
@@ -694,7 +695,9 @@ public class GameWindow extends JFrame implements Notification {
 								searchingY = false;
 							}
 
-							placedShipsOfSize[i]--;
+							if (!searchingX && !searchingY) {
+								placedShipsOfSize[i]--;
+							}
 						}
 					}
 				}

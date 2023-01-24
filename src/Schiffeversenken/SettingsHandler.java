@@ -165,7 +165,26 @@ public class SettingsHandler {
 	 * @return Ein <code>String</code> Array mit allen Themenamen.
 	 */
 	public static String[] getSavedGames() {
-		return new File(saveGamesPath).list();
+		String[] folderContent = new File(saveGamesPath).list();
+		int numOfValidNames = folderContent.length;
+
+		for (int i = 0; i < folderContent.length; i++) {
+			if (!SettingsHandler.validateSavefileName(folderContent[i])) {
+				numOfValidNames--;
+				folderContent[i] = null;
+			}
+		}
+
+		String[] validFiles = new String[numOfValidNames];
+		int pos = 0;
+
+		for (String fileName : folderContent) {
+			if (fileName != null) {
+				validFiles[pos++] = fileName;
+			}
+		}
+
+		return validFiles;
 	}
 
 	/**
@@ -297,6 +316,16 @@ public class SettingsHandler {
 	 */
 	public static boolean validateHEXColor(String color) {
 		return color.matches("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$");
+	}
+
+	/**
+	 * Liefert zurück ob der Name ein Name einer Speicherdatei sein kann.
+	 *
+	 * @param filename The name of the File
+	 * @return <code>true</code> wenn es das Schema einer Speicherdatei hat
+	 */
+	public static boolean validateSavefileName(String filename) {
+		return filename.matches("^\\d+#.+\\.json$");
 	}
 
 	/**
