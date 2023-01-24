@@ -16,7 +16,7 @@ import Schiffeversenken.*;
 import UserInterface.UIComponents.*;
 
 /**
- * TODO UI Fixes (Felix), 4 remaining
+ * TODO UI Fixes (Felix), 3 remaining
  * - Eigene beschossene Schiffe werden nicht korrekt gerendert
  * - Anzeige bei remaining ships labeln fixen
  * - Anzeige wer dran ist
