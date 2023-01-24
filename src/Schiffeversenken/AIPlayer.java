@@ -112,6 +112,17 @@ public class AIPlayer extends Player implements Notification {
 		System.out.println(target.x + " " + target.y);
 		int res = shoot(target); // schießt zufällig auf ein Feld mit höchstem Prioritätswert
 		System.out.println(res);
+		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot ein
+			for (int j = 0; j < game.getPitchSize(); j++) {
+				if (getPointsShot()[i][j] == 0) { // verfehlt wird als 0 eingetragen
+					priorities[i][j] = 0;
+				} else if (getPointsShot()[i][j] == 1) { // treffer wird als -1 eingetragen
+					priorities[i][j] = -1;
+				} else if (getPointsShot()[i][j] == 2) { // versenkt wird als -2 eingetragen
+					priorities[i][j] = -2;
+				}
+			}
+		}
 		if (res == 2) {
 			for (int i = 0; i < priorities.length; i++) {
 				for (int j = 0; j < priorities.length; j++) {
