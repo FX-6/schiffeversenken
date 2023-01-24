@@ -61,12 +61,12 @@ public class Main {
 		case NETWORK_AI_SERVER:
 			player1 = new AIPlayer(currentGame, null);
 			player2 = new NetworkPlayer(currentGame, player1);
-			player2.setOtherPlayer(player2);
+			player1.setOtherPlayer(player2);
 			break;
 		case NETWORK_AI_CLIENT:
 			player1 = new AIPlayer(currentGame, null);
 			player2 = new NetworkPlayer(currentGame, player1, hostAddress);
-			player2.setOtherPlayer(player2);
+			player1.setOtherPlayer(player2);
 			break;
 		}
 
