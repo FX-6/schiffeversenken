@@ -15,11 +15,9 @@ import Notifications.NotificationCenter;
 import Schiffeversenken.*;
 import UserInterface.UIComponents.*;
 
-/**
- * TODO UI Fixes (Felix), 2 remaining
- * - Eigene beschossene Schiffe werden nicht korrekt gerendert
- * - Anzeige wer dran ist
- */
+// TODO UI Fixes (Felix), 1? remaining
+// - Anzeige wer dran ist
+// ? Eigene beschossene Schiffe werden nicht korrekt gerendert
 
 /**
  * Das Fenster des Spiels.
@@ -683,13 +681,15 @@ public class GameWindow extends JFrame implements Notification {
 						searchingX = true;
 						searchingY = true;
 						for (int i = 1; searchingX || searchingY; i++) {
-							if (killedRootX + i < pointsShot.length && pointsShot[killedRootX + i][killedRootY] >= 1) {
+							if (searchingX && killedRootX + i < pointsShot.length
+									&& pointsShot[killedRootX + i][killedRootY] >= 1) {
 								pointsShot[killedRootX + i][killedRootY] = 3;
 							} else {
 								searchingX = false;
 							}
 
-							if (killedRootY + i < pointsShot.length && pointsShot[killedRootX][killedRootY + i] >= 1) {
+							if (searchingY && killedRootY + i < pointsShot.length
+									&& pointsShot[killedRootX][killedRootY + i] >= 1) {
 								pointsShot[killedRootX][killedRootY + i] = 3;
 							} else {
 								searchingY = false;
