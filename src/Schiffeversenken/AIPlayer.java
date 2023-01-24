@@ -24,12 +24,9 @@ public class AIPlayer extends Player implements Notification {
 	private void handleShoot() {
 		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot ein
 			for (int j = 0; j < game.getPitchSize(); j++) {
-				if (getPointsShot()[i][j] == 0) { // verfehlt wird als 0 eingetragen
-					priorities[i][j] = 0;
-				} else if (getPointsShot()[i][j] == 1) { // treffer wird als -1 eingetragen
-					priorities[i][j] = -1;
-				} else if (getPointsShot()[i][j] == 2) { // versenkt wird als -2 eingetragen
-					priorities[i][j] = -2;
+				if (getPointsShot()[i][j] == 0) { priorities[i][j] = 0; 			// verfehlt wird als 0 eingetragen
+					} else if (getPointsShot()[i][j] == 1) { priorities[i][j] = -1;	// treffer wird als -1 eingetragen
+					} else if (getPointsShot()[i][j] == 2) { priorities[i][j] = -2;	// versenkt wird als -2 eingetragen
 				}
 			}
 		}
@@ -44,18 +41,10 @@ public class AIPlayer extends Player implements Notification {
 							priorities[tempi][tempj] = 0;
 						}
 
-						if (k == 0) { //setzt links, rechts oberhalb und unterhalb des treffers auf Prio 200
-							tempi = i - 1;
-							tempj = j;
-						} else if (k == 1) {
-							tempi = i;
-							tempj = j - 1;
-						} else if (k == 2) {
-							tempi = i;
-							tempj = j + 1;
-						} else if (k == 3) {
-							tempi = i + 1;
-							tempj = j;
+						if (k == 0)        { tempi = i - 1; tempj = j; //setzt links, rechts oberhalb und unterhalb des treffers auf Prio 200
+						} else if (k == 1) { tempi = i; tempj = j - 1;
+						} else if (k == 2) { tempi = i; tempj = j + 1;
+						} else if (k == 3) { tempi = i + 1; tempj = j;
 						}
 						if (tempi >= 0 && tempi < game.getPitchSize() && tempj >= 0 && tempj < game.getPitchSize() && priorities[tempi][tempj] == 100) {
 							priorities[tempi][tempj] = 200;
@@ -64,12 +53,11 @@ public class AIPlayer extends Player implements Notification {
 				}
 			}
 		}
-
-		ArrayList<Point> maxs = new ArrayList<Point>();
-		int max = 0;
+		ArrayList<Point> maxs = new ArrayList<Point>();			//ein Array mit allen maximalen Prio werten
+		int max = 0;											//Wert des maximalen Prio werts
 		maxs.add(new Point(0, 0));
-		for (int i = 0; i < game.getPitchSize(); i++) { 		// sucht alle Felder mit höchstem Prioritätswert
-			for (int j = 0; j < game.getPitchSize(); j++) {
+		for (int i = 0; i < game.getPitchSize(); i++) { 		//schreibt alle Felder mit maximalem Prio wert
+			for (int j = 0; j < game.getPitchSize(); j++) {		//in das Array
 				if (priorities[i][j] > max) {
 					maxs.clear();
 					maxs.add(new Point(i, j));
