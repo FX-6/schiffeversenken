@@ -196,7 +196,7 @@ public abstract class Player {
 						} else {
 							NotificationCenter.sendNotification("WinPlayer2", null);
 						}
-						game.exit(this, GameExitStatus.GAME_FINISHED);
+						//game.exit(this, GameExitStatus.GAME_FINISHED);
 					}
 				}, "SpielBeenden").start();
 			}

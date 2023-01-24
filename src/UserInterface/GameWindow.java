@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import javax.swing.*;
 
 import Notifications.Notification;
+import Notifications.NotificationCenter;
 import Schiffeversenken.*;
 import UserInterface.UIComponents.*;
 
@@ -97,6 +98,9 @@ public class GameWindow extends JFrame implements Notification {
 	 * Setup befehle.
 	 */
 	private void setup() {
+		NotificationCenter.addObserver("WinPlayer1", this);
+		NotificationCenter.addObserver("WinPlayer2", this);
+		
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.pack();
 		this.setMinimumSize(getSize());
