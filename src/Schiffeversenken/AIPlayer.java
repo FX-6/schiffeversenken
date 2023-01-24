@@ -11,6 +11,7 @@ public class AIPlayer extends Player implements Notification {
 
 	private int[][] priorities = new int[game.getPitchSize()][game.getPitchSize()]; // Ein 2D Array mit
 																					// Schussprioritaeten.
+
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
 		NotificationCenter.addObserver("AIPlayerPlaceShips", this);
@@ -55,50 +56,29 @@ public class AIPlayer extends Player implements Notification {
 			for (int j = 0; j < priorities[i].length; j++) { // links und rechts unterhalb aller Treffer
 				if (priorities[i][j] == -1) { // auf Prioritaet 0
 					for (int k = 0; k < 4; k++) {
-						int tempi = i - (k < 2 ? 1 : 0);
-						int tempj = j - (k % 2 == 0 ? 1 : 0);
-						if (tempi > 0 && tempi < game.getPitchSize() && tempj > 0 && tempj < game.getPitchSize()) {
+						int tempi = i - (k < 2 ? 1 : -1);
+						int tempj = j - ((k % 2) == 0 ? 1 : -1);
+						if (tempi >= 0 && tempi < game.getPitchSize() && tempj >= 0 && tempj < game.getPitchSize()) {
 							priorities[tempi][tempj] = 0;
 						}
-					}
-					if (i-- > 0) { // setzt, wenn das Schiff mehr als 1 Feld getroffen ist,
-						if (priorities[i--][j] == -1) { // für vertikale Schiffe die Felder links und rechts
-							if (j-- > 0) { // auf Prio 0
-								priorities[i][j--] = 0; // und für horizontale Schiffe die Felder links und rechts
-							} // auf Prio 0
-							if (j++ < game.getPitchSize()) {
-								priorities[i][j++] = 0;
-							}
+
+						if (k == 0) {
+							tempi = i - 1;
+							tempj = j;
+						} else if (k == 1) {
+							tempi = i;
+							tempj = j - 1;
+						} else if (k == 2) {
+							tempi = i;
+							tempj = j + 1;
+						} else if (k == 3) {
+							tempi = i + 1;
+							tempj = j;
 						}
-					}
-					if (i++ > 0) {
-						if (priorities[i++][j] == -1) {
-							if (j-- > 0) {
-								priorities[i][j--] = 0;
-							}
-							if (j++ < game.getPitchSize()) {
-								priorities[i][j++] = 0;
-							}
-						}
-					}
-					if (j-- > 0) {
-						if (priorities[i][j--] == -1) {
-							if (i-- > 0) {
-								priorities[i--][j] = 0;
-							}
-							if (i++ < game.getPitchSize()) {
-								priorities[i++][j] = 0;
-							}
-						}
-					}
-					if (j++ > 0) {
-						if (priorities[i][j++] == -1) {
-							if (i-- > 0) {
-								priorities[i--][j] = 0;
-							}
-							if (i++ < game.getPitchSize()) {
-								priorities[i++][j] = 0;
-							}
+
+						if (tempi >= 0 && tempi < game.getPitchSize() && tempj >= 0 && tempj < game.getPitchSize()
+								&& priorities[tempi][tempj] == 100) {
+							priorities[tempi][tempj] = 200;
 						}
 					}
 				}
@@ -123,7 +103,7 @@ public class AIPlayer extends Player implements Notification {
 
 		for (int i = 0; i < priorities.length; i++) {
 			for (int j = 0; j < priorities.length; j++) {
-				System.out.print((priorities[j][i] == 0 ? "  " : "") + priorities[j][i] + ", ");
+				System.out.printf("%3s, ", Integer.toString(priorities[j][i]));
 			}
 			System.out.println(" ");
 		}
@@ -132,6 +112,38 @@ public class AIPlayer extends Player implements Notification {
 		System.out.println(target.x + " " + target.y);
 		int res = shoot(target); // schießt zufällig auf ein Feld mit höchstem Prioritätswert
 		System.out.println(res);
+		for (int i = 0; i < game.getPitchSize(); i++) { // traegt die Werte aus PointsShot ein
+			for (int j = 0; j < game.getPitchSize(); j++) {
+				if (getPointsShot()[i][j] == 0) { // verfehlt wird als 0 eingetragen
+					priorities[i][j] = 0;
+				} else if (getPointsShot()[i][j] == 1) { // treffer wird als -1 eingetragen
+					priorities[i][j] = -1;
+				} else if (getPointsShot()[i][j] == 2) { // versenkt wird als -2 eingetragen
+					priorities[i][j] = -2;
+				}
+			}
+		}
+		if (res == 2) {
+			for (int i = 0; i < priorities.length; i++) {
+				for (int j = 0; j < priorities.length; j++) {
+					if (priorities[j][i] == 200) {
+						priorities[j][i] = 0;
+					} else if (priorities[j][i] == -2) {
+						System.out.println("found a -2");
+						for (int k = 0; k < 8; k++) {
+							int tempI = i + ((k<3)?(-1):((k>2)&&(k<5))?(0):(k>4)?(1):0);
+							int tempJ = j + (((k==0)||(k==3)||(k==5))?(-1):((k==1)||(k==6))?(0):((k==2)||(k==4)||(k==7))?(1):0);
+							if (tempI >= 0 && tempJ >= 0 && tempI < priorities.length && tempJ < priorities.length) {
+								if (priorities[tempJ][tempI] > 0) {
+									priorities[tempJ][tempI] = 0;
+									System.out.println(tempJ + " " + tempI);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		if (isMyTurn()) {
 			this.handleShoot();
 		}
