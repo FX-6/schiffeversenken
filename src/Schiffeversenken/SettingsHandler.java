@@ -78,7 +78,6 @@ public class SettingsHandler {
 					entry = zipInStr.getNextEntry();
 				}
 			} catch (IOException e) {
-				// Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -345,6 +344,7 @@ class SettingsValues {
 	private String settings_theme_path = "Default";
 
 	private BufferedImage image_water;
+	private BufferedImage image_water_destroyed;
 	private BufferedImage image_clouds;
 	private BufferedImage image_ship_destroyed;
 	private BufferedImage image_ship_2_destroyed;
@@ -446,6 +446,7 @@ class SettingsValues {
 
 			try {
 				image_water = ImageIO.read(new File(internalCurrentThemePath + "water.png"));
+				image_water_destroyed = ImageIO.read(new File(internalCurrentThemePath + "water_destroyed.png"));
 				image_clouds = ImageIO.read(new File(internalCurrentThemePath + "clouds.png"));
 				image_ship_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_destroyed.png"));
 				image_ship_2_destroyed = ImageIO.read(new File(internalCurrentThemePath + "ship_2_destroyed.png"));
@@ -577,21 +578,21 @@ class SettingsValues {
 	 */
 	public void setValue(String name, String value) {
 		if (name.equals("settings.image.size")) {
-			this.color_background = value;
+			this.settings_image_size = value;
 		} else if (name.equals("settings.fontsize.small")) {
-			this.color_foreground = value;
+			this.settings_fontsize_small = value;
 		} else if (name.equals("settings.fontsize.large")) {
-			this.color_foreground = value;
+			this.settings_fontsize_large = value;
 		} else if (name.equals("settings.items.width")) {
-			this.color_foreground = value;
+			this.settings_items_width = value;
 		} else if (name.equals("settings.items.height")) {
-			this.color_button_background = value;
+			this.settings_items_height = value;
 		} else if (name.equals("settings.items.small.width")) {
-			this.color_button_foreground = value;
+			this.settings_items_small_width = value;
 		} else if (name.equals("settings.items.small.height")) {
-			this.color_error = value;
+			this.settings_items_small_height = value;
 		} else if (name.equals("settings.items.padding")) {
-			this.color_border = value;
+			this.settings_items_padding = value;
 		} else if (name.equals("settings.border.width")) {
 			this.settings_border_width = value;
 		} else if (name.equals("settings.border.radius")) {
@@ -625,7 +626,6 @@ class SettingsValues {
 				fileWriter.append(settingsFileString);
 				fileWriter.close();
 			} catch (IOException e) {
-				// Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else if (name.startsWith("color.")) {
@@ -641,7 +641,6 @@ class SettingsValues {
 				fileWriter.append(colorsFileString);
 				fileWriter.close();
 			} catch (IOException e) {
-				// Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -658,6 +657,8 @@ class SettingsValues {
 			return image_clouds;
 		} else if (name.equals("image_water")) {
 			return image_water;
+		} else if (name.equals("image_water_destroyed")) {
+			return image_water_destroyed;
 		} else if (name.equals("image_ship_destroyed")) {
 			return image_ship_destroyed;
 		} else if (name.equals("image_ship_2_destroyed")) {
