@@ -8,6 +8,10 @@ import Schiffeversenken.Main;
 import Schiffeversenken.SettingsHandler;
 import Schiffeversenken.Ship;
 
+/**
+ * Rendert die Map im Hintergrund des Spielsfensters.
+ * Bietet viele methoden um sie zu updaten.
+ */
 public class GameMapPanel extends UIPanel {
 	private static final long serialVersionUID = 1L;
 
@@ -22,12 +26,16 @@ public class GameMapPanel extends UIPanel {
 	private Schiffeversenken.Point currentShootFocus = null;
 
 	private Image cloudImage = SettingsHandler.getImage("image_clouds");
-	private Image zoomedCloudImage = cloudImage.getScaledInstance(100, 100, Image.SCALE_FAST);
+	private Image zoomedCloudImage = cloudImage.getScaledInstance(imageSize, imageSize, Image.SCALE_FAST);
 	private Image waterImage = SettingsHandler.getImage("image_water");
-	private Image zoomedWaterImage = waterImage.getScaledInstance(100, 100, Image.SCALE_FAST);
+	private Image zoomedWaterImage = waterImage.getScaledInstance(imageSize, imageSize, Image.SCALE_FAST);
 	private Image destroyedShipImage = SettingsHandler.getImage("image_ship_destroyed");
-	private Image zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(100, 100, Image.SCALE_FAST);
+	private Image zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(imageSize, imageSize,
+			Image.SCALE_FAST);
 
+	/**
+	 * Erstellt eine neue Map.
+	 */
 	public GameMapPanel() {
 		super();
 
@@ -35,13 +43,15 @@ public class GameMapPanel extends UIPanel {
 		this.setSize(Main.currentGame.getPitchSize() * imageSize, Main.currentGame.getPitchSize() * imageSize);
 
 		this.addMouseListener(new MouseAdapter() {
+			// speichert die Maus location für's veerschieben der Map
 			public void mousePressed(MouseEvent e) {
 				prevMouseLocation = e.getLocationOnScreen();
-				updateWindowPositionVar();
+				windowPosition = getLocation();
 			}
 		});
 
 		this.addMouseMotionListener(new MouseMotionAdapter() {
+			// ändert die Position beim drag'n'drop
 			public void mouseDragged(MouseEvent e) {
 				Point currentMouseLocation = e.getLocationOnScreen();
 				windowPosition.x += currentMouseLocation.x - prevMouseLocation.x;
@@ -50,6 +60,7 @@ public class GameMapPanel extends UIPanel {
 				setLocation(windowPosition.x, windowPosition.y);
 			}
 
+			// ändert das Feld über dem die Maus gerade hovert
 			public void mouseMoved(MouseEvent e) {
 				int zoomedItemSize = (int) (imageSize * zoomFactor);
 
@@ -61,6 +72,7 @@ public class GameMapPanel extends UIPanel {
 		});
 
 		this.addMouseWheelListener(new MouseWheelListener() {
+			// änderet den Zoom beim scrollen
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				int oldZommedItemSize = (int) (imageSize * zoomFactor);
 
@@ -90,22 +102,34 @@ public class GameMapPanel extends UIPanel {
 		});
 	}
 
-	private void updateWindowPositionVar() {
-		this.windowPosition = this.getLocation();
-	}
-
+	/**
+	 * Sagt der Map das fertig platziert wurde.
+	 * Repaints parent.
+	 */
 	public void finishedPlacing() {
 		inMatch = true;
 
 		this.getParent().repaint();
 	}
 
+	/**
+	 * Sagt der Map das der beobachtete Spieler geändert wurde.
+	 * Rendert dann ein anderes Spielfeld.
+	 * Repaints parent.
+	 */
 	public void changeDisplayedPlayer() {
 		viewingSelf = !viewingSelf;
 
 		this.getParent().repaint();
 	}
 
+	/**
+	 * Verschiebt die Map um eine gewissen anzahl an Feldern.
+	 * Repaints parent.
+	 *
+	 * @param horizontal Wenn <code>true</code> dann horizontal
+	 * @param amount     Anzahl um die die Map verschoben werden soll
+	 */
 	public void changePositionByTiles(boolean horizontal, int amount) {
 		int zoomedItemSize = (int) (imageSize * zoomFactor);
 
@@ -118,6 +142,13 @@ public class GameMapPanel extends UIPanel {
 		this.getParent().repaint();
 	}
 
+	/**
+	 * Ändert das Feld über dem gerade gehovert wird.
+	 * Repaints parent.
+	 *
+	 * @param horizontal Wenn <code>true</code> dann horizontal
+	 * @param amount     Anzahl um die das Feld geändert wird
+	 */
 	public void changeCurrentlyFocusedTile(boolean horizontal, int amount) {
 		if (horizontal) {
 			if (currentFocusedX + amount >= 0 && currentFocusedX + amount < Main.currentGame.getPitchSize()) {
@@ -132,23 +163,38 @@ public class GameMapPanel extends UIPanel {
 		this.getParent().repaint();
 	}
 
+	/**
+	 * Setzt die größe des Schiffs das platziert werden soll.
+	 * <= 2 um Schiffe zu löschen.
+	 * Repaints parent.
+	 *
+	 * @param size Die neue größe
+	 */
 	public void setCurrentlyPlacedShipSize(int size) {
 		currentlyPlacedShipSize = size;
 
 		this.getParent().repaint();
 	}
 
+	/**
+	 * Toggelt die Orientierung des Schiffs das platziert werden soll.
+	 * Repaints parent.
+	 */
 	public void changeCurrentlyPlacedShipOrientation() {
 		currentlyPlacedShipOrientation = (currentlyPlacedShipOrientation == 1 ? 0 : 1);
 
 		this.getParent().repaint();
 	}
 
+	/**
+	 * Platziert ein Schiff wenn man im Spiel ist.
+	 * Repaints parent (wenn es funktioniert hat).
+	 *
+	 * @return <code>true</code> wenn es funktioniert hat
+	 */
 	public boolean placeShip() {
 		if (!inMatch) {
 			boolean returnVal = false;
-
-			System.out.println(currentlyPlacedShipSize);
 
 			if (currentlyPlacedShipSize >= 2) {
 				returnVal = Main.currentGame.getPlayer1().placeShipAt(
@@ -164,6 +210,11 @@ public class GameMapPanel extends UIPanel {
 		}
 	}
 
+	/**
+	 * Löscht ein Schiff wenn man im Spiel ist.
+	 *
+	 * @return <code>true</code> wenn es funktioniert hat
+	 */
 	private boolean removeShip() {
 		if (!inMatch) {
 			boolean returnVal = Main.currentGame.getPlayer1()
@@ -175,6 +226,14 @@ public class GameMapPanel extends UIPanel {
 		}
 	}
 
+	/**
+	 * Setzt den Focus auf das gerade gehovert Feld.
+	 * Entfernt den Focus falls man gerade auf ihm hovert.
+	 * Repaints parent.
+	 *
+	 * @return <code>true</code> wenn der Focus geändert wurde, false wenn der Focus
+	 *         entfernt wurde
+	 */
 	public boolean setShootFocus() {
 		boolean returnVal = false;
 
@@ -191,15 +250,27 @@ public class GameMapPanel extends UIPanel {
 		return returnVal;
 	}
 
+	/**
+	 * Liefert den aktuellen Focus.
+	 *
+	 * @return Der Focus als {@link Schiffeversenken.Point}
+	 */
 	public Schiffeversenken.Point getShootFocus() {
 		return currentShootFocus;
 	}
 
+	/**
+	 * Löscht den aktuellen Focus.
+	 * Repaints parent.
+	 */
 	public void clearShootFocus() {
 		currentShootFocus = null;
 		this.getParent().repaint();
 	}
 
+	/**
+	 * Löscht den Focus, falls man auf ihm hovert.
+	 */
 	public void clearShootFocusIfSame() {
 		if (currentShootFocus != null && currentShootFocus.x == currentFocusedX
 				&& currentShootFocus.y == currentFocusedY) {
@@ -336,8 +407,6 @@ public class GameMapPanel extends UIPanel {
 
 							killedSize = i;
 						}
-
-						System.out.println("killedSize: " + killedSize);
 
 						if (killedOrientation == 0) {
 							Image zoomedShipImage = SettingsHandler.getImage("image_ship_" + killedSize + "_destroyed")

@@ -18,6 +18,9 @@ import UserInterface.UIComponents.*;
  * TODO: Wenn das Spiel beendet wird, dann muss das Fenster wieder geschlossen werden!!
  */
 
+/**
+ * Das Fenster des Spiels.
+ */
 public class GameWindow extends JFrame implements Notification {
 	private static final long serialVersionUID = 1L;
 
@@ -39,6 +42,9 @@ public class GameWindow extends JFrame implements Notification {
 	private JLabel remainingShipsSize5Label = new HeaderLabel("Größe 5: 0/0", false);
 	JButton shootButton = new InputButton("SCHIEßEN", true); // ẞ (groß) oder ß (klein)?
 
+	/**
+	 * Erstellt das Fenster für's Spiel.
+	 */
 	public GameWindow() {
 		super("Schiffeversenken");
 
@@ -80,6 +86,9 @@ public class GameWindow extends JFrame implements Notification {
 		this.showFrame();
 	}
 
+	/**
+	 * Setup befehle.
+	 */
 	private void setup() {
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.pack();
@@ -422,7 +431,7 @@ public class GameWindow extends JFrame implements Notification {
 					} else {
 						if (!inMatch) {
 							setError("Platzieren nicht möglich");
-						} else {
+						} else if (!viewingSelf) {
 							setError("Fehler");
 						}
 					}
@@ -534,26 +543,26 @@ public class GameWindow extends JFrame implements Notification {
 			}
 		});
 
-		// create clouds as background background
-		JPanel backgroundPanel2 = new BackgroundPanel("image_cloud");
-		backgroundPanel2.setSize(this.getSize());
-		// this.add(backgroundPanel2);
-
 		// reposition elements
 		this.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
 				addShipsGameMenu.setLocation(e.getComponent().getWidth() - addShipsGameMenu.getWidth() - 25, 10);
+				gameMenu.setLocation(e.getComponent().getWidth() - gameMenu.getWidth() - 25, 10);
 				errorPanel.setLocation(e.getComponent().getWidth() / 2 - errorPanel.getWidth() / 2,
 						e.getComponent().getHeight() - errorPanel.getHeight() - 59);
 				savePanel.setLocation(e.getComponent().getWidth() / 2 - savePanel.getWidth() / 2,
 						e.getComponent().getHeight() / 2 - savePanel.getHeight() / 2);
-				backgroundPanel2.setSize(getSize());
 			}
 		});
 
 		this.updateButtonLabels();
 	}
 
+	/**
+	 * Zeigt eine Fehlernachricht für 2 Sekunden auf dem Screen.
+	 *
+	 * @param text Der Fehler der angezeigt werden soll
+	 */
 	private void setError(String text) {
 		errorLabel.setText(text);
 
@@ -567,6 +576,9 @@ public class GameWindow extends JFrame implements Notification {
 		}, 2000);
 	}
 
+	/**
+	 * Erneuert die beschriftung der Buttons.
+	 */
 	private void updateButtonLabels() {
 		int[] placedShipsOfSize = { 0, 0, 0, 0, 0, 0 };
 
@@ -684,10 +696,12 @@ public class GameWindow extends JFrame implements Notification {
 		}
 	}
 
+	/**
+	 * Schießt auf den aktuellen Focus.
+	 */
 	private void shootAtFocus() {
 		if (inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
 			if (gameMap.getShootFocus() != null) {
-				System.out.println(gameMap.getShootFocus().x + " " + gameMap.getShootFocus().y);
 				int res = Main.currentGame.getPlayer1().shoot(gameMap.getShootFocus().add(1, 1));
 				gameMap.clearShootFocus();
 
@@ -712,10 +726,16 @@ public class GameWindow extends JFrame implements Notification {
 		}
 	}
 
+	/**
+	 * Ändert die Sichtbarkeit des Fensters auf <code>false</code>.
+	 */
 	public void hideFrame() {
 		this.setVisible(false);
 	}
 
+	/**
+	 * Ändert die Sichtbarkeit des Fensters auf <code>true</code>.
+	 */
 	public void showFrame() {
 		this.setVisible(true);
 	}
