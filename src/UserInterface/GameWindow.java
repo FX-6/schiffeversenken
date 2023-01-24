@@ -20,7 +20,6 @@ import UserInterface.UIComponents.*;
  * - Eigene beschossene Schiffe werden nicht korrekt gerendert
  * - Anzeige bei remaining ships labeln fixen
  * - Anzeige wer dran ist
- * - Wiederholtes beschießen verhindern
  */
 
 /**
@@ -728,8 +727,13 @@ public class GameWindow extends JFrame implements Notification {
 	 * Schießt auf den aktuellen Focus.
 	 */
 	private void shootAtFocus() {
-		if (inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
+		if (!gameOver && inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
 			if (gameMap.getShootFocus() != null) {
+				if (!gameMap.isValidShootFocus()) {
+					setError("Nicht möglich");
+					return;
+				}
+
 				int res = Main.currentGame.getPlayer1().shoot(gameMap.getShootFocus().add(1, 1));
 				gameMap.clearShootFocus();
 
@@ -743,10 +747,10 @@ public class GameWindow extends JFrame implements Notification {
 				} else {
 					setError("Fehler");
 				}
-			} else if (!gameOver) {
+			} else {
 				passTurnWarningPanel.setVisible(true);
 			}
-		} else {
+		} else if (!gameOver) {
 			if (Main.currentGame.getPlayer2().isMyTurn()) {
 				setError("Gegner:in am Zug");
 			} else {

@@ -270,6 +270,21 @@ public class GameMapPanel extends UIPanel {
 	}
 
 	/**
+	 * Bestätigt ob an die Position geschossen werden kann.
+	 *
+	 * @return <code>false</code> wenn dahin schonmal geschossen wurde
+	 */
+	public boolean isValidShootFocus() {
+		int[][] pointsShot = Main.currentGame.getPlayer1().getPointsShot();
+
+		if (currentShootFocus == null || pointsShot[currentShootFocus.x][currentShootFocus.y] != -1) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * Löscht den aktuellen Focus.
 	 * Repaints parent.
 	 */
