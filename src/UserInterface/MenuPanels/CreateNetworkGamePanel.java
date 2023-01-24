@@ -53,19 +53,22 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 			ipAddressLabel.setText("IP nicht gefunden");
 			e1.printStackTrace();
 		}
+		GridBagConstraints ipAddressLabelConstraints = wrapperPanel.defaultConstraints;
+		ipAddressLabelConstraints.gridy = 0;
+		wrapperPanel.add(ipAddressLabel, ipAddressLabelConstraints);
 
 		// field size input
 		InputPanel sizeInputPanel = new InputPanel("Spielfeldgröße", false);
 		InputTextField sizeInput = new InputTextField();
 		sizeInputPanel.add(sizeInput);
 		GridBagConstraints sizeInputPanelConstraints = doubleFirstConstraints;
-		sizeInputPanelConstraints.gridy = 0;
+		sizeInputPanelConstraints.gridy = 1;
 		wrapperPanel.add(sizeInputPanel, sizeInputPanelConstraints);
 
 		// auto ship button
 		JButton autoShipButton = new InputButton("Bevölkern", false);
 		GridBagConstraints autoShipButtonConstraints = doubleSecondConstraints;
-		autoShipButtonConstraints.gridy = 0;
+		autoShipButtonConstraints.gridy = 1;
 		wrapperPanel.add(autoShipButton, autoShipButtonConstraints);
 
 		// ship size 2 input
@@ -73,7 +76,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 		InputTextField ship2Input = new InputTextField();
 		ship2InputPanel.add(ship2Input);
 		GridBagConstraints ship2InputPanelConstraints = doubleFirstConstraints;
-		ship2InputPanelConstraints.gridy = 1;
+		ship2InputPanelConstraints.gridy = 2;
 		wrapperPanel.add(ship2InputPanel, ship2InputPanelConstraints);
 
 		// ship size 3 input
@@ -81,7 +84,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 		InputTextField ship3Input = new InputTextField();
 		ship3InputPanel.add(ship3Input);
 		GridBagConstraints ship3InputPanelConstraints = doubleSecondConstraints;
-		ship3InputPanelConstraints.gridy = 1;
+		ship3InputPanelConstraints.gridy = 2;
 		wrapperPanel.add(ship3InputPanel, ship3InputPanelConstraints);
 
 		// ship size 4 input
@@ -89,7 +92,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 		InputTextField ship4Input = new InputTextField();
 		ship4InputPanel.add(ship4Input);
 		GridBagConstraints ship4InputPanelConstraints = doubleFirstConstraints;
-		ship4InputPanelConstraints.gridy = 2;
+		ship4InputPanelConstraints.gridy = 3;
 		wrapperPanel.add(ship4InputPanel, ship4InputPanelConstraints);
 
 		// ship size 5 input
@@ -97,7 +100,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 		InputTextField ship5Input = new InputTextField();
 		ship5InputPanel.add(ship5Input);
 		GridBagConstraints ship5InputPanelConstraints = doubleSecondConstraints;
-		ship5InputPanelConstraints.gridy = 2;
+		ship5InputPanelConstraints.gridy = 3;
 		wrapperPanel.add(ship5InputPanel, ship5InputPanelConstraints);
 
 		// auto fill ships
@@ -136,7 +139,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 		JComboBox<String> loadGameInput = new InputComboBox<String>(loadGameOptions);
 		loadGameInputPanel.add(loadGameInput);
 		GridBagConstraints loadGameInputPanelConstraints = defaultConstraints;
-		loadGameInputPanelConstraints.gridy = 3;
+		loadGameInputPanelConstraints.gridy = 4;
 		wrapperPanel.add(loadGameInputPanel, loadGameInputPanelConstraints);
 
 		// Start game button
@@ -176,7 +179,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 			}
 		});
 		GridBagConstraints startGameButtonConstraints = defaultConstraints;
-		startGameButtonConstraints.gridy = 4;
+		startGameButtonConstraints.gridy = 5;
 		wrapperPanel.add(startGameButton, startGameButtonConstraints);
 
 		// wrapperPanel
