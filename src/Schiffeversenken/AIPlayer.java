@@ -9,7 +9,6 @@ public class AIPlayer extends Player implements Notification {
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
 		NotificationCenter.addObserver("AIPlayerPlaceShips", this); //Notifications werden eingerichtet
-		NotificationCenter.addObserver("ServerConnected", this);
 	}
 	@Override
 	public void pass() { // Teile der KI mit, dass sie einen weiteren Zug ausüben darf
