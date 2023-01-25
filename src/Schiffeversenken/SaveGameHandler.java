@@ -261,44 +261,47 @@ public class SaveGameHandler {
 				
 				// Liest Schiffe des Spielers ein -> Player
 				else if (key.equals("ships") && object > 1) {
-					int numberOfShips = Main.currentGame.getNumberOfShips(2) + Main.currentGame.getNumberOfShips(3) + Main.currentGame.getNumberOfShips(4) + Main.currentGame.getNumberOfShips(5);
-					
-					List<Ship> ships = new ArrayList<Ship>();
-					
-					for (int i = 0; i < numberOfShips; i++) {
-						reader.nextLine();
-												
-						String[] coords = reader.nextLine().trim().split(":")[1].replace("\"", "").split(",");
-						Point rootPoint = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));				// Ursprung des Schiffs
+					// Nur wenn Spieler 2 kein Netzwerk Spieler ist und dieser gerade abgearbeitet wird. Sonst wäre Liste leer und es kommt zu fehlern
+					if (object == 3 && !(Main.currentGame.getPlayer2() instanceof NetworkPlayer)) {
+						int numberOfShips = Main.currentGame.getNumberOfShips(2) + Main.currentGame.getNumberOfShips(3) + Main.currentGame.getNumberOfShips(4) + Main.currentGame.getNumberOfShips(5);
 						
-						int length = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));				// Länge des Schiffs
-						int orientation = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));		// Orientierung des Schiffs
+						List<Ship> ships = new ArrayList<Ship>();
 						
-						reader.nextLine();
-						
-						int[] damage = new int[length];
-						for (int j = 0; j < length; j++) {
-							damage[j] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));						// Beschädigungen am Schiff
+						for (int i = 0; i < numberOfShips; i++) {
+							reader.nextLine();
+													
+							String[] coords = reader.nextLine().trim().split(":")[1].replace("\"", "").split(",");
+							Point rootPoint = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));				// Ursprung des Schiffs
+							
+							int length = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));				// Länge des Schiffs
+							int orientation = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));		// Orientierung des Schiffs
+							
+							reader.nextLine();
+							
+							int[] damage = new int[length];
+							for (int j = 0; j < length; j++) {
+								damage[j] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));						// Beschädigungen am Schiff
+							}
+							
+							// Erzeugt neues Schiffs-Objekt aus eingelesenen Daten
+							Ship ship = new Ship(length, orientation);
+							ship.setRootPoint(rootPoint);
+							ship.setDamage(damage);
+							
+							ships.add(ship);
+													
+							reader.nextLine();
+							reader.nextLine();
 						}
 						
-						// Erzeugt neues Schiffs-Objekt aus eingelesenen Daten
-						Ship ship = new Ship(length, orientation);
-						ship.setRootPoint(rootPoint);
-						ship.setDamage(damage);
-						
-						ships.add(ship);
-												
-						reader.nextLine();
-						reader.nextLine();
-					}
-					
-					// -> Player1
-					if (object == 2) {
-						Main.currentGame.getPlayer1().setShips(ships);
-					}
-					// -> Player2
-					else if (object == 3) {
-						Main.currentGame.getPlayer2().setShips(ships);
+						// -> Player1
+						if (object == 2) {
+							Main.currentGame.getPlayer1().setShips(ships);
+						}
+						// -> Player2
+						else if (object == 3) {
+							Main.currentGame.getPlayer2().setShips(ships);
+						}
 					}
 					
 				}
