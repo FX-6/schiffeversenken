@@ -262,7 +262,7 @@ public class SaveGameHandler {
 				// Liest Schiffe des Spielers ein -> Player
 				else if (key.equals("ships") && object > 1) {
 					// Nur wenn Spieler 2 kein Netzwerk Spieler ist und dieser gerade abgearbeitet wird. Sonst wäre Liste leer und es kommt zu fehlern
-					if (object == 3 && !(Main.currentGame.getPlayer2() instanceof NetworkPlayer)) {
+					if (!(Main.currentGame.getPlayer2() instanceof NetworkPlayer) || (Main.currentGame.getPlayer2() instanceof NetworkPlayer && object != 3)) {
 						int numberOfShips = Main.currentGame.getNumberOfShips(2) + Main.currentGame.getNumberOfShips(3) + Main.currentGame.getNumberOfShips(4) + Main.currentGame.getNumberOfShips(5);
 						
 						List<Ship> ships = new ArrayList<Ship>();

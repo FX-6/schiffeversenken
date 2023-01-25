@@ -127,7 +127,7 @@ public class Game {
 		try {
 			new SaveGameHandler(id);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return false;
 		}
 		return true;
