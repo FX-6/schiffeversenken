@@ -16,6 +16,8 @@ public class AIPlayer extends Player implements Notification {
 		setMyTurn(true);
 		handleShoot();
 	}
+	public int[][] getPriorities() {return this.priorities;}							// Getter zum Speichern eines Spiels
+	public void setPriorities(int[][] priorities) {this.priorities = priorities;}		// Setter zum Laden eines Spiels
 	private void handleShoot() {
 		for (int i = 0; i < game.getPitchSize(); i++) // traegt die Werte aus PointsShot ein
 			for (int j = 0; j < game.getPitchSize(); j++) 

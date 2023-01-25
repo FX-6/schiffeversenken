@@ -69,6 +69,7 @@ public class SaveGameHandler {
 		
 		// Speicherung von Player1-Objekt
 		String[] player1 = new String[4];
+		if (Main.currentGame.getPlayer1() instanceof AIPlayer) player1 = new String[5];								// Falls Spieler 1 eine KI ist, muss zusätzliches gespeichert werden
 		player1[0] = writeAttribute("isMyTurn", Main.currentGame.getPlayer1().isMyTurn(), "");						// Ob Spieler am Zug ist
 		player1[1] = writeAttribute("shipsDestroyed", Main.currentGame.getPlayer1().getShipsDestroyed(), "");		// Anzahl der beim Gegner zerstörten Schiffe
 		player1[2] = write2DArray("pointsShot", Main.currentGame.getPlayer1().getPointsShot() , "\t");				// Karte der bereits beschossenen Punkte
@@ -86,11 +87,17 @@ public class SaveGameHandler {
 		}
 		player1[3] = writeArray("ships", shipList1, "\t", false);													// Liste aller eigenen Schiffe
 		
+		if (Main.currentGame.getPlayer1() instanceof AIPlayer) {
+			AIPlayer ai = (AIPlayer) Main.currentGame.getPlayer1();
+			player1[4] = write2DArray("priorities", ai.getPriorities(), "\t");										// Prioritäten für den nächsten Schuss
+		}
+		
 		
 		
 		// Speicherung von Player2-Objekt
 		// Kommentarie siehe oben bei Player1
 		String[] player2 = new String[4];
+		if (Main.currentGame.getPlayer2() instanceof AIPlayer) player2 = new String[5];
 		player2[0] = writeAttribute("isMyTurn", Main.currentGame.getPlayer2().isMyTurn(), "");
 		player2[1] = writeAttribute("shipsDestroyed", Main.currentGame.getPlayer2().getShipsDestroyed(), "");
 		player2[2] = write2DArray("pointsShot", Main.currentGame.getPlayer2().getPointsShot() , "\t");
@@ -107,6 +114,11 @@ public class SaveGameHandler {
 			shipList2[list2.indexOf(ship)] = writeObject(attributes, "\t");
 		}
 		player2[3] = writeArray("ships", shipList2, "\t", false);
+		
+		if (Main.currentGame.getPlayer2() instanceof AIPlayer) {
+			AIPlayer ai = (AIPlayer) Main.currentGame.getPlayer2();
+			player2[4] = write2DArray("priorities", ai.getPriorities(), "\t");
+		}
 		
 		
 		
@@ -187,6 +199,16 @@ public class SaveGameHandler {
 					ships[3] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
 					
 					Main.currentGame.setShips(ships);
+				}
+				
+				// Überprüfen, ob gespeicherte Spieler mit Spieler des Spiels übereinstimmen
+				else if (key.equals("player1")) {
+					if (!Main.currentGame.getPlayer1().getClass().toString().equals(value.replace("\"", ""))) throw new FileNotFoundException("Players do not match!");
+				}
+				
+				// Überprüfen, ob gespeicherte Spieler mit Spieler des Spiels übereinstimmen
+				else if (key.equals("player2") ) {
+					if (!Main.currentGame.getPlayer2().getClass().toString().equals(value.replace("\"", ""))) throw new FileNotFoundException("Players do not match!");
 				}
 				
 				// Liest Wert, ob Spieler am Zug ist, ein -> Player
@@ -279,6 +301,36 @@ public class SaveGameHandler {
 						Main.currentGame.getPlayer2().setShips(ships);
 					}
 					
+				}
+				
+				// Liest Schussprioritäten für KI ein
+				else if (key.equals("priorities")) {
+					int pitchSize = Main.currentGame.getPitchSize();
+					int[][] priorities = new int[pitchSize][pitchSize];
+					
+					// Setzt Karte zusammen
+					for (int x = 0; x < pitchSize; x++) {
+						reader.nextLine();
+						for (int y = 0; y < pitchSize; y++) {
+							priorities[x][y] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+						}
+						reader.nextLine();
+					}
+					
+					// -> Player1
+					if (object == 2) {
+						if (Main.currentGame.getPlayer1() instanceof AIPlayer) {
+							AIPlayer ai = (AIPlayer) Main.currentGame.getPlayer1();
+							ai.setPriorities(priorities);
+						}
+					}
+					// -> Player2
+					else if (object == 3) {
+						if (Main.currentGame.getPlayer2() instanceof AIPlayer) {
+							AIPlayer ai = (AIPlayer) Main.currentGame.getPlayer2();
+							ai.setPriorities(priorities);
+						}
+					}
 				}
 								
 			}
