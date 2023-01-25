@@ -1,5 +1,7 @@
 package Schiffeversenken;
 
+import Notifications.NotificationCenter;
+
 public class HumanPlayer extends Player {
 
 	public HumanPlayer(Game game, Player otherPlayer) {
@@ -11,6 +13,7 @@ public class HumanPlayer extends Player {
 		// Teile der UI mit, dass Spieler dran ist und lasse ihn aktionen ausfuehren!!
 		otherPlayer.setMyTurn(false);
 		setMyTurn(true);
+		NotificationCenter.sendNotification("UITurn", null);
 	}
 
 }

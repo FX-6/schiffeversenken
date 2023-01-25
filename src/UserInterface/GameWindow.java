@@ -41,6 +41,7 @@ public class GameWindow extends JFrame implements Notification {
 	private JButton addShips4Button = new InputButton("Größe 4: 0/0", true);
 	private JButton addShips5Button = new InputButton("Größe 5: 0/0", true);
 	private GameMenuPanel gameMenu = new GameMenuPanel();
+	private JLabel currentTurnLabel = new HeaderLabel("Du bist dran", true);
 	private JLabel currentPlayerLabel = new HeaderLabel("Du", false);
 	private JButton changePlayerButton = new InputButton("Ändern", false);
 	private JLabel remainingShipsSize2Label = new HeaderLabel("2er: 0/0", false);
@@ -100,6 +101,7 @@ public class GameWindow extends JFrame implements Notification {
 	private void setup() {
 		NotificationCenter.addObserver("WinPlayer1", this);
 		NotificationCenter.addObserver("WinPlayer2", this);
+		NotificationCenter.addObserver("UITurn", this);
 
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.pack();
@@ -336,12 +338,20 @@ public class GameWindow extends JFrame implements Notification {
 		this.add(addShipsGameMenu);
 
 		// create menu for when in game
+		currentTurnLabel.setMinimumSize(gameMenu.largeDimension());
+		currentTurnLabel.setPreferredSize(gameMenu.largeDimension());
+		currentTurnLabel.setMaximumSize(gameMenu.largeDimension());
+		currentTurnLabel.setSize(gameMenu.largeDimension());
+		GridBagConstraints currentTurnLabelConstraints = gameMenu.defaultConstraints;
+		currentTurnLabelConstraints.gridy = 0;
+		gameMenu.add(currentTurnLabel, currentTurnLabelConstraints);
+
 		currentPlayerLabel.setMinimumSize(gameMenu.smallDimension());
 		currentPlayerLabel.setPreferredSize(gameMenu.smallDimension());
 		currentPlayerLabel.setMaximumSize(gameMenu.smallDimension());
 		currentPlayerLabel.setSize(gameMenu.smallDimension());
 		GridBagConstraints currentPlayerLabelConstraints = gameMenu.doubleFirstConstraints;
-		currentPlayerLabelConstraints.gridy = 0;
+		currentPlayerLabelConstraints.gridy = 1;
 		gameMenu.add(currentPlayerLabel, currentPlayerLabelConstraints);
 
 		changePlayerButton.setMinimumSize(gameMenu.smallDimension());
@@ -349,7 +359,7 @@ public class GameWindow extends JFrame implements Notification {
 		changePlayerButton.setMaximumSize(gameMenu.smallDimension());
 		changePlayerButton.setSize(gameMenu.smallDimension());
 		GridBagConstraints changePlayerButtonConstraints = gameMenu.doubleSecondConstraints;
-		changePlayerButtonConstraints.gridy = 0;
+		changePlayerButtonConstraints.gridy = 1;
 		gameMenu.add(changePlayerButton, changePlayerButtonConstraints);
 		changePlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -365,7 +375,7 @@ public class GameWindow extends JFrame implements Notification {
 		remainingShipsHeaderLabel.setMaximumSize(gameMenu.largeDimension());
 		remainingShipsHeaderLabel.setSize(gameMenu.largeDimension());
 		GridBagConstraints remainingShipsHeaderLabelConstraints = gameMenu.defaultConstraints;
-		remainingShipsHeaderLabelConstraints.gridy = 1;
+		remainingShipsHeaderLabelConstraints.gridy = 2;
 		gameMenu.add(remainingShipsHeaderLabel, remainingShipsHeaderLabelConstraints);
 
 		remainingShipsSize2Label.setMinimumSize(gameMenu.smallDimension());
@@ -373,7 +383,7 @@ public class GameWindow extends JFrame implements Notification {
 		remainingShipsSize2Label.setMaximumSize(gameMenu.smallDimension());
 		remainingShipsSize2Label.setSize(gameMenu.smallDimension());
 		GridBagConstraints remainingShipsSize2LabelConstraints = gameMenu.doubleFirstConstraints;
-		remainingShipsSize2LabelConstraints.gridy = 2;
+		remainingShipsSize2LabelConstraints.gridy = 3;
 		gameMenu.add(remainingShipsSize2Label, remainingShipsSize2LabelConstraints);
 
 		remainingShipsSize3Label.setMinimumSize(gameMenu.smallDimension());
@@ -381,7 +391,7 @@ public class GameWindow extends JFrame implements Notification {
 		remainingShipsSize3Label.setMaximumSize(gameMenu.smallDimension());
 		remainingShipsSize3Label.setSize(gameMenu.smallDimension());
 		GridBagConstraints remainingShipsSize3LabelConstraints = gameMenu.doubleSecondConstraints;
-		remainingShipsSize3LabelConstraints.gridy = 2;
+		remainingShipsSize3LabelConstraints.gridy = 3;
 		gameMenu.add(remainingShipsSize3Label, remainingShipsSize3LabelConstraints);
 
 		remainingShipsSize4Label.setMinimumSize(gameMenu.smallDimension());
@@ -389,7 +399,7 @@ public class GameWindow extends JFrame implements Notification {
 		remainingShipsSize4Label.setMaximumSize(gameMenu.smallDimension());
 		remainingShipsSize4Label.setSize(gameMenu.smallDimension());
 		GridBagConstraints remainingShipsSize4LabelConstraints = gameMenu.doubleFirstConstraints;
-		remainingShipsSize4LabelConstraints.gridy = 3;
+		remainingShipsSize4LabelConstraints.gridy = 4;
 		gameMenu.add(remainingShipsSize4Label, remainingShipsSize4LabelConstraints);
 
 		remainingShipsSize5Label.setMinimumSize(gameMenu.smallDimension());
@@ -397,7 +407,7 @@ public class GameWindow extends JFrame implements Notification {
 		remainingShipsSize5Label.setMaximumSize(gameMenu.smallDimension());
 		remainingShipsSize5Label.setSize(gameMenu.smallDimension());
 		GridBagConstraints remainingShipsSize5LabelConstraints = gameMenu.doubleSecondConstraints;
-		remainingShipsSize5LabelConstraints.gridy = 3;
+		remainingShipsSize5LabelConstraints.gridy = 4;
 		gameMenu.add(remainingShipsSize5Label, remainingShipsSize5LabelConstraints);
 
 		saveButton.setMinimumSize(gameMenu.largeDimension());
@@ -405,7 +415,7 @@ public class GameWindow extends JFrame implements Notification {
 		saveButton.setMaximumSize(gameMenu.largeDimension());
 		saveButton.setSize(gameMenu.largeDimension());
 		GridBagConstraints saveButtonConstraints = gameMenu.defaultConstraints;
-		saveButtonConstraints.gridy = 4;
+		saveButtonConstraints.gridy = 5;
 		gameMenu.add(saveButton, saveButtonConstraints);
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -418,7 +428,7 @@ public class GameWindow extends JFrame implements Notification {
 		shootButton.setMaximumSize(gameMenu.largeDimension());
 		shootButton.setSize(gameMenu.largeDimension());
 		GridBagConstraints shootButtonConstraints = gameMenu.defaultConstraints;
-		shootButtonConstraints.gridy = 5;
+		shootButtonConstraints.gridy = 6;
 		gameMenu.add(shootButton, shootButtonConstraints);
 		shootButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -575,6 +585,20 @@ public class GameWindow extends JFrame implements Notification {
 		});
 
 		this.updateButtonLabels();
+
+		if (!inMatch) {
+			for (int[] row : Main.currentGame.getPlayer1().getPointsShot()) {
+				for (int tile : row) {
+					if (!inMatch && tile != -1) {
+						gameMenu.setVisible(true);
+						addShipsGameMenu.setVisible(false);
+						inMatch = true;
+						gameMap.finishedPlacing();
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -713,10 +737,16 @@ public class GameWindow extends JFrame implements Notification {
 					.setText("5er: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
 		}
 
-		if (viewingSelf || !Main.currentGame.getPlayer1().isMyTurn()) {
-			shootButton.setEnabled(false);
+		shootButton.setEnabled(false);
+
+		if (Main.currentGame.getPlayer1().isMyTurn()) {
+			currentTurnLabel.setText("Du bist dran");
+
+			if (!viewingSelf) {
+				shootButton.setEnabled(true);
+			}
 		} else {
-			shootButton.setEnabled(true);
+			currentTurnLabel.setText("Gegner:in ist dran");
 		}
 
 		if (gameOver) {
@@ -739,6 +769,7 @@ public class GameWindow extends JFrame implements Notification {
 
 				int res = Main.currentGame.getPlayer1().shoot(gameMap.getShootFocus().add(1, 1));
 				gameMap.clearShootFocus();
+				updateButtonLabels();
 
 				if (res == 0) {
 					setError("Daneben");
@@ -791,6 +822,9 @@ public class GameWindow extends JFrame implements Notification {
 
 			gameOverLabel.setText("Du hast verloren :(");
 			gameOverPanel.setVisible(true);
+		} else if (type.equals("UITurn")) {
+			updateButtonLabels();
+			this.repaint();
 		}
 	}
 }
