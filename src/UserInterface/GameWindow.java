@@ -606,13 +606,7 @@ public class GameWindow extends JFrame implements Notification {
 		}
 
 		if (playingAsBot) {
-			AIPlayer.placeShipsAutomatically(Main.currentGame.getPlayer1());
-
-			gameMenu.setVisible(true);
-			addShipsGameMenu.setVisible(false);
-			inMatch = true;
-			gameMap.finishedPlacing();
-			Main.currentGame.setReady(Main.currentGame.getPlayer1());
+			NotificationCenter.sendNotification("AIPlayerPlaceShips", null);
 
 			updateButtonLabels();
 			repaint();
