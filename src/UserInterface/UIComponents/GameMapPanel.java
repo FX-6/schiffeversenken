@@ -17,6 +17,7 @@ public class GameMapPanel extends UIPanel {
 
 	private Point prevMouseLocation, windowPosition;
 	private double zoomFactor = 1;
+	private boolean playingAsBot = false;
 	private boolean gameOver = false;
 	private boolean inMatch = false;
 	private boolean viewingSelf = true;
@@ -177,7 +178,9 @@ public class GameMapPanel extends UIPanel {
 	 * @param size Die neue größe
 	 */
 	public void setCurrentlyPlacedShipSize(int size) {
-		currentlyPlacedShipSize = size;
+		if (!inMatch && !playingAsBot) {
+			currentlyPlacedShipSize = size;
+		}
 
 		this.getParent().repaint();
 	}
@@ -187,7 +190,9 @@ public class GameMapPanel extends UIPanel {
 	 * Repaints parent.
 	 */
 	public void changeCurrentlyPlacedShipOrientation() {
-		currentlyPlacedShipOrientation = (currentlyPlacedShipOrientation == 1 ? 0 : 1);
+		if (!inMatch && !playingAsBot) {
+			currentlyPlacedShipOrientation = (currentlyPlacedShipOrientation == 1 ? 0 : 1);
+		}
 
 		this.getParent().repaint();
 	}
@@ -199,7 +204,7 @@ public class GameMapPanel extends UIPanel {
 	 * @return <code>true</code> wenn es funktioniert hat
 	 */
 	public boolean placeShip() {
-		if (!inMatch) {
+		if (!inMatch && !playingAsBot) {
 			boolean returnVal = false;
 
 			if (currentlyPlacedShipSize >= 2) {
@@ -222,7 +227,7 @@ public class GameMapPanel extends UIPanel {
 	 * @return <code>true</code> wenn es funktioniert hat
 	 */
 	private boolean removeShip() {
-		if (!inMatch) {
+		if (!inMatch && !playingAsBot) {
 			boolean returnVal = Main.currentGame.getPlayer1()
 					.removeShip(Main.currentGame.getPlayer1()
 							.getShipAt(new Schiffeversenken.Point(currentFocusedX + 1, currentFocusedY + 1)));
@@ -241,7 +246,7 @@ public class GameMapPanel extends UIPanel {
 	 *         entfernt wurde
 	 */
 	public boolean setShootFocus() {
-		if (gameOver) {
+		if (gameOver || playingAsBot) {
 			return false;
 		}
 
@@ -289,7 +294,7 @@ public class GameMapPanel extends UIPanel {
 	 * Repaints parent.
 	 */
 	public void clearShootFocus() {
-		if (gameOver) {
+		if (gameOver || playingAsBot) {
 			return;
 		}
 
@@ -301,7 +306,7 @@ public class GameMapPanel extends UIPanel {
 	 * Löscht den Focus, falls man auf ihm hovert.
 	 */
 	public void clearShootFocusIfSame() {
-		if (gameOver) {
+		if (gameOver || playingAsBot) {
 			return;
 		}
 
@@ -317,6 +322,10 @@ public class GameMapPanel extends UIPanel {
 	 */
 	public void setGameOver() {
 		gameOver = true;
+	}
+
+	public void playerIsBot(boolean bool) {
+		playingAsBot = bool;
 	}
 
 	@Override

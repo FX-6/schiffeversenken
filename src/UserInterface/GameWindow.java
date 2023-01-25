@@ -15,10 +15,6 @@ import Notifications.NotificationCenter;
 import Schiffeversenken.*;
 import UserInterface.UIComponents.*;
 
-// TODO UI Fixes (Felix), 1? remaining
-// - Anzeige wer dran ist
-// ? Eigene beschossene Schiffe werden nicht korrekt gerendert
-
 /**
  * Das Fenster des Spiels.
  */
@@ -28,6 +24,7 @@ public class GameWindow extends JFrame implements Notification {
 	private boolean gameOver = false;
 	private boolean inMatch = false;
 	private boolean viewingSelf = true;
+	private boolean playingAsBot = false;
 
 	private WrapperPanel gameOverPanel = new WrapperPanel();
 	private JLabel gameOverLabel = new HeaderLabel("Game Over", true);
@@ -36,6 +33,7 @@ public class GameWindow extends JFrame implements Notification {
 	private JLabel errorLabel = new HeaderLabel("", true);
 	private JButton savePanelButton = new InputButton("Speichern", false);
 	private WrapperPanel passTurnWarningPanel = new WrapperPanel();
+	private GameMenuPanel addShipsGameMenu = new GameMenuPanel();
 	private JButton addShips2Button = new InputButton("Größe 2: 0/0", true);
 	private JButton addShips3Button = new InputButton("Größe 3: 0/0", true);
 	private JButton addShips4Button = new InputButton("Größe 4: 0/0", true);
@@ -56,6 +54,9 @@ public class GameWindow extends JFrame implements Notification {
 	 */
 	public GameWindow() {
 		super("Schiffeversenken");
+
+		playingAsBot = Main.currentGame.getPlayer1() instanceof AIPlayer;
+		gameMap.playerIsBot(playingAsBot);
 
 		addWindowListener(new WindowListener() {
 			@Override
@@ -200,11 +201,11 @@ public class GameWindow extends JFrame implements Notification {
 		passTurnWarningPanel.setLocation(this.getWidth() / 2 - passTurnWarningPanel.getWidth() / 2,
 				this.getHeight() / 2 - passTurnWarningPanel.getHeight() / 2);
 		passTurnWarningPanel.setVisible(false);
-		this.add(passTurnWarningPanel);
+		if (!playingAsBot) {
+			this.add(passTurnWarningPanel);
+		}
 
 		// create menu for placing ships
-		GameMenuPanel addShipsGameMenu = new GameMenuPanel();
-
 		JLabel placeShipsHeaderLabel = new HeaderLabel("Platzierte Schiffe", true);
 		placeShipsHeaderLabel.setMinimumSize(addShipsGameMenu.largeDimension());
 		placeShipsHeaderLabel.setPreferredSize(addShipsGameMenu.largeDimension());
@@ -335,7 +336,9 @@ public class GameWindow extends JFrame implements Notification {
 		});
 
 		addShipsGameMenu.setLocation(this.getWidth() - addShipsGameMenu.getWidth() - 25, 10);
-		this.add(addShipsGameMenu);
+		if (!playingAsBot) {
+			this.add(addShipsGameMenu);
+		}
 
 		// create menu for when in game
 		currentTurnLabel.setMinimumSize(gameMenu.largeDimension());
@@ -429,7 +432,9 @@ public class GameWindow extends JFrame implements Notification {
 		shootButton.setSize(gameMenu.largeDimension());
 		GridBagConstraints shootButtonConstraints = gameMenu.defaultConstraints;
 		shootButtonConstraints.gridy = 6;
-		gameMenu.add(shootButton, shootButtonConstraints);
+		if (!playingAsBot) {
+			gameMenu.add(shootButton, shootButtonConstraints);
+		}
 		shootButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				shootAtFocus();
@@ -599,6 +604,19 @@ public class GameWindow extends JFrame implements Notification {
 				}
 			}
 		}
+
+		if (playingAsBot) {
+			AIPlayer.placeShipsAutomatically(Main.currentGame.getPlayer1());
+
+			gameMenu.setVisible(true);
+			addShipsGameMenu.setVisible(false);
+			inMatch = true;
+			gameMap.finishedPlacing();
+			Main.currentGame.setReady(Main.currentGame.getPlayer1());
+
+			updateButtonLabels();
+			repaint();
+		}
 	}
 
 	/**
@@ -760,7 +778,7 @@ public class GameWindow extends JFrame implements Notification {
 	 * Schießt auf den aktuellen Focus.
 	 */
 	private void shootAtFocus() {
-		if (!gameOver && inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
+		if (!playingAsBot && !gameOver && inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
 			if (gameMap.getShootFocus() != null) {
 				if (!gameMap.isValidShootFocus()) {
 					setError("Nicht möglich");
@@ -784,7 +802,7 @@ public class GameWindow extends JFrame implements Notification {
 			} else {
 				passTurnWarningPanel.setVisible(true);
 			}
-		} else if (!gameOver) {
+		} else if (!playingAsBot && !gameOver) {
 			if (Main.currentGame.getPlayer2().isMyTurn()) {
 				setError("Gegner:in am Zug");
 			} else {
