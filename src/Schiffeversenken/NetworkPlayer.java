@@ -287,8 +287,8 @@ public class NetworkPlayer extends Player implements Notification  {
 			case "size":														// size <pitchSize>
 				int pitchSize = Integer.parseInt(args[1]);
 				game.setPitchSize(pitchSize);
-				NotificationCenter.sendNotification("ReceivedGameData", null);
 				sendFirst("done");
+				NotificationCenter.sendNotification("ReceivedGameData", null);
 				break;
 				
 			case "ships":														// ships <ships ...>
@@ -300,8 +300,8 @@ public class NetworkPlayer extends Player implements Notification  {
 					ships[size-2]++;
 				}
 				game.setShips(ships);
-				NotificationCenter.sendNotification("ReceivedGameData", null);
 				sendFirst("done");
+				NotificationCenter.sendNotification("ReceivedGameData", null);
 				break;
 				
 			case "shot":														// shot <row | y> <col | x>

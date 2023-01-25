@@ -1,7 +1,10 @@
 package Schiffeversenken;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
+
 import Notifications.Notification;
 import Notifications.NotificationCenter;
 public class AIPlayer extends Player implements Notification {
@@ -14,7 +17,12 @@ public class AIPlayer extends Player implements Notification {
 	public void pass() { // Teile der KI mit, dass sie einen weiteren Zug ausüben darf
 		otherPlayer.setMyTurn(false);
 		setMyTurn(true);
-		handleShoot();
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			public void run() {
+				handleShoot();
+			}
+		}, 100);
 	}
 	public int[][] getPriorities() {return this.priorities;}							// Getter zum Speichern eines Spiels
 	public void setPriorities(int[][] priorities) {this.priorities = priorities;}		// Setter zum Laden eines Spiels

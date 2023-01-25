@@ -173,7 +173,7 @@ public class Game {
 				player2.sendReady();
 			}
 		}
-		
+				
 		// Überprüfung
 		if (readyCount == 2) {
 			// Überprüfung, ob es sich um ein SPiel über das Netzwerk handelt
@@ -182,7 +182,11 @@ public class Game {
 				
 				// Gibt Spieler 1 den ersten Zug, falls diese Instanz des Spiels als Server agiert
 				if (player2.isServer) {
-					player1.pass();
+					new Thread(new Runnable() {
+						public void run() {
+							player1.pass();
+						}
+					}, "NeuerZug").start();
 				} 
 				
 				// Gibt Spieler 2 den ersten Zug, falls diese Instanz des Spiels als Client agiert
