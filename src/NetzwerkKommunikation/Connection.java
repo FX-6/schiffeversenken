@@ -22,7 +22,7 @@ public class Connection {
 	/**
 	 * Port, des Servers. 
 	 */
-	private int port = 4000;			// Durch Prof. Grambow festgelegt
+	private int port = 50000;			// Durch Prof. Grambow festgelegt
 	
 	/**
 	 * Socket der Verbindung.
