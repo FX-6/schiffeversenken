@@ -144,7 +144,7 @@ public class SaveGameHandler {
 	 * @param id Eindeutige ID, welche den Spielstand, der geladen werden soll, identifiziert.
 	 * @throws FileNotFoundException Der Spielstand mit der übergebenen ID kann nicht geladen werden, da die zugehörige Datei nicht existiert.
 	 */
-	public SaveGameHandler(String id) throws FileNotFoundException {
+	public SaveGameHandler(String id) throws FileNotFoundException, NumberFormatException {
 		File file = null;
 		
 		// Sucht die richtige Datei mit der übergebenen ID
@@ -162,184 +162,184 @@ public class SaveGameHandler {
 		// Attribute, die den Zustand des Spiels, der Netzwerkverbindung, o.ä. speichern, müssen/dürfen nicht überschrieben werden.
 		
 				
-		Scanner reader = new Scanner(file);
-		
-		int objectDepth = 0;
-		int object = 0;					// 1 = Game, 2 = Player1, 3 = Player2
-		
-		// Liest jede Zeile aus der Datei
-		while (reader.hasNextLine()) {
-			String line = reader.nextLine().trim();
+		try (Scanner reader = new Scanner(file)) {
+			int objectDepth = 0;
+			int object = 0;					// 1 = Game, 2 = Player1, 3 = Player2
 			
-			if (line.contains("{")) {
-				objectDepth++;
-				if (objectDepth == 1) {
-					object++;
+			// Liest jede Zeile aus der Datei
+			while (reader.hasNextLine()) {
+				String line = reader.nextLine().trim();
+				
+				if (line.contains("{")) {
+					objectDepth++;
+					if (objectDepth == 1) {
+						object++;
+					}
 				}
-			}
-			if (line.contains("}")) objectDepth--;
+				if (line.contains("}")) objectDepth--;
 
-			
-			if (line.contains(":")) {
-				String key = line.split(":")[0].replace("\"", "");
-				String value = line.split(":")[1].replace(",", "");
 				
-				
-				// Liest Feldgröße ein -> Game
-				if (key.equals("pitchSize")) {
-					Main.currentGame.setPitchSize(Integer.parseInt(value));
-				}
-				
-				// Liest Anzahl der Schiffe pro Schiffsgrößen ein -> Game
-				else if (key.equals("ships") && object == 1) {
-					int[] ships = new int[4];
-					ships[0] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
-					ships[1] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
-					ships[2] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
-					ships[3] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+				if (line.contains(":")) {
+					String key = line.split(":")[0].replace("\"", "");
+					String value = line.split(":")[1].replace(",", "");
 					
-					Main.currentGame.setShips(ships);
-				}
-				
-				// Überprüfen, ob gespeicherte Spieler mit Spieler des Spiels übereinstimmen
-				else if (key.equals("player1")) {
-					if (!Main.currentGame.getPlayer1().getClass().toString().equals(value.replace("\"", ""))) throw new FileNotFoundException("Players do not match!");
-				}
-				
-				// Überprüfen, ob gespeicherte Spieler mit Spieler des Spiels übereinstimmen
-				else if (key.equals("player2") ) {
-					if (!Main.currentGame.getPlayer2().getClass().toString().equals(value.replace("\"", ""))) throw new FileNotFoundException("Players do not match!");
-				}
-				
-				// Liest Wert, ob Spieler am Zug ist, ein -> Player
-				else if (key.equals("isMyTurn")) {
-					// -> Player1
-					if (object == 2) {
-						Main.currentGame.getPlayer1().setMyTurn(Boolean.parseBoolean(value));
-					}
-					// -> Player2
-					else if (object == 3) {
-						Main.currentGame.getPlayer2().setMyTurn(Boolean.parseBoolean(value));
-					}
-				}
-				
-				// Liest Anzahl der beim Gegner zerstörten Schiffe ein -> Player
-				else if (key.equals("shipsDestroyed")) {
-					// -> Player1
-					if (object == 2) {
-						Main.currentGame.getPlayer1().setShipsDestroyed(Integer.parseInt(value));
-					}
-					// -> Player2
-					else if (object == 3) {
-						Main.currentGame.getPlayer2().setShipsDestroyed(Integer.parseInt(value));
-					}
-				}
-				
-				// List Karte der bereits beschossenen Punkte ein -> Player
-				else if (key.equals("pointsShot")) {
-					int pitchSize = Main.currentGame.getPitchSize();
-					int[][] shots = new int[pitchSize][pitchSize];
 					
-					// Setzt Karte zusammen
-					for (int x = 0; x < pitchSize; x++) {
-						reader.nextLine();
-						for (int y = 0; y < pitchSize; y++) {
-							shots[x][y] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+					// Liest Feldgröße ein -> Game
+					if (key.equals("pitchSize")) {
+						Main.currentGame.setPitchSize(Integer.parseInt(value));
+					}
+					
+					// Liest Anzahl der Schiffe pro Schiffsgrößen ein -> Game
+					else if (key.equals("ships") && object == 1) {
+						int[] ships = new int[4];
+						ships[0] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+						ships[1] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+						ships[2] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+						ships[3] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+						
+						Main.currentGame.setShips(ships);
+					}
+					
+					// Überprüfen, ob gespeicherte Spieler mit Spieler des Spiels übereinstimmen
+					else if (key.equals("player1")) {
+						if (!Main.currentGame.getPlayer1().getClass().toString().equals(value.replace("\"", ""))) throw new FileNotFoundException("Players do not match!");
+					}
+					
+					// Überprüfen, ob gespeicherte Spieler mit Spieler des Spiels übereinstimmen
+					else if (key.equals("player2") ) {
+						if (!Main.currentGame.getPlayer2().getClass().toString().equals(value.replace("\"", ""))) throw new FileNotFoundException("Players do not match!");
+					}
+					
+					// Liest Wert, ob Spieler am Zug ist, ein -> Player
+					else if (key.equals("isMyTurn")) {
+						// -> Player1
+						if (object == 2) {
+							Main.currentGame.getPlayer1().setMyTurn(Boolean.parseBoolean(value));
 						}
-						reader.nextLine();
+						// -> Player2
+						else if (object == 3) {
+							Main.currentGame.getPlayer2().setMyTurn(Boolean.parseBoolean(value));
+						}
 					}
 					
-					// -> Player1
-					if (object == 2) {
-						Main.currentGame.getPlayer1().setPointsShot(shots);
+					// Liest Anzahl der beim Gegner zerstörten Schiffe ein -> Player
+					else if (key.equals("shipsDestroyed")) {
+						// -> Player1
+						if (object == 2) {
+							Main.currentGame.getPlayer1().setShipsDestroyed(Integer.parseInt(value));
+						}
+						// -> Player2
+						else if (object == 3) {
+							Main.currentGame.getPlayer2().setShipsDestroyed(Integer.parseInt(value));
+						}
 					}
-					// -> Player2
-					else if (object == 3) {
-						Main.currentGame.getPlayer2().setPointsShot(shots);
-					}
-				}
-				
-				// Liest Schiffe des Spielers ein -> Player
-				else if (key.equals("ships") && object > 1) {
-					// Nur wenn Spieler 2 kein Netzwerk Spieler ist und dieser gerade abgearbeitet wird. Sonst wäre Liste leer und es kommt zu fehlern
-					if (!(Main.currentGame.getPlayer2() instanceof NetworkPlayer) || (Main.currentGame.getPlayer2() instanceof NetworkPlayer && object != 3)) {
-						int numberOfShips = Main.currentGame.getNumberOfShips(2) + Main.currentGame.getNumberOfShips(3) + Main.currentGame.getNumberOfShips(4) + Main.currentGame.getNumberOfShips(5);
+					
+					// List Karte der bereits beschossenen Punkte ein -> Player
+					else if (key.equals("pointsShot")) {
+						int pitchSize = Main.currentGame.getPitchSize();
+						int[][] shots = new int[pitchSize][pitchSize];
 						
-						List<Ship> ships = new ArrayList<Ship>();
-						
-						for (int i = 0; i < numberOfShips; i++) {
+						// Setzt Karte zusammen
+						for (int x = 0; x < pitchSize; x++) {
 							reader.nextLine();
-													
-							String[] coords = reader.nextLine().trim().split(":")[1].replace("\"", "").split(",");
-							Point rootPoint = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));				// Ursprung des Schiffs
-							
-							int length = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));				// Länge des Schiffs
-							int orientation = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));		// Orientierung des Schiffs
-							
-							reader.nextLine();
-							
-							int[] damage = new int[length];
-							for (int j = 0; j < length; j++) {
-								damage[j] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));						// Beschädigungen am Schiff
+							for (int y = 0; y < pitchSize; y++) {
+								shots[x][y] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
 							}
-							
-							// Erzeugt neues Schiffs-Objekt aus eingelesenen Daten
-							Ship ship = new Ship(length, orientation);
-							ship.setRootPoint(rootPoint);
-							ship.setDamage(damage);
-							
-							ships.add(ship);
-													
-							reader.nextLine();
 							reader.nextLine();
 						}
 						
 						// -> Player1
 						if (object == 2) {
-							Main.currentGame.getPlayer1().setShips(ships);
+							Main.currentGame.getPlayer1().setPointsShot(shots);
 						}
 						// -> Player2
 						else if (object == 3) {
-							Main.currentGame.getPlayer2().setShips(ships);
+							Main.currentGame.getPlayer2().setPointsShot(shots);
 						}
 					}
 					
+					// Liest Schiffe des Spielers ein -> Player
+					else if (key.equals("ships") && object > 1) {
+						// Nur wenn Spieler 2 kein Netzwerk Spieler ist und dieser gerade abgearbeitet wird. Sonst wäre Liste leer und es kommt zu fehlern
+						if (!(Main.currentGame.getPlayer2() instanceof NetworkPlayer) || (Main.currentGame.getPlayer2() instanceof NetworkPlayer && object != 3)) {
+							int numberOfShips = Main.currentGame.getNumberOfShips(2) + Main.currentGame.getNumberOfShips(3) + Main.currentGame.getNumberOfShips(4) + Main.currentGame.getNumberOfShips(5);
+							
+							List<Ship> ships = new ArrayList<Ship>();
+							
+							for (int i = 0; i < numberOfShips; i++) {
+								reader.nextLine();
+														
+								String[] coords = reader.nextLine().trim().split(":")[1].replace("\"", "").split(",");
+								Point rootPoint = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));				// Ursprung des Schiffs
+								
+								int length = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));				// Länge des Schiffs
+								int orientation = Integer.parseInt(reader.nextLine().trim().split(":")[1].replace(",", ""));		// Orientierung des Schiffs
+								
+								reader.nextLine();
+								
+								int[] damage = new int[length];
+								for (int j = 0; j < length; j++) {
+									damage[j] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));						// Beschädigungen am Schiff
+								}
+								
+								// Erzeugt neues Schiffs-Objekt aus eingelesenen Daten
+								Ship ship = new Ship(length, orientation);
+								ship.setRootPoint(rootPoint);
+								ship.setDamage(damage);
+								
+								ships.add(ship);
+														
+								reader.nextLine();
+								reader.nextLine();
+							}
+							
+							// -> Player1
+							if (object == 2) {
+								Main.currentGame.getPlayer1().setShips(ships);
+							}
+							// -> Player2
+							else if (object == 3) {
+								Main.currentGame.getPlayer2().setShips(ships);
+							}
+						}
+						
+					}
+					
+					// Liest Schussprioritäten für KI ein
+					else if (key.equals("priorities")) {
+						int pitchSize = Main.currentGame.getPitchSize();
+						int[][] priorities = new int[pitchSize][pitchSize];
+						
+						// Setzt Karte zusammen
+						for (int x = 0; x < pitchSize; x++) {
+							reader.nextLine();
+							for (int y = 0; y < pitchSize; y++) {
+								priorities[x][y] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
+							}
+							reader.nextLine();
+						}
+						
+						// -> Player1
+						if (object == 2) {
+							if (Main.currentGame.getPlayer1() instanceof AIPlayer) {
+								AIPlayer ai = (AIPlayer) Main.currentGame.getPlayer1();
+								ai.setPriorities(priorities);
+							}
+						}
+						// -> Player2
+						else if (object == 3) {
+							if (Main.currentGame.getPlayer2() instanceof AIPlayer) {
+								AIPlayer ai = (AIPlayer) Main.currentGame.getPlayer2();
+								ai.setPriorities(priorities);
+							}
+						}
+					}
+									
 				}
 				
-				// Liest Schussprioritäten für KI ein
-				else if (key.equals("priorities")) {
-					int pitchSize = Main.currentGame.getPitchSize();
-					int[][] priorities = new int[pitchSize][pitchSize];
-					
-					// Setzt Karte zusammen
-					for (int x = 0; x < pitchSize; x++) {
-						reader.nextLine();
-						for (int y = 0; y < pitchSize; y++) {
-							priorities[x][y] = Integer.parseInt(reader.nextLine().trim().replace(",", ""));
-						}
-						reader.nextLine();
-					}
-					
-					// -> Player1
-					if (object == 2) {
-						if (Main.currentGame.getPlayer1() instanceof AIPlayer) {
-							AIPlayer ai = (AIPlayer) Main.currentGame.getPlayer1();
-							ai.setPriorities(priorities);
-						}
-					}
-					// -> Player2
-					else if (object == 3) {
-						if (Main.currentGame.getPlayer2() instanceof AIPlayer) {
-							AIPlayer ai = (AIPlayer) Main.currentGame.getPlayer2();
-							ai.setPriorities(priorities);
-						}
-					}
-				}
-								
 			}
-			
+			reader.close();
 		}
-		reader.close();
 		
 		NotificationCenter.sendNotification("GameLoaded", null);				// Dass die UI sich aktualisieren kann, wenn das Spiel geladen wurde
 		
