@@ -18,8 +18,6 @@ import Schiffeversenken.*;
 import UserInterface.Menu;
 import UserInterface.UIComponents.*;
 
-// TODO Spiel starten Knopf deaktivieren, wenn der andere Verbindung wieder abbricht
-
 /**
  * Die UI um ein online Spiel zu erstellen.
  */
