@@ -186,7 +186,8 @@ public abstract class Player {
 						} else {
 							NotificationCenter.sendNotification("WinPlayer2", null);
 						}
-						//game.exit(this, GameExitStatus.GAME_FINISHED);
+						// Netzwerkverbindung nach Vorgaben beenden ohne das Fenster zu schließen
+						game.exit(player, GameExitStatus.GAME_FINISHED);
 					}
 				}, "SpielBeenden").start();
 			}	

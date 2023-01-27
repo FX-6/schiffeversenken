@@ -46,6 +46,12 @@ public class Game {
 	
 	
 	/**
+	 * Speicherung, ob das Spiel bis zum Ende gespielt wurde und es einen Sieger gibt
+	 */
+	private boolean end = false;
+	
+	
+	/**
 	 * Erstellt eine neue Instanz des Backends eines Spiels.
 	 * 
 	 * @param pitchSize Seitenlänge In Feldern des Spielfelds für dieses Spiel.
@@ -222,26 +228,44 @@ public class Game {
 	 */
 	public void exit(Object sender, GameExitStatus status) {
 		
-		// Netzwerkverbindung beenden, falls Spiel über das Netzwerk gespielt wird und der Aufruf dieser Methode nicht durch einen Befehl über das Netzwerk veranlasst wurde
-		if (!(sender instanceof NetworkPlayer)) {
-			if (player2 instanceof NetworkPlayer) {
-				NetworkPlayer player2 = (NetworkPlayer) getPlayer2();
-				player2.endConnection();
+		if (end == false) {
+			// Netzwerkverbindung beenden, falls Spiel über das Netzwerk gespielt wird und der Aufruf dieser Methode nicht durch einen Befehl über das Netzwerk veranlasst wurde
+			if (!(sender instanceof NetworkPlayer)) {
+				if (player2 instanceof NetworkPlayer) {
+					NetworkPlayer player2 = (NetworkPlayer) getPlayer2();
+					player2.endConnection();
+				}
+			} 
+			
+			// Die restlichen Befehle nicht ausführen, wenn der Grund des Beenden des Spiels ein Ende des Spiels ist
+			if (status == GameExitStatus.GAME_FINISHED) {
+				end = true;
+				return;
 			}
+			
+			// Schließen des Spiel Fensters, falls der Aufruf dieser Methode nicht durch das Schließen deselben Fensters veranlasst wurde
+			if (!(sender instanceof JFrame) && status != GameExitStatus.CONNECTION_REFUESED) {
+				Main.menuWindow.closeGameWindow();
+			}
+			
+			// Enterfnen aller abbonierten Notifications, damit player1 und player2 von der GarbageCollection freigegeben werden
+			NotificationCenter.removeAllObservers(player1);
+			NotificationCenter.removeAllObservers(player2);
+			
+			// Spiel beenden
+			Main.currentGame = null;
+			System.out.println("Spiel beendet");
 		} 
-		
-		// Schließen des Spiel Fensters, falls der Aufruf dieser Methode nicht durch das Schließen deselben Fensters veranlasst wurde
-		if (!(sender instanceof JFrame) && status != GameExitStatus.CONNECTION_REFUESED) {
-			Main.menuWindow.closeGameWindow();
+		else if (!(sender instanceof NetworkPlayer)) {
+			// Enterfnen aller abbonierten Notifications, damit player1 und player2 von der GarbageCollection freigegeben werden
+			NotificationCenter.removeAllObservers(player1);
+			NotificationCenter.removeAllObservers(player2);
+			
+			// Spiel beenden
+			Main.currentGame = null;
+			System.out.println("Spiel beendet");
 		}
-		
-		// Enterfnen aller abbonierten Notifications, damit player1 und player2 von der GarbageCollection freigegeben werden
-		NotificationCenter.removeAllObservers(player1);
-		NotificationCenter.removeAllObservers(player2);
-		
-		// Spiel beenden
-		Main.currentGame = null;
-		System.out.println("Spiel beendet");
+	
 	}
 	
 	
