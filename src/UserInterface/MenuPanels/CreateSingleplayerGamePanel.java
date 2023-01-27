@@ -19,8 +19,14 @@ import UserInterface.UIComponents.*;
  * Die UI um ein offline Spiel zu erstellen.
  */
 public class CreateSingleplayerGamePanel extends BackgroundPanel implements Notification {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Das Menü, der Parent.
+	 */
 	Menu parent;
 
 	/**
@@ -143,7 +149,7 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel implements Noti
 						ships[3] = ship5Input.getIntValue();
 						Main.currentGame.setShips(ships);
 						Main.currentGame.transmittSizeAndShips();
-						
+
 						NotificationCenter.sendNotification("AIPlayerPlaceShips", null);
 
 						parent.openGameWindow();

@@ -12,8 +12,14 @@ import UserInterface.MenuPanels.*;
  * Das Fenster des Menüs.
  */
 public class Menu extends JFrame {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Speicher das Fenster des Spiels.
+	 */
 	public GameWindow gameWindow;
 
 	/**

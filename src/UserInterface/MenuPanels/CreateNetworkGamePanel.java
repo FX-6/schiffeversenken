@@ -18,16 +18,23 @@ import Schiffeversenken.*;
 import UserInterface.Menu;
 import UserInterface.UIComponents.*;
 
-// TODO Spiel starten Knopf deaktivieren, wenn der andere Verbindung wieder abbricht
-
 /**
  * Die UI um ein online Spiel zu erstellen.
  */
 public class CreateNetworkGamePanel extends BackgroundPanel implements Notification {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Der Button zum Starten des Spiels.
+	 */
 	private JButton startGameButton;
 
+	/**
+	 * Das Menü, der Parent.
+	 */
 	Menu parent;
 
 	/**

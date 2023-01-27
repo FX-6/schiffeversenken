@@ -17,8 +17,14 @@ import UserInterface.UIComponents.WrapperPanel;
  * Die UI für das Startmenü.
  */
 public class MainPanel extends BackgroundPanel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Das Menü, der Parent.
+	 */
 	Menu parent;
 
 	/**

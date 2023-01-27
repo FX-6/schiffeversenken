@@ -6,6 +6,9 @@ import java.awt.Dimension;
  * Wird als Wrapper für das Menü während der Runde genutzt.
  */
 public class GameMenuPanel extends WrapperPanel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
 	/**

@@ -8,8 +8,14 @@ import java.awt.Font;
  * zurückzukommen.
  */
 public class MenuButton extends InputButton {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Größe des Menübuttons.
+	 */
 	private Dimension size = new Dimension(75, 25);
 
 	/**

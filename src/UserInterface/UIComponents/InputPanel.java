@@ -12,14 +12,36 @@ import javax.swing.SwingConstants;
  * Wird als Container für Inpus genutzt.
  */
 public class InputPanel extends UIPanel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Die Größe des Panels.
+	 */
 	protected Dimension size = new Dimension(itemWidth, itemHeigth);
 
+	/**
+	 * Dient als Container um die beiden Labels zu halten.
+	 */
 	private JPanel inputLabelRow;
+	/**
+	 * Das Label das den Namen des Inputs zeigt.
+	 */
 	private JLabel inputLabel;
+	/**
+	 * Das Label das den Error zeigt.
+	 */
 	private JLabel errorLabel;
+	/**
+	 * Das Layout der {@link #inputLabelRow}
+	 */
 	private GridLayout singleGridLayout = new GridLayout(2, 1, 0, 0);
+	/**
+	 * Die Schriftart der beiden kleinen Label {@link #inputLabel} und
+	 * {@link #errorLabel}
+	 */
 	private Font font = new Font("Titel", Font.PLAIN, fontSizeSmall);
 
 	/**

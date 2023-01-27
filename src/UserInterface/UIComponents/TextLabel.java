@@ -6,8 +6,14 @@ import java.awt.Dimension;
  * Wird als standard Textlabel, das den Userstyles folgt, genutzt.
  */
 public class TextLabel extends UILabel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Die Größe des Labels.
+	 */
 	protected Dimension size = new Dimension(itemWidth, itemHeigth);
 
 	/**

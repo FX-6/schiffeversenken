@@ -15,8 +15,14 @@ import UserInterface.UIComponents.*;
  * Die UI für die Einstellungen.
  */
 public class SettingsPanel extends BackgroundPanel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Das Menü, der Parent.
+	 */
 	Menu parent;
 
 	/**

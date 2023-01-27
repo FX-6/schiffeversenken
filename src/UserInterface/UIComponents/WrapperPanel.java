@@ -13,8 +13,14 @@ import javax.swing.border.EmptyBorder;
  * Sollte als Top-Level Component in der UI genutzt werden.
  */
 public class WrapperPanel extends UIPanel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Die Größe des Panels.
+	 */
 	protected Dimension size = new Dimension(itemWidth + 2 * borderWidth + 2 * padding, 2 * borderWidth + padding);
 
 	/**

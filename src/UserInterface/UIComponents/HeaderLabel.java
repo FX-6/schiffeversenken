@@ -7,9 +7,18 @@ import java.awt.Font;
  * Wird als Überschrift, die den Userstyles folgt, genutzt.
  */
 public class HeaderLabel extends UILabel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Die Schriftart des Labels.
+	 */
 	private Font font = new Font("Titel", Font.BOLD, fontSizeLarge);
+	/**
+	 * Die Größe des Labels.
+	 */
 	protected Dimension size = new Dimension(itemWidth, itemHeigth);
 
 	/**
