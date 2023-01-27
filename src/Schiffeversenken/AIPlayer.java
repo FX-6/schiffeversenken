@@ -9,26 +9,32 @@ import Notifications.Notification;
 import Notifications.NotificationCenter;
 public class AIPlayer extends Player implements Notification {
 	private int[][] priorities = new int[game.getPitchSize()][game.getPitchSize()]; // Ein 2D Array mit Schussprioritaeten.
+	private boolean gameOver = false;
 	public AIPlayer(Game game, Player otherPlayer) {
 		super(game, otherPlayer);
 		NotificationCenter.addObserver("AIPlayerPlaceShips", this); //Notifications werden eingerichtet
+		NotificationCenter.addObserver("WinPlayer1", this); //Notifications werden eingerichtet
+		NotificationCenter.addObserver("WinPlayer2", this); //Notifications werden eingerichtet
 	}
 	@Override
 	public void pass() { // Teile der KI mit, dass sie einen weiteren Zug ausüben darf
 		otherPlayer.setMyTurn(false);
 		setMyTurn(true);
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			public void run() {
-				handleShoot();
-			}
-		}, 100);
+		if (!gameOver) {
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				public void run() {
+					handleShoot();
+				}
+			}, 100);
+		}
 	}
 	public int[][] getPriorities() {return this.priorities;}							// Getter zum Speichern eines Spiels
 	public void setPriorities(int[][] priorities) {this.priorities = priorities;}		// Setter zum Laden eines Spiels
 	private void handleShoot() {
+		NotificationCenter.sendNotification("UI-Repaint", null);
 		for (int i = 0; i < game.getPitchSize(); i++) // traegt die Werte aus PointsShot ein
-			for (int j = 0; j < game.getPitchSize(); j++) 
+			for (int j = 0; j < game.getPitchSize(); j++)
 				if (getPointsShot()[i][j] == 0)  	  priorities[i][j] = 0; 	// verfehlt wird als 0 eingetragen
 				else if (getPointsShot()[i][j] == 1)  priorities[i][j] = -1;	// treffer wird als -1 eingetragen
 				else if (getPointsShot()[i][j] == 2)  priorities[i][j] = -2;	// versenkt wird als -2 eingetragen
@@ -70,7 +76,7 @@ public class AIPlayer extends Player implements Notification {
 			for (int i = 0; i < priorities.length; i++)
 				for (int j = 0; j < priorities.length; j++)
 					if      (priorities[j][i] == 200) priorities[j][i] = 0;			//werden alle Prio 200 mit 0 ersetzt
-					else if (priorities[j][i] == -2)								//und alle Felder um das letzte zerstoerte Schiffsteil 
+					else if (priorities[j][i] == -2)								//und alle Felder um das letzte zerstoerte Schiffsteil
 						for (int k = 0; k < 8; k++) {								//werden zu Prio 0 gesetzt
 							int tempI = i + ((k<3)?(-1):((k>2)&&(k<5))?(0):(k>4)?(1):0);
 							int tempJ = j + (((k==0)||(k==3)||(k==5))?(-1):((k==1)||(k==6))?(0):((k==2)||(k==4)||(k==7))?(1):0);
@@ -88,7 +94,7 @@ public class AIPlayer extends Player implements Notification {
 			player.removeAllShips();
 			for (int j = 2; j < 6 && !failed; j++) 						// platziert die SChiffe von klein nach groß
 				while (remainingShipsToBePlaced[j] > 0 && !failed)		// platziert allee Schiffe einer Größe
-					for (int k = 0; k < 500 && !failed; k++) 			// bis zu 500 platzierungsversuche pro Schiff			
+					for (int k = 0; k < 500 && !failed; k++) 			// bis zu 500 platzierungsversuche pro Schiff
 						if (player.placeShipAt(new Ship(j, (int) Math.floor(Math.random() * 2)), new Point((int) (Math.random() * (Main.currentGame.getPitchSize() + 1)),(int) (Math.random() * (Main.currentGame.getPitchSize() + 1))))) {
 							remainingShipsToBePlaced[j]--;				// nach 500 Versuchen werden alle Schiffe gelöscht und der nächste Versuch startet
 							k = 500;
@@ -104,6 +110,9 @@ public class AIPlayer extends Player implements Notification {
 			for (int[] priorityRow : priorities) Arrays.fill(priorityRow, 100);
 			AIPlayer.placeShipsAutomatically(this);
 			Main.currentGame.setReady(this);
+			NotificationCenter.sendNotification("UI-AIPlayerReady", null);
+		} else if (!gameOver && (type.equals("WinPlayer1") || type.equals("WinPlayer2"))) {
+			gameOver = true;
 		}
 	}
 }

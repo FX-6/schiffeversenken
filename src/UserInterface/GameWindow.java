@@ -106,6 +106,8 @@ public class GameWindow extends JFrame implements Notification {
 		NotificationCenter.addObserver("WinPlayer2", this);
 		NotificationCenter.addObserver("UITurn", this);
 		NotificationCenter.addObserver("SaveGame", this);
+		NotificationCenter.addObserver("UI-AIPlayerReady", this);
+		NotificationCenter.addObserver("UI-Repaint", this);
 
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.pack();
@@ -468,7 +470,7 @@ public class GameWindow extends JFrame implements Notification {
 						if (!gameMap.setShootFocus()) {
 							shootAtFocus();
 						}
-					} else {
+					} else if (!playingAsBot) {
 						if (!inMatch) {
 							setError("Platzieren nicht möglich");
 						} else if (!viewingSelf) {
@@ -500,7 +502,7 @@ public class GameWindow extends JFrame implements Notification {
 				} else {
 					if (!inMatch) {
 						setError("Platzieren nicht möglich");
-					} else {
+					} else if (!playingAsBot) {
 						setError("Fehler");
 					}
 				}
@@ -769,6 +771,14 @@ public class GameWindow extends JFrame implements Notification {
 			currentTurnLabel.setText("Gegner:in ist dran");
 		}
 
+		if (Main.currentGame.getPlayer1().isMyTurn()) {
+			saveButton.setEnabled(true);
+			savePanelButton.setEnabled(true);
+		} else {
+			saveButton.setEnabled(false);
+			savePanelButton.setEnabled(false);
+		}
+
 		if (gameOver) {
 			saveButton.setEnabled(false);
 			shootButton.setEnabled(false);
@@ -848,6 +858,14 @@ public class GameWindow extends JFrame implements Notification {
 		} else if (type.equals("SaveGame")) {
 			saveId = object.toString();
 			savePanel.setVisible(true);
+		} else if (type.equals("UI-AIPlayerReady")) {
+			gameMenu.setVisible(true);
+			addShipsGameMenu.setVisible(false);
+			inMatch = true;
+			gameMap.finishedPlacing();
+		} else if (type.equals("UI-Repaint") && playingAsBot) {
+			this.updateButtonLabels();
+			this.repaint();
 		}
 	}
 }
