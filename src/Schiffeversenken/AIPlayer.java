@@ -47,10 +47,7 @@ public class AIPlayer extends Player implements Notification {
 		otherPlayer.setMyTurn(false);
 		setMyTurn(true);
 		if (!gameOver) {
-			Timer timer = new Timer();
-			timer.schedule(new TimerTask() {
-				public void run() { handleShoot(); }
-			}, 100);
+			handleShoot();
 		}
 	}
 

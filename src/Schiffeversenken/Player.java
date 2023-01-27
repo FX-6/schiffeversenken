@@ -126,18 +126,8 @@ public abstract class Player {
 		int result = otherPlayer.shot(point);				// Auf gegnerisches Schiff schießen
 		pointsShot[point.x - 1][point.y - 1] = result;		// Punkt speichern, auf den geschossen wurde
 		
-		// Falls kein Schiff getroffen wurde
-		if (result == 0) {
-			// Neuer Thread, damit Antwort returnt wird
-			new Thread(new Runnable() {
-				public void run() {
-					otherPlayer.pass();						// Gegner den Zug geben
-				}
-			}, "NeuerZug").start();;
-		}
-		
 		// Falls ein Schiff getroffen wurde
-		else if (result >= 1) {
+		if (result >= 1) {
 			// Punkte, an denen kein Schiff liegen darf (-> 1 Feld Wasser zwischen Schiffen) markieren
 			if (point.x - 2 >= 0 && point.y - 2 >= 0) pointsShot[point.x - 2][point.y - 2] = 0;							// links oben
 			if (point.x - 2 >= 0 && point.y < game.getPitchSize()) pointsShot[point.x - 2][point.y] = 0;				// unten links
@@ -199,7 +189,17 @@ public abstract class Player {
 						//game.exit(this, GameExitStatus.GAME_FINISHED);
 					}
 				}, "SpielBeenden").start();
-			}
+			}	
+		}
+		
+		// Falls kein Schiff getroffen wurde
+		if (result == 0 && !(this instanceof NetworkPlayer)) {
+			// Neuer Thread, damit Antwort returnt wird
+			new Thread(new Runnable() {
+				public void run() {
+					otherPlayer.pass();						// Gegner den Zug geben
+				}
+			}, "NeuerZug").start();;
 		}
 		
 		return result;

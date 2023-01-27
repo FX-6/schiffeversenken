@@ -198,7 +198,11 @@ public class Game {
 			
 			// Gibt Spieler 1 den ersten Zug, falls das Spiel lokal gespielt wird
 			else {
-				player1.pass();
+				new Thread(new Runnable() {
+					public void run() {
+						player1.pass();
+					}
+				}, "NeuerZug").start();
 			}
 		}
 	}

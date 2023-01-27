@@ -13,7 +13,7 @@ import Notifications.NotificationCenter;
  * mit einem anderen Spiel kommunizieren zu können.
  */
 public class NetworkPlayer extends Player implements Notification  {
-
+	
 	/**
 	 * Speichert, ob dieses Spiel als Server agiert.
 	 */
@@ -315,7 +315,7 @@ public class NetworkPlayer extends Player implements Notification  {
 				try {
 					connection.disconnect();
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				game.exit(this, GameExitStatus.CONNECTION_CLOSED);
 				return;
@@ -324,13 +324,17 @@ public class NetworkPlayer extends Player implements Notification  {
 				try {
 					connection.disconnect();
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				game.exit(this, GameExitStatus.CONNECTION_CLOSED);
 				return;
 				
 			case "pass":														// pass
-				otherPlayer.pass();
+				new Thread(new Runnable() {
+					public void run() {
+						otherPlayer.pass();
+					}
+				}, "NeuerZug").start();
 				break;
 				
 			case "answer":														// answer <damage>
