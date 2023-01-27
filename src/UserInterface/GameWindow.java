@@ -25,12 +25,14 @@ public class GameWindow extends JFrame implements Notification {
 	private boolean inMatch = false;
 	private boolean viewingSelf = true;
 	private boolean playingAsBot = false;
+	private String saveId = "";
 
 	private WrapperPanel gameOverPanel = new WrapperPanel();
 	private JLabel gameOverLabel = new HeaderLabel("Game Over", true);
 	private GameMapPanel gameMap = new GameMapPanel();
 	private WrapperPanel errorPanel = new WrapperPanel();
 	private JLabel errorLabel = new HeaderLabel("", true);
+	private WrapperPanel savePanel = new WrapperPanel();
 	private JButton savePanelButton = new InputButton("Speichern", false);
 	private WrapperPanel passTurnWarningPanel = new WrapperPanel();
 	private GameMenuPanel addShipsGameMenu = new GameMenuPanel();
@@ -103,6 +105,7 @@ public class GameWindow extends JFrame implements Notification {
 		NotificationCenter.addObserver("WinPlayer1", this);
 		NotificationCenter.addObserver("WinPlayer2", this);
 		NotificationCenter.addObserver("UITurn", this);
+		NotificationCenter.addObserver("SaveGame", this);
 
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.pack();
@@ -133,8 +136,6 @@ public class GameWindow extends JFrame implements Notification {
 		this.add(errorPanel);
 
 		// save game input
-		WrapperPanel savePanel = new WrapperPanel();
-
 		InputPanel saveNameInputPanel = new InputPanel("Name", true);
 		JTextField saveNameInput = new InputTextField();
 		saveNameInputPanel.add(saveNameInput);
@@ -147,10 +148,17 @@ public class GameWindow extends JFrame implements Notification {
 		savePanel.add(savePanelButton, savePanelButtonConstraints);
 		savePanelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (Main.currentGame.save(String.valueOf(new Date().getTime()), saveNameInput.getText(),
+				if (saveId != "" &&
+						Main.currentGame.save(saveId, saveNameInput.getText(), Main.currentGame.getPlayer2())) {
+					// id war verfügbar
+					saveId = "";
+					savePanel.setVisible(false);
+				} else if (Main.currentGame.save(String.valueOf(new Date().getTime()), saveNameInput.getText(),
 						Main.currentGame.getPlayer1())) {
+					// id war nicht verfügbar
 					savePanel.setVisible(false);
 				} else {
+					// fehler
 					saveNameInputPanel.setError("Fehler beim speichern");
 				}
 			}
@@ -837,6 +845,9 @@ public class GameWindow extends JFrame implements Notification {
 		} else if (type.equals("UITurn")) {
 			updateButtonLabels();
 			this.repaint();
+		} else if (type.equals("SaveGame")) {
+			saveId = object.toString();
+			savePanel.setVisible(true);
 		}
 	}
 }
