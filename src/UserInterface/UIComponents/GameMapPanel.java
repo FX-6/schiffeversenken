@@ -13,28 +13,92 @@ import Schiffeversenken.Ship;
  * Bietet viele methoden um sie zu updaten.
  */
 public class GameMapPanel extends UIPanel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
-	private Point prevMouseLocation, windowPosition;
+	/**
+	 * Speichert die letzte Mausposition.
+	 */
+	private Point prevMouseLocation;
+	/**
+	 * Speichert die Position des Fensters.
+	 */
+	private Point windowPosition;
+	/**
+	 * Speichert den Faktor um den gezoomt wird, 1 = kein zoom.
+	 */
 	private double zoomFactor = 1;
+	/**
+	 * Speichert ob man als Bot spielt.
+	 */
 	private boolean playingAsBot = false;
+	/**
+	 * Speichert ob das Spiel zuende ist.
+	 */
 	private boolean gameOver = false;
+	/**
+	 * Speichert ob man im Spiel ist oder noch Schiffe platziert.
+	 */
 	private boolean inMatch = false;
+	/**
+	 * Speichert ob man sich selbst anschaut, oder den:die Gegner:in.
+	 */
 	private boolean viewingSelf = true;
+	/**
+	 * Speichert die X-Koordinate des Felds das aktuell gehovert wird.
+	 */
 	private int currentFocusedX = Main.currentGame.getPitchSize() / 2;
+	/**
+	 * Speichert die Y-Koordinate des Felds das aktuell gehovert wird.
+	 */
 	private int currentFocusedY = Main.currentGame.getPitchSize() / 2;
+	/**
+	 * Speichert die Größe des Schiffs das aktuell platziert werden soll.
+	 */
 	private int currentlyPlacedShipSize = 0;
+	/**
+	 * Speichert die Ausrichtung des Schiffs das aktuell platziert werden soll.
+	 */
 	private int currentlyPlacedShipOrientation = 0;
+	/**
+	 * Speichert den Punkt auf den geschossen werden soll.
+	 */
 	private Schiffeversenken.Point currentShootFocus = null;
 
+	/**
+	 * Das Bild der Wolken.
+	 */
 	private Image cloudImage = SettingsHandler.getImage("image_clouds");
+	/**
+	 * Das Bild der Wolken, passend gezoomt.
+	 */
 	private Image zoomedCloudImage = cloudImage.getScaledInstance(imageSize, imageSize, Image.SCALE_FAST);
+	/**
+	 * Das Bild des Wassers.
+	 */
 	private Image waterImage = SettingsHandler.getImage("image_water");
+	/**
+	 * Das Bild des Wassers, passend gezoomt.
+	 */
 	private Image zoomedWaterImage = waterImage.getScaledInstance(imageSize, imageSize, Image.SCALE_FAST);
+	/**
+	 * Das Bild eines getroffenen Schiffteils.
+	 */
 	private Image destroyedShipImage = SettingsHandler.getImage("image_ship_destroyed");
+	/**
+	 * Das Bild eines getroffenen Schiffteils, passend gezoomt.
+	 */
 	private Image zoomedDestroyedShipImage = destroyedShipImage.getScaledInstance(imageSize, imageSize,
 			Image.SCALE_FAST);
+	/**
+	 * Das Bild von getroffenem Wasser.
+	 */
 	private Image destroyedWaterImage = SettingsHandler.getImage("image_water_destroyed");
+	/**
+	 * Das Bild von getroffenem Wasser, passend gezoomt.
+	 */
 	private Image zoomedDestroyedWaterImage = destroyedWaterImage.getScaledInstance(imageSize, imageSize,
 			Image.SCALE_FAST);
 

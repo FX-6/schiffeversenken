@@ -19,16 +19,38 @@ import UserInterface.UIComponents.InputTextField;
  * zugänglich für den Rest des Codes.
  */
 public class SettingsHandler {
+	/**
+	 * Name des Ordners in dem alles gespeichert wird.
+	 */
 	private static String appName = "Schiffeversenken";
+	/**
+	 * Pfad des Ordners in dem alles gespeichert wird. OS abhängig. Ohne tailing
+	 * separator.
+	 */
 	public static String appDirectory = ((System.getProperty("os.name")).toLowerCase().contains("win")
 			? (System.getenv("AppData") + "\\" + appName)
 			: ((System.getProperty("os.name")).toLowerCase().contains("mac")
 					? (System.getProperty("user.home") + "/Library/Application Support/" + appName)
 					: (System.getProperty("user.home") + "/." + appName)));
+	/**
+	 * Pfad zur <code>settings.json</code> file.
+	 */
 	public static String settingsFilePath = appDirectory + File.separator + "settings.json";
+	/**
+	 * Pfad zum <code>Themes</code> folder. Ohne tailing separator.
+	 */
 	public static String themesFolderPath = appDirectory + File.separator + "Themes";
+	/**
+	 * Pfad zum aktuellen Theme folder. Ohne tailing separator.
+	 */
 	public static String currentThemePath = themesFolderPath + File.separator;
+	/**
+	 * Pfad zum <code>Saves</code> folder. Ohne tailing separator.
+	 */
 	public static String saveGamesPath = appDirectory + File.separator + "Saves";
+	/**
+	 * Alle werte der Einstellungen.
+	 */
 	public static SettingsValues settingsValues;
 
 	/**
@@ -345,44 +367,140 @@ public class SettingsHandler {
 	}
 }
 
-/*
+/**
  * Wird intern genutzt um die Werte zu speichern, enthält auch Standardwerte.
  */
 class SettingsValues {
+	/**
+	 * Hintergrundfarbe der UI als HEX.
+	 */
 	private String color_background = "#FFFFFF";
+	/**
+	 * Schriftfarbe der UI als HEX.
+	 */
 	private String color_foreground = "#000000";
+	/**
+	 * Button Hintergrundfarbe der UI als HEX.
+	 */
 	private String color_button_background = "#FFFFFF";
+	/**
+	 * Button Schriftfarbe der UI als HEX.
+	 */
 	private String color_button_foreground = "#000000";
+	/**
+	 * Error Schriftfarbe der UI als HEX.
+	 */
 	private String color_error = "#FF0000";
+	/**
+	 * Borderdarbe der UI als HEX.
+	 */
 	private String color_border = "#000000";
 
+	/**
+	 * Größe eines Bildes, als auch eines Tiles.
+	 */
 	private String settings_image_size = "100";
+	/**
+	 * Die kleine Schriftgröße.
+	 */
 	private String settings_fontsize_small = "15";
+	/**
+	 * Die große Schriftgröße.
+	 */
 	private String settings_fontsize_large = "25";
+	/**
+	 * Normale Breite eines UI Elements.
+	 */
 	private String settings_items_width = "500";
+	/**
+	 * Normale Höhe eines UI Elements.
+	 */
 	private String settings_items_height = "70";
+	/**
+	 * Kleine Breite eines UI Elements.
+	 */
 	private String settings_items_small_width = "350";
+	/**
+	 * Kleine Höhe eines UI Elements.
+	 */
 	private String settings_items_small_height = "55";
+	/**
+	 * Normales Padding von UI Elementen.
+	 */
 	private String settings_items_padding = "20";
+	/**
+	 * Normale Borderbreite von UI Elementen.
+	 */
 	private String settings_border_width = "2";
+	/**
+	 * Normaler Borderradius von UI Elementen.
+	 */
 	private String settings_border_radius = "15";
+	/**
+	 * Name des aktuellen Themes.
+	 */
 	private String settings_theme_path = "Default";
 
+	/**
+	 * Bild von Wasser.
+	 */
 	private BufferedImage image_water;
+	/**
+	 * Bild von Wasser auf das geschossen wurde.
+	 */
 	private BufferedImage image_water_destroyed;
+	/**
+	 * Bild von Wolken.
+	 */
 	private BufferedImage image_clouds;
+	/**
+	 * Bild eines Schiffteils, auf das geschossen wurde.
+	 */
 	private BufferedImage image_ship_destroyed;
+	/**
+	 * Bild des 2er Schiffs, zerstört.
+	 */
 	private BufferedImage image_ship_2_destroyed;
+	/**
+	 * Bild des 2er Schiffs, ganz.
+	 */
 	private BufferedImage image_ship_2_healthy;
+	/**
+	 * Bild des 3er Schiffs, zerstört.
+	 */
 	private BufferedImage image_ship_3_destroyed;
+	/**
+	 * Bild des 3er Schiffs, ganz.
+	 */
 	private BufferedImage image_ship_3_healthy;
+	/**
+	 * Bild des 4er Schiffs, zerstört.
+	 */
 	private BufferedImage image_ship_4_destroyed;
+	/**
+	 * Bild des 4er Schiffs, ganz.
+	 */
 	private BufferedImage image_ship_4_healthy;
+	/**
+	 * Bild des 5er Schiffs, zerstört.
+	 */
 	private BufferedImage image_ship_5_destroyed;
+	/**
+	 * Bild des 5er Schiffs, ganz.
+	 */
 	private BufferedImage image_ship_5_healthy;
 
+	/**
+	 * Pfad zur <code>colors.json</code> file.
+	 */
 	private String colorsFilePath = "";
+	/**
+	 * Der Inhalt von <code>settings.json</code> als String.
+	 */
 	private String settingsFileString = "";
+	/**
+	 * Der Inhalt von <code>colors.json</code> als String.
+	 */
 	private String colorsFileString = "";
 
 	/**

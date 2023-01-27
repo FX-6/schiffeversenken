@@ -8,8 +8,14 @@ import Schiffeversenken.SettingsHandler;
  * Wird als Hintergrund genutzt, rendert ein Bild gekachelt.
  */
 public class BackgroundPanel extends UIPanel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Das Hintergrundbild, standard: <code>image_water</code>.
+	 */
 	protected String backgroundImage = "image_water";
 
 	/**

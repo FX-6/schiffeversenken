@@ -8,8 +8,17 @@ import javax.swing.border.Border;
  * Wird intern als abgerundete Border genutzt.
  */
 public class RoundedBorder implements Border {
+	/**
+	 * Der Borderradius.
+	 */
 	private int borderRadius;
+	/**
+	 * Die Borderbreite.
+	 */
 	private int borderWidth;
+	/**
+	 * Die Borderfarbe.
+	 */
 	private Color borderColor;
 
 	/**

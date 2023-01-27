@@ -19,12 +19,30 @@ import UserInterface.UIComponents.*;
  * Das Fenster des Spiels.
  */
 public class GameWindow extends JFrame implements Notification {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Speichert ob das Spiel zuende ist.
+	 */
 	private boolean gameOver = false;
+	/**
+	 * Speichert ob man im Spiel ist oder noch Schiffe platziert.
+	 */
 	private boolean inMatch = false;
+	/**
+	 * Speichert ob man sich selbst anschaut, oder den:die Gegner:in.
+	 */
 	private boolean viewingSelf = true;
+	/**
+	 * Speichert ob man als Bot spielt.
+	 */
 	private boolean playingAsBot = false;
+	/**
+	 * Speichert die ID des savegames, wenn ein save request kommt.
+	 */
 	private String saveId = "";
 
 	private WrapperPanel gameOverPanel = new WrapperPanel();
@@ -773,10 +791,8 @@ public class GameWindow extends JFrame implements Notification {
 
 		if (Main.currentGame.getPlayer1().isMyTurn()) {
 			saveButton.setEnabled(true);
-			savePanelButton.setEnabled(true);
 		} else {
 			saveButton.setEnabled(false);
-			savePanelButton.setEnabled(false);
 		}
 
 		if (gameOver) {

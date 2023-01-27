@@ -14,8 +14,14 @@ import UserInterface.UIComponents.*;
  * Die UI für die Anleitung.
  */
 public class TutorialPanel extends BackgroundPanel {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Das Menü, der Parent.
+	 */
 	Menu parent;
 
 	/**

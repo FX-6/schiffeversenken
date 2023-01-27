@@ -22,20 +22,49 @@ import UserInterface.UIComponents.*;
  * Die UI um einem online Spiel beizutreten.
  */
 public class NetworkGamePanel extends BackgroundPanel implements Notification {
+	/**
+	 * Wird zur serialization genutzt.
+	 */
 	private static final long serialVersionUID = 1L;
 
-	// Zählt, ob Schiffe und Spielfeldgröße empfangen wurden. Wenn 2, dann wird
-	// GameWindow geöffnet
+	/**
+	 * Zählt, ob Schiffe und Spielfeldgröße empfangen wurden. Wenn 2, dann wird
+	 * GameWindow geöffnet
+	 */
 	private int receivedGameData = 0;
 
+	/**
+	 * Das Menü, der Parent.
+	 */
 	private Menu parent;
-	private InputPanel ipInputPanel;
 
+	/**
+	 * Das Panel um die IP einzugeben.
+	 */
+	private InputPanel ipInputPanel;
+	/**
+	 * Das Textfield um die IP einzugeben.
+	 */
 	private JTextField ipInput;
+	/**
+	 * Tritt einem Spiel als Mensch bei.
+	 */
 	private JButton joinGameAsHumanButton;
+	/**
+	 * Tritt einem Spiel als Bot bei.
+	 */
 	private JButton joinGameAsAiButton;
+	/**
+	 * Erstellt ein Spiel als Mensch bei.
+	 */
 	private JButton createGameAsHumanButton;
+	/**
+	 * Erstellt ein Spiel als Bot bei.
+	 */
 	private JButton createGameAsAiButton;
+	/**
+	 * Der Button der zurück zum Menü führt
+	 */
 	private JButton menuButton;
 
 	/**
