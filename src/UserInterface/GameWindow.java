@@ -159,7 +159,7 @@ public class GameWindow extends JFrame implements Notification {
 					savePanel.setVisible(false);
 				} else {
 					// fehler
-					saveNameInputPanel.setError("Fehler beim speichern");
+					saveNameInputPanel.setError("Fehler beim Speichern");
 				}
 			}
 		});
