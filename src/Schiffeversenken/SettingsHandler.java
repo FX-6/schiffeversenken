@@ -14,8 +14,6 @@ import javax.imageio.ImageIO;
 import UserInterface.UIComponents.InputPanel;
 import UserInterface.UIComponents.InputTextField;
 
-// TODO Change link to zip file (Felix)
-
 /**
  * Verwaltet die Einstellungen die der Spieler macht und speichert sie
  * zugänglich für den Rest des Codes.
@@ -46,9 +44,7 @@ public class SettingsHandler {
 			saveDir.mkdir();
 
 			try {
-				// vlt lieber n github link, dann kann mans gescheit updaten
-				URL url = new URL(
-						"https://cdn.discordapp.com/attachments/828604182591307797/1049638280515289108/SchiffeversenkenDefaults.zip");
+				URL url = new URL("https://github.com/FX-6/schiffeversenken/raw/main/Settings.zip");
 				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 				connection.setRequestMethod("GET");
 				InputStream in = connection.getInputStream();
