@@ -215,7 +215,11 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 		});
 	}
 
+	/**
+	 * Startet und verwaltet eine Animation während des Verbindungsaufbaus zu einem Server.
+	 */
 	private void animateConnecting() {
+		// Alle Knöpfe deaktivieren, dass sie während dem Verbindungsaufbau nicht gedrückt werden können
 		menuButton.setEnabled(false);
 		joinGameAsHumanButton.setEnabled(false);
 		createGameAsHumanButton.setEnabled(false);
@@ -223,30 +227,32 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 		createGameAsAiButton.setEnabled(false);
 		ipInput.setEnabled(false);
 
+		// Den aktuellen Text speichern
 		String text = ipInput.getText();
 
 		ipInput.setText(text + " ");
 
+		// Animation initialisieren und starten
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 
 			@Override
 			public void run() {
-				if (ipInput.getText().equals("")) {
-					ipInput.setText(text);
-					timer.cancel();
-					menuButton.setEnabled(true);
-					joinGameAsHumanButton.setEnabled(true);
+				if (ipInput.getText().equals("")) {				// Wenn das Textfeld leer ist, wird die Animation gestoppt
+					ipInput.setText(text);						// Ursprünglichen Text wiederherstellen
+					timer.cancel();								// Animation beenden
+					menuButton.setEnabled(true);				// Alle Knöpfe wieder aktivieren
+					joinGameAsHumanButton.setEnabled(true);		// ...
 					createGameAsHumanButton.setEnabled(true);
 					joinGameAsAiButton.setEnabled(true);
 					createGameAsAiButton.setEnabled(true);
 					ipInput.setEnabled(true);
-				} else if (ipInput.getText().equals(text + " ...")) {
+				} else if (ipInput.getText().equals(text + " ...")) {		// Wenn bereits drei Punkte angefügt wurden, Punkte wieder löschen
 					ipInput.setText(text + " ");
-				} else if (ipInput.getText().startsWith("W")) { // animateWaitingForServer() ist aktiviert worden
+				} else if (ipInput.getText().startsWith("W")) { 			// Animation beenden, da Verbindungsaufbau erfolgreich war und auf Nachrichten des Servers gewartet werden muss (-> animateWaitingForServer() wurde aufgerufen)
 					timer.cancel();
 					menuButton.setEnabled(true);
-				} else {
+				} else {												// Animation fortsetzen und Punkt anfügen
 					ipInput.setText(ipInput.getText() + ".");
 				}
 			}
@@ -254,16 +260,20 @@ public class NetworkGamePanel extends BackgroundPanel implements Notification {
 		timer.schedule(task, 0, 250);
 	}
 
+	/**
+	 * Startet und verwaltet eine Animation nach erfolgreichem Verbindungsaufbau zu einem Server, bis der Server die Anzahl der Schiffe und die Spielfeldgröße gesendet hat.
+	 */
 	private void animateWaitingForServer() {
+		// Animation initialisieren und starten
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 			public void run() {
-				if (ipInput.getText().equals("")) {
+				if (ipInput.getText().equals("")) {									// Animation beenden
 					timer.cancel();
-				} else if (ipInput.getText().equals("Warten auf Server ...")) {
+				} else if (ipInput.getText().equals("Warten auf Server ...")) {		// Punkte zurücksetzen
 					ipInput.setText("Warten auf Server ");
 				} else {
-					ipInput.setText(ipInput.getText() + ".");
+					ipInput.setText(ipInput.getText() + ".");						// Punkt anfügen
 				}
 			}
 		};
