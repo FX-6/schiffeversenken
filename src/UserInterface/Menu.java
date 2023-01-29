@@ -1,11 +1,16 @@
 package UserInterface;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JFrame;
 
 import Notifications.NotificationCenter;
 import Schiffeversenken.GameExitStatus;
 import Schiffeversenken.GameType;
 import Schiffeversenken.Main;
+import Schiffeversenken.SettingsHandler;
 import UserInterface.MenuPanels.*;
 
 /**
@@ -74,10 +79,14 @@ public class Menu extends JFrame {
 	 * Zeigt die Spielanleitung.
 	 */
 	public void showTutorial() {
-		NotificationCenter.removeAllObservers(getContentPane());
-		TutorialPanel tutorial = new TutorialPanel(this);
-		this.setContentPane(tutorial);
-		this.validate();
+		if (Desktop.isDesktopSupported()) {
+			try {
+				File settingsFile = new File(SettingsHandler.appDirectory + File.separator + "Anleitung.pdf");
+				Desktop.getDesktop().open(settingsFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
