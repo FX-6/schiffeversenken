@@ -54,20 +54,20 @@ public class GameWindow extends JFrame implements Notification {
 	private JButton savePanelButton = new InputButton("Speichern", false);
 	private WrapperPanel passTurnWarningPanel = new WrapperPanel();
 	private GameMenuPanel addShipsGameMenu = new GameMenuPanel();
-	private JButton addShips2Button = new InputButton("Größe 2: 0/0", true);
-	private JButton addShips3Button = new InputButton("Größe 3: 0/0", true);
-	private JButton addShips4Button = new InputButton("Größe 4: 0/0", true);
-	private JButton addShips5Button = new InputButton("Größe 5: 0/0", true);
+	private JButton addShips2Button = new InputButton("Gr\u00f6\u00dfe 2: 0/0", true);
+	private JButton addShips3Button = new InputButton("Gr\u00f6\u00dfe 3: 0/0", true);
+	private JButton addShips4Button = new InputButton("Gr\u00f6\u00dfe 4: 0/0", true);
+	private JButton addShips5Button = new InputButton("Gr\u00f6\u00dfe 5: 0/0", true);
 	private GameMenuPanel gameMenu = new GameMenuPanel();
 	private JLabel currentTurnLabel = new HeaderLabel("Du bist dran", true);
 	private JLabel currentPlayerLabel = new HeaderLabel("Du", false);
-	private JButton changePlayerButton = new InputButton("Ändern", false);
+	private JButton changePlayerButton = new InputButton("\u00c4ndern", false);
 	private JLabel remainingShipsSize2Label = new HeaderLabel("2er: 0/0", false);
 	private JLabel remainingShipsSize3Label = new HeaderLabel("3er: 0/0", false);
 	private JLabel remainingShipsSize4Label = new HeaderLabel("4er: 0/0", false);
 	private JLabel remainingShipsSize5Label = new HeaderLabel("5er: 0/0", false);
 	private JButton saveButton = new InputButton("Speichern", true);
-	private JButton shootButton = new InputButton("SCHIEẞEN", true); // ẞ (groß) oder ß (klein)?
+	private JButton shootButton = new InputButton("SCHIE\u1e9eEN", true); // ẞ (groß) oder ß (klein)?
 
 	/**
 	 * Erstellt das Fenster für's Spiel.
@@ -200,7 +200,7 @@ public class GameWindow extends JFrame implements Notification {
 		this.add(savePanel);
 
 		// pass turn to enemy warning
-		JLabel passTurnWarningLabel = new HeaderLabel("Zug überspringen?", true);
+		JLabel passTurnWarningLabel = new HeaderLabel("Zug \u00fcberspringen?", true);
 		GridBagConstraints passTurnWarningLabelConstraints = passTurnWarningPanel.defaultConstraints;
 		passTurnWarningLabelConstraints.gridy = 0;
 		passTurnWarningPanel.add(passTurnWarningLabel, passTurnWarningLabelConstraints);
@@ -261,7 +261,7 @@ public class GameWindow extends JFrame implements Notification {
 			}
 		});
 
-		JButton removeShipsButton = new InputButton("Schiffe löschen", true);
+		JButton removeShipsButton = new InputButton("Schiffe l\u00f6schen", true);
 		removeShipsButton.setMinimumSize(addShipsGameMenu.largeDimension());
 		removeShipsButton.setPreferredSize(addShipsGameMenu.largeDimension());
 		removeShipsButton.setMaximumSize(addShipsGameMenu.largeDimension());
@@ -490,7 +490,7 @@ public class GameWindow extends JFrame implements Notification {
 						}
 					} else if (!playingAsBot) {
 						if (!inMatch) {
-							setError("Platzieren nicht möglich");
+							setError("Platzieren nicht m\u00f6glich");
 						} else if (!viewingSelf) {
 							setError("Fehler");
 						}
@@ -519,7 +519,7 @@ public class GameWindow extends JFrame implements Notification {
 					}
 				} else {
 					if (!inMatch) {
-						setError("Platzieren nicht möglich");
+						setError("Platzieren nicht m\u00f6glich");
 					} else if (!playingAsBot) {
 						setError("Fehler");
 					}
@@ -671,10 +671,10 @@ public class GameWindow extends JFrame implements Notification {
 			placedShipsOfSize[ship.getLength()]++;
 		}
 
-		addShips2Button.setText("Größe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
-		addShips3Button.setText("Größe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
-		addShips4Button.setText("Größe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
-		addShips5Button.setText("Größe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
+		addShips2Button.setText("Gr\u00f6\u00dfe 2: " + placedShipsOfSize[2] + "/" + Main.currentGame.getNumberOfShips(2));
+		addShips3Button.setText("Gr\u00f6\u00dfe 3: " + placedShipsOfSize[3] + "/" + Main.currentGame.getNumberOfShips(3));
+		addShips4Button.setText("Gr\u00f6\u00dfe 4: " + placedShipsOfSize[4] + "/" + Main.currentGame.getNumberOfShips(4));
+		addShips5Button.setText("Gr\u00f6\u00dfe 5: " + placedShipsOfSize[5] + "/" + Main.currentGame.getNumberOfShips(5));
 		if (placedShipsOfSize[2] == Main.currentGame.getNumberOfShips(2)) {
 			addShips2Button.setEnabled(false);
 		} else {
@@ -809,7 +809,7 @@ public class GameWindow extends JFrame implements Notification {
 		if (!playingAsBot && !gameOver && inMatch && Main.currentGame.getPlayer1().isMyTurn()) {
 			if (gameMap.getShootFocus() != null) {
 				if (!gameMap.isValidShootFocus()) {
-					setError("Nicht möglich");
+					setError("Nicht m\u00f6glich");
 					return;
 				}
 

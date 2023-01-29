@@ -22,7 +22,7 @@ public class MenuButton extends InputButton {
 	 * Erstellt den Button, der genutzt werden sollte um zum Menü zurückzukommen.
 	 */
 	public MenuButton() {
-		super("Menü", true);
+		super("Men\u00fc", true);
 
 		defaultFont = new Font("Titel", Font.PLAIN, fontSizeSmall);
 		hoverFont = new Font("Titel", Font.BOLD, fontSizeSmall);

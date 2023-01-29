@@ -226,7 +226,7 @@ public class SettingsHandler {
 			inputPanel.setError("Zu klein");
 			return false;
 		} else if (input > 30) {
-			inputPanel.setError("Zu groß");
+			inputPanel.setError("Zu gro\u00df");
 			return false;
 		}
 
@@ -289,7 +289,7 @@ public class SettingsHandler {
 			inputPanels[0].setError("Zu klein");
 			return false;
 		} else if (inputs[0] > 30) {
-			inputPanels[0].setError("Zu groß");
+			inputPanels[0].setError("Zu gro\u00df");
 			return false;
 		} else if (percOccupied < 10) {
 			inputPanels[1].setError("Zu wenige");

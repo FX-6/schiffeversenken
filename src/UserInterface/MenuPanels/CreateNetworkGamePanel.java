@@ -53,7 +53,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 		WrapperPanel wrapperPanel = new WrapperPanel();
 
 		// IP Address heading
-		JLabel ipAddressLabel = new HeaderLabel("Lädt...", true);
+		JLabel ipAddressLabel = new HeaderLabel("L\u00e4dt...", true);
 		try {
 			ipAddressLabel.setText("IP: " + Inet4Address.getLocalHost().getHostAddress());
 		} catch (UnknownHostException e1) {
@@ -65,7 +65,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 		wrapperPanel.add(ipAddressLabel, ipAddressLabelConstraints);
 
 		// field size input
-		InputPanel sizeInputPanel = new InputPanel("Spielfeldgröße", false);
+		InputPanel sizeInputPanel = new InputPanel("Spielfeldgr\u00f6\u00dfe", false);
 		InputTextField sizeInput = new InputTextField();
 		sizeInputPanel.add(sizeInput);
 		GridBagConstraints sizeInputPanelConstraints = doubleFirstConstraints;
@@ -73,7 +73,7 @@ public class CreateNetworkGamePanel extends BackgroundPanel implements Notificat
 		wrapperPanel.add(sizeInputPanel, sizeInputPanelConstraints);
 
 		// auto ship button
-		JButton autoShipButton = new InputButton("Bevölkern", false);
+		JButton autoShipButton = new InputButton("Bev\u00f6lkern", false);
 		GridBagConstraints autoShipButtonConstraints = doubleSecondConstraints;
 		autoShipButtonConstraints.gridy = 1;
 		wrapperPanel.add(autoShipButton, autoShipButtonConstraints);

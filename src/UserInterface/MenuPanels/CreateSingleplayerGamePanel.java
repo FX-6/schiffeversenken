@@ -44,7 +44,7 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel implements Noti
 		WrapperPanel wrapperPanel = new WrapperPanel();
 
 		// field size input
-		InputPanel sizeInputPanel = new InputPanel("Spielfeldgröße", false);
+		InputPanel sizeInputPanel = new InputPanel("Spielfeldgr\u00f6\u00dfe", false);
 		InputTextField sizeInput = new InputTextField();
 		sizeInputPanel.add(sizeInput);
 		GridBagConstraints sizeInputPanelConstraints = doubleFirstConstraints;
@@ -52,7 +52,7 @@ public class CreateSingleplayerGamePanel extends BackgroundPanel implements Noti
 		wrapperPanel.add(sizeInputPanel, sizeInputPanelConstraints);
 
 		// auto ship button
-		JButton autoShipButton = new InputButton("Bevölkern", false);
+		JButton autoShipButton = new InputButton("Bev\u00f6lkern", false);
 		GridBagConstraints autoShipButtonConstraints = doubleSecondConstraints;
 		autoShipButtonConstraints.gridy = 0;
 		wrapperPanel.add(autoShipButton, autoShipButtonConstraints);
