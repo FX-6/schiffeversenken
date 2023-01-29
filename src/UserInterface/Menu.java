@@ -116,7 +116,7 @@ public class Menu extends JFrame {
 	/**
 	 * Zeigt die Inputs zum Beitreten eins Spiels an.
 	 *
-	 * @param type
+	 * @param type Art des Spiels
 	 */
 	public void showNetworkGame(GameType type) {
 		NotificationCenter.removeAllObservers(getContentPane());

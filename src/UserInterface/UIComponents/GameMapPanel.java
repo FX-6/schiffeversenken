@@ -236,7 +236,7 @@ public class GameMapPanel extends UIPanel {
 
 	/**
 	 * Setzt die größe des Schiffs das platziert werden soll.
-	 * <= 2 um Schiffe zu löschen.
+	 * Muss größer oder gleich 2 um Schiffe zu löschen.
 	 * Repaints parent.
 	 *
 	 * @param size Die neue größe

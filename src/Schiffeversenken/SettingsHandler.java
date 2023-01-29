@@ -237,8 +237,8 @@ public class SettingsHandler {
 	/**
 	 * Prüft ob die übergebenen Inputs erlaubt sind.
 	 *
-	 * @param inputField Die Inputfields indem der Wert eingegeben wurde als Array
-	 * @param inputPanel Die Panels indem die InputFields sind als Array um einen
+	 * @param inputFields Die Inputfields indem der Wert eingegeben wurde als Array
+	 * @param inputPanels Die Panels indem die InputFields sind als Array um einen
 	 *                   error zu setzen
 	 * @return <code>true</code> wenn es keinen fehler gab, ansonsten
 	 *         <code>false</code>
@@ -327,7 +327,7 @@ public class SettingsHandler {
 	/**
 	 * Liefert zurück ob der Input eine valid HEX-Color scheme ist.
 	 *
-	 * @param ip Die HEX-Color als <code>String</code> mit vorangehendem
+	 * @param color Die HEX-Color als <code>String</code> mit vorangehendem
 	 *           <code>#</code>.
 	 * @return <code>true</code> wenn die HEX-Color valid ist, ansonsten
 	 *         <code>false</code>
